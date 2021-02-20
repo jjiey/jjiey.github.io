@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yangsanity.me/2021/02/18/hello-world/</loc>
+    
+    <lastmod>2021-02-20</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yangsanity.me/404/index.html</loc>
     
     <lastmod>2021-02-20</lastmod>
@@ -10,13 +17,6 @@
   
   <url>
     <loc>http://yangsanity.me/about/index.html</loc>
-    
-    <lastmod>2021-02-20</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yangsanity.me/2021/02/18/hello-world/</loc>
     
     <lastmod>2021-02-20</lastmod>
     
@@ -66,6 +66,20 @@
   </url>
 
   
+  <url>
+    <loc>http://yangsanity.me/tags/Hello-World-tags/</loc>
+    <lastmod>2021-02-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 
+  
+  <url>
+    <loc>http://yangsanity.me/categories/Hello-World-categories/</loc>
+    <lastmod>2021-02-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
 </urlset>
