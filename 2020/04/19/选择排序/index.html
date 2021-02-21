@@ -20,30 +20,35 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="yangsanity&#39;s blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Yangsanity&#39;s Blog">
-<meta property="og:url" content="http://yangsanity.me/index.html">
+  <meta name="description" content="选择排序（selection sort）在排序算法中也是比较基础的一个，来，一起看看。 选择排序思想和冒泡排序的名字一样，它的名字也是足够直白的。“选择”两个字对于人生来说真算的上是一个比较艰难的字眼，不过在选择排序中不用担心，这里做选择没那么难。具体来说，我们可以把数组看作两部分，一部分为有序区，一部分为无序区，我们每次只需要在数组无序区中选择出指定的值，然后把它放到有序区，直到无序区没有元素（">
+<meta property="og:type" content="article">
+<meta property="og:title" content="选择排序">
+<meta property="og:url" content="http://yangsanity.me/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
-<meta property="og:description" content="yangsanity&#39;s blog">
+<meta property="og:description" content="选择排序（selection sort）在排序算法中也是比较基础的一个，来，一起看看。 选择排序思想和冒泡排序的名字一样，它的名字也是足够直白的。“选择”两个字对于人生来说真算的上是一个比较艰难的字眼，不过在选择排序中不用担心，这里做选择没那么难。具体来说，我们可以把数组看作两部分，一部分为有序区，一部分为无序区，我们每次只需要在数组无序区中选择出指定的值，然后把它放到有序区，直到无序区没有元素（">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yangsanity.me/images/2-1.gif">
+<meta property="article:published_time" content="2020-04-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-02-21T08:05:26.521Z">
 <meta property="article:author" content="jjiey">
+<meta property="article:tag" content="sorting">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yangsanity.me/images/2-1.gif">
 
-<link rel="canonical" href="http://yangsanity.me/">
+<link rel="canonical" href="http://yangsanity.me/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Yangsanity's Blog</title>
+  <title>选择排序 | Yangsanity's Blog</title>
   
 
 
@@ -176,9 +181,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -194,10 +200,9 @@
       <meta itemprop="name" content="Yangsanity's Blog">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">选择排序</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          选择排序
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -250,7 +255,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>选择排序（selection sort）在排序算法中也是比较基础的一个，来，一起看看。</p>
+        <p>选择排序（selection sort）在排序算法中也是比较基础的一个，来，一起看看。</p>
 <h2 id="选择排序思想"><a href="#选择排序思想" class="headerlink" title="选择排序思想"></a>选择排序思想</h2><p>和冒泡排序的名字一样，它的名字也是足够直白的。“选择”两个字对于人生来说真算的上是一个比较艰难的字眼，不过在选择排序中不用担心，这里做选择没那么难。具体来说，<strong>我们可以把数组看作两部分，一部分为有序区，一部分为无序区，我们每次只需要在数组无序区中选择出指定的值，然后把它放到有序区，直到无序区没有元素（具体操作来说，只需要把有序区和无序区两个值的位置交换即可）</strong>。</p>
 <p>那什么是指定的值？我也不是故意要用这个含糊其辞的说法，正所谓“命运只有一个，而人生却有多种选择”，在这里也有多种选择。对于这个值，我们可以选择无序区的最大值；也可以选择无序区的最小值；甚至可以既选择无序区的最大值，又选择无序区的最小值。其实最后一种选择相当于是对前两种选择的一种优化，在下面会说到。</p>
 <p>当然不同的选择也会导致放到有序区的规则不同。这里以数组从小到大排序为例，假如数组前半段为有序区，后半段为无序区，那么每次需要在无序区中选择出最小值，将它放到有序区的末尾即可；假如数组前半段为无序区，后半段为有序区，那么每次需要在无序区中选择出最大值，将它放到有序区的开头即可。</p>
@@ -414,489 +419,92 @@
 <p><em><span style="color:red;">原地排序和稳定性的概念在<a href="/2020/04/18/%E4%BB%8E%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%BC%80%E5%A7%8B/">从冒泡排序开始</a>最后中有解释，就不赘述了。</span></em></p>
 <hr>
 
-      
     </div>
 
     
     
     
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+        
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/18/%E4%BB%8E%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%BC%80%E5%A7%8B/">
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" title="选择排序">http://yangsanity.me/2020/04/19/选择排序/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
+        
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/18/%E4%BB%8E%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%BC%80%E5%A7%8B/" class="post-title-link" itemprop="url">从冒泡排序开始</a>
-        </h2>
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+    <div class="social-list">
 
-              <time title="创建时间：2020-04-18 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-18T00:00:00+08:00">2020-04-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-21 14:53:27" itemprop="dateModified" datetime="2021-02-21T14:53:27+08:00">2021-02-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
             </span>
 
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/04/18/%E4%BB%8E%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%BC%80%E5%A7%8B/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/18/从冒泡排序开始/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
+            <span class="label">WeChat</span>
+          </a>
         </div>
-      </header>
 
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>冒泡排序（bubble sort）在排序算法中应该算是比较经典也比较简单的一个了，咱们就直入正题吧。</p>
-<h2 id="冒泡排序思想"><a href="#冒泡排序思想" class="headerlink" title="冒泡排序思想"></a>冒泡排序思想</h2><p>其实它的名称都已经够直白了对吧，就是“冒泡”嘛。但是具体是怎么“冒”的呢？就是<strong>从数组中第一个位置开始，相邻元素两两比较大小，如果左边的元素大于右边的元素，则交换两元素的位置，否则，就保持它们在数组中的位置不变；然后再继续比较接下来相邻两元素的大小</strong>。</p>
-<p>这样在经过每一轮比较和交换之后，最大的数字就会被移动到数组的最右边。类比一下汽水中的小气泡，如果把数组的左边看作汽水的瓶底，右边看作汽水的瓶口，数组中最大的数字每一轮都会像小气泡一样浮到了最上面，是不是裸眼3D效果都已经出来了。</p>
-<p><img src="/images/1-1.gif" alt="使用冒泡排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
-<p>接下来就用个简单的demo来演示一下整个过程吧。待排序数组如下：</p>
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-</tr>
-</table>
-
-<p>第一轮比较和交换的详细过程为：<br>（1）2 &lt; 5，保持不变；5 &gt; 4，交换位置</p>
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">5</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-</tr>
-</table>
-（2）5 < 8，保持不变；8 > 7，交换位置
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">7</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">8</td>
-<td style="text-align: center;">9</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-</tr>
-</table>
-（3）8 < 9，保持不变；9 > 1，交换位置
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">9</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-</tr>
-</table>
-（4）9 > 6，交换位置
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">6</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">9</td>
-<td style="text-align: center;">3</td>
-</tr>
-</table>
-（5）9 > 3，交换位置
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">9</td>
-</tr>
-</table>
-至此，第一轮比较结束，可以发现，数组中的最大值 9 已经位于数组末尾。
-
-<p>后续的比较和交换过程与第一轮是一样的，就不赘述了，这里直接给出所有轮次的结果如下：</p>
-<table>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-<tr>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
-<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
-</tr>
-</table>
-
-<h2 id="冒泡排序代码"><a href="#冒泡排序代码" class="headerlink" title="冒泡排序代码"></a>冒泡排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * bubbleSort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] bubbleSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="comment">// swap 时用到的临时变量</span></span><br><span class="line">  <span class="keyword">int</span> temp;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; data.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; data.length - <span class="number">1</span> - i; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data[j] &gt; data[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// swap</span></span><br><span class="line">        temp = data[j];</span><br><span class="line">        data[j] = data[j + <span class="number">1</span>];</span><br><span class="line">        data[j + <span class="number">1</span>] = temp;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="冒泡排序优化"><a href="#冒泡排序优化" class="headerlink" title="冒泡排序优化"></a>冒泡排序优化</h2><p>经过前面的介绍，冒泡排序看起来还是挺简单的对吧，是的，但是一定程度上很简单也就意味着很粗暴，其实对于上个版本的实现来说，还是有很大的优化空间的。</p>
-<p>仍然以上面的demo为例，我们直接去看所有轮次的结果，会发现其实在第六轮的时候数组已经排好序了，但是程序还是会兢兢业业的去执行第七轮和第八轮，所以这就是一个可以优化的点。</p>
-<p>具体在代码优化实现上，我们可以加一个标志位来标记数组是否已经有序（或者也可以说，是用来标记数组中元素是否进行过交换）。</p>
-<h2 id="冒泡排序优化代码"><a href="#冒泡排序优化代码" class="headerlink" title="冒泡排序优化代码"></a>冒泡排序优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * bubbleSort优化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * 如果某一轮已经有序，则提前结束</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] bubbleSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="keyword">int</span> temp;</span><br><span class="line">  <span class="comment">// 标记是否有序</span></span><br><span class="line">  <span class="keyword">boolean</span> isSorted;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; data.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">    <span class="comment">// 每一轮开始 isSorted 初始值都置为 true</span></span><br><span class="line">    isSorted = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; data.length - <span class="number">1</span> - i; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data[j] &gt; data[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// swap</span></span><br><span class="line">        temp = data[j];</span><br><span class="line">        data[j] = data[j + <span class="number">1</span>];</span><br><span class="line">        data[j + <span class="number">1</span>] = temp;</span><br><span class="line">        <span class="comment">// 如果进行了交换，意味着数组还不是有序的，isSorted 置为 false</span></span><br><span class="line">        isSorted = <span class="keyword">false</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isSorted) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="冒泡排序再优化"><a href="#冒泡排序再优化" class="headerlink" title="冒泡排序再优化"></a>冒泡排序再优化</h2><p>这里说冒泡排序还可以再优化，针对的是一种特殊的情况来说的。这种情况就是给定的待排序数组前半段是无序的，后半段是有序的。</p>
-<p>再用个简单的demo来演示一下这种情况。待排序数组如下：</p>
-<table>
-<tr>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">9</td>
-</tr>
-</table>
-
-<p>第一轮比较和交换的详细过程为：<br>（1）4 &gt; 3，交换位置</p>
-<table>
-<tr>
-<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">9</td>
-</tr>
-</table>
-（2）4 > 2，交换位置
-<table>
-<tr>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">9</td>
-</tr>
-</table>
-（3）4 > 1，交换位置
-<table>
-<tr>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
-<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">6</td>
-<td style="text-align: center;">7</td>
-<td style="text-align: center;">8</td>
-<td style="text-align: center;">9</td>
-</tr>
-</table>
-（4）4 < 5，保持不变；5 < 6，保持不变；6 < 7，保持不变；7 < 8，保持不变；8 < 9，保持不变
-至此，第一轮比较结束。
-
-<p>后续的比较和交换过程与第一轮是一样的，就不赘述了，这里可以发现一个问题：其实数组后半段已经是有序的了，但是每一轮还是会再去比较大小，其实这是没有必要的。所以这也是一个可以优化的点。</p>
-<p>具体在代码优化实现上，我们可以维护一个边界位置，在该边界位置前半段是无序数组，后半段是有序数组，在内循环中，只需要比较到该边界的位置即可。</p>
-<h2 id="冒泡排序再优化代码"><a href="#冒泡排序再优化代码" class="headerlink" title="冒泡排序再优化代码"></a>冒泡排序再优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * bubbleSort优化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * 每一轮排序后，记录最后一次元素交换的位置，该位置即为无序数组和有序数组的边界位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] bubbleSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="keyword">int</span> temp;</span><br><span class="line">  <span class="keyword">boolean</span> isSorted;</span><br><span class="line">  <span class="comment">// 每次交换的位置</span></span><br><span class="line">  <span class="keyword">int</span> lastChangeIndex = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 无序数组和有序数组的边界，内循环中每次只需比较到这里为止，第一轮边界值为数组最后一个值</span></span><br><span class="line">  <span class="keyword">int</span> sortBorder = data.length - <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; data.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">    isSorted = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; sortBorder; j++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data[j] &gt; data[j + <span class="number">1</span>]) &#123;</span><br><span class="line">        <span class="comment">// swap</span></span><br><span class="line">        temp = data[j];</span><br><span class="line">        data[j] = data[j + <span class="number">1</span>];</span><br><span class="line">        data[j + <span class="number">1</span>] = temp;</span><br><span class="line">        isSorted = <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">// lastChangeIndex 更新为每次交换的位置</span></span><br><span class="line">        lastChangeIndex = j;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 此时 lastChangeIndex 表示每一轮中最后一次交换的位置，即此时无序数组和有序数组的边界值，将它赋值给 sortBorder</span></span><br><span class="line">    sortBorder = lastChangeIndex;</span><br><span class="line">    <span class="keyword">if</span> (isSorted) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="复杂度和稳定性分析"><a href="#复杂度和稳定性分析" class="headerlink" title="复杂度和稳定性分析"></a>复杂度和稳定性分析</h2><ol>
-<li>时间复杂度</li>
-</ol>
-<ul>
-<li><p>最优时间复杂度：O(n)</p>
-<ul>
-<li>在最理想的情况下，即待排序数组本来就是有序的，用上述<span style="color:red;">冒泡排序优化代码</span>来实现，其实我们只需要遍历 1 次就可以了。假定待排序数组长度为 n，那么最优时间复杂度即为 O(n)。</li>
-</ul>
-</li>
-<li><p>最坏时间复杂度：O(n^2)</p>
-</li>
-<li><p>平均时间复杂度：O(n^2)</p>
-</li>
-</ul>
-<ol start="2">
-<li>空间复杂度：O(1)</li>
-</ol>
-<ul>
-<li>整个过程都是原地排序，并没有用到其它辅助的空间。</li>
-</ul>
-<ol start="3">
-<li>冒泡排序是一种稳定排序。</li>
-</ol>
-<p><em><span style="color:red;">这里牵扯到两个概念，也在这里顺便介绍一下：</span></em></p>
-<p><em><span style="color:red;">原地排序：在排序过程中不需要辅助空间，直接利用原来待排序数组的存储空间来进行比较和交换。</span></em></p>
-<p><em><span style="color:red;">稳定性：如果待排序数组中存在相同的元素，且在排序后这些相同元素之间的顺序与排序前的顺序一致，则称这种排序为稳定性排序；否则，则为不稳定性排序。</span></em></p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/01/01/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-01T00:00:00+08:00">2020-01-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-02-21 13:21:51" itemprop="dateModified" datetime="2021-02-21T13:21:51+08:00">2021-02-21</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hello-World-categories/" itemprop="url" rel="index"><span itemprop="name">Hello World categories</span></a>
-                </span>
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
             </span>
 
-          
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/01/01/hello-world/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/01/01/hello-world/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
+            <span class="label">RSS</span>
+          </a>
         </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
     </div>
+  </div>
 
-    
-    
-    
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/sorting/" rel="tag"># sorting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/18/%E4%BB%8E%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%BC%80%E5%A7%8B/" rel="prev" title="从冒泡排序开始">
+      <i class="fa fa-chevron-left"></i> 从冒泡排序开始
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
 
           </div>
           
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -943,6 +551,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">选择排序思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">选择排序代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">选择排序优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">选择排序优化代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%92%8C%E7%A8%B3%E5%AE%9A%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">复杂度和稳定性分析</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1075,6 +684,26 @@
   }
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/";
+    this.page.identifier = "2020/04/19/选择排序/";
+    this.page.title = "选择排序";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
 </script>
 
 </body>
