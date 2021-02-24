@@ -20,17 +20,20 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Tencent Commonweal 404">
-<meta property="og:url" content="http://yangsanity.me/404/index.html">
+  <meta name="description" content="jstat (JVM Statistics M onitoring Tool): 虚拟机统计信息监视工具 功能用于监视虚拟机各种运行状态信息的命令行工具。可以显示本地或者远程虚拟机进程中的类加载、内存、垃圾收集、即时编译等运行时数据。 远程虚拟机进程需要远程主机提供 RMI 支持，JDK 中提供了 jstatd 工具可以很方便地建立远程 RMI 服务器。 命令格式jstat [ option vm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jstat 基本命令">
+<meta property="og:url" content="http://yangsanity.me/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
+<meta property="og:description" content="jstat (JVM Statistics M onitoring Tool): 虚拟机统计信息监视工具 功能用于监视虚拟机各种运行状态信息的命令行工具。可以显示本地或者远程虚拟机进程中的类加载、内存、垃圾收集、即时编译等运行时数据。 远程虚拟机进程需要远程主机提供 RMI 支持，JDK 中提供了 jstatd 工具可以很方便地建立远程 RMI 服务器。 命令格式jstat [ option vm">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-20T15:11:26.019Z">
-<meta property="article:modified_time" content="2021-02-20T15:11:26.019Z">
+<meta property="article:published_time" content="2021-02-23T07:10:24.000Z">
+<meta property="article:modified_time" content="2021-02-24T02:52:39.422Z">
 <meta property="article:author" content="jjiey">
+<meta property="article:tag" content="JVM Tool">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yangsanity.me/404/">
+<link rel="canonical" href="http://yangsanity.me/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
 
 
 <script id="page-configurations">
@@ -38,13 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Tencent Commonweal 404 | Yangsanity's Blog
-</title>
+  <title>jstat 基本命令 | Yangsanity's Blog</title>
   
 
 
@@ -176,48 +178,238 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jstat 基本命令
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">Tencent Commonweal 404
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
 
-<div class="post-meta">
+              <time title="创建时间：2021-02-23 15:10:24" itemprop="dateCreated datePublished" datetime="2021-02-23T15:10:24+08:00">2021-02-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jstat 基本命令" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/23/jstat-基本命令/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
   
 
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>jstat (JVM Statistics M onitoring Tool): 虚拟机统计信息监视工具</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>用于监视虚拟机各种运行状态信息的命令行工具。可以显示本地或者远程虚拟机进程中的类加载、内存、垃圾收集、即时编译等运行时数据。</p>
+<h3 id="远程虚拟机进程"><a href="#远程虚拟机进程" class="headerlink" title="远程虚拟机进程"></a>远程虚拟机进程</h3><p>需要远程主机提供 RMI 支持，JDK 中提供了 jstatd 工具可以很方便地建立远程 RMI 服务器。</p>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>jstat [ option vmid [interval[s|ms] [count]] ]</p>
+<h3 id="VMID"><a href="#VMID" class="headerlink" title="VMID"></a>VMID</h3><p>如果是本地虚拟机进程，VMID 与 LVMID 是一致的; 如果是远程虚拟机进程，那 VMID 的格式应当是:</p>
+<p>[protocol:][//]lvmid[@hostname[:port]/servername]</p>
+<h3 id="interval-和-count"><a href="#interval-和-count" class="headerlink" title="interval 和 count"></a>interval 和 count</h3><p>interval: 查询间隔</p>
+<p>count: 次数</p>
+<p>如果省略这 2 个参数，说明只查询一次。</p>
+<p>假设需要每 250 毫秒查询一次进程 2764 垃圾收集状况，一共查询 20 次，那命令应当是:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gc 2764 250 20</span><br></pre></td></tr></table></figure>
+<h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><p>代表用户希望查询的虚拟机信息，主要分为三类: <strong><em>类加载、垃圾收集、运行期编译状况</em></strong>。</p>
+<table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-class</td>
+<td align="center">视类装载、卸载数量、总空间以及类装载所耗费的时间</td>
+</tr>
+<tr>
+<td align="center">-gc</td>
+<td align="center">监视 Java 堆状况，包括 Eden 区、2 个 Survivor 区、老年代、永久代等的容量、已用空间、GC 时间合计等信息</td>
+</tr>
+<tr>
+<td align="center">-gccapacity</td>
+<td align="center">监视内容与 -gc 基本相同，但输出主要关注 Java 堆各个区域使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-gcutil</td>
+<td align="center">监视内容与 -gc 基本相同，但输出主要关注已使用空间占总空间的百分比</td>
+</tr>
+<tr>
+<td align="center">-gccause</td>
+<td align="center">与 -gcutil 功能一样，但是会额外输出导致上一次 GC 产生的原因</td>
+</tr>
+<tr>
+<td align="center">-gcnew</td>
+<td align="center">监视新生代 GC 状况</td>
+</tr>
+<tr>
+<td align="center">-gcnewcapacity</td>
+<td align="center">监视内容与 -gcnew 基本相同，输出主要关注使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-gcold</td>
+<td align="center">监视老年代 GC 状况</td>
+</tr>
+<tr>
+<td align="center">-gcoldcapacity</td>
+<td align="center">监视内容与 -gcold 基本相同，输出主要关注使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-gcpermcapacity</td>
+<td align="center">输出永久代使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-compiler</td>
+<td align="center">输出即时编译器(JIT compiler，just-in-time compiler)编译过的方法、耗时等信息</td>
+</tr>
+<tr>
+<td align="center">-printcompilation</td>
+<td align="center">输出已经被即时编译的方法</td>
+</tr>
+</tbody></table>
+<h2 id="执行样例"><a href="#执行样例" class="headerlink" title="执行样例"></a>执行样例</h2><h3 id="gcutil"><a href="#gcutil" class="headerlink" title="-gcutil"></a>-gcutil</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcutil 2764</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" title="jstat 基本命令">http://yangsanity.me/2021/02/23/jstat-基本命令/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
 </div>
 
-</header>
+        
 
-      
-      
-      
-      <div class="post-body">
-          <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8" homepageurl="/" homepagename='back to the homepage'></script>
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
 
-      </div>
-      
-      
-      
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
     </div>
-    
+  </div>
 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JVM-Tool/" rel="tag"># JVM Tool</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" rel="prev" title="jps 基本命令">
+      <i class="fa fa-chevron-left"></i> jps 基本命令
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
     
-    
-    
+  </article>
+  
+  
+  
+
 
 
           </div>
           
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -264,6 +456,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%9B%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">远程虚拟机进程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">命令格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#VMID"><span class="nav-number">2.1.</span> <span class="nav-text">VMID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#interval-%E5%92%8C-count"><span class="nav-number">2.2.</span> <span class="nav-text">interval 和 count</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#option"><span class="nav-number">2.3.</span> <span class="nav-text">option</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%A0%B7%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">执行样例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#gcutil"><span class="nav-number">3.1.</span> <span class="nav-text">-gcutil</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,6 +680,26 @@
   }
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/";
+    this.page.identifier = "2021/02/23/jstat-基本命令/";
+    this.page.title = "jstat 基本命令";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
 </script>
 
 </body>

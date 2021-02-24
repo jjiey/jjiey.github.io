@@ -20,17 +20,20 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Tencent Commonweal 404">
-<meta property="og:url" content="http://yangsanity.me/404/index.html">
+  <meta name="description" content="jps (JVM Process Status Tool): 虚拟机进程状况工具 功能列出正在运行的虚拟机进程，并显示虚拟机执行主类(Main Class，main() 函数所在的类)名称以及这些进程的本地虚拟机唯一 ID(LVMID)。 LVMIDLVMID (Local Virtual Machine Identifier): 本地虚拟机进程的唯一 ID PID (Process Identi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jps 基本命令">
+<meta property="og:url" content="http://yangsanity.me/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
+<meta property="og:description" content="jps (JVM Process Status Tool): 虚拟机进程状况工具 功能列出正在运行的虚拟机进程，并显示虚拟机执行主类(Main Class，main() 函数所在的类)名称以及这些进程的本地虚拟机唯一 ID(LVMID)。 LVMIDLVMID (Local Virtual Machine Identifier): 本地虚拟机进程的唯一 ID PID (Process Identi">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-20T15:11:26.019Z">
-<meta property="article:modified_time" content="2021-02-20T15:11:26.019Z">
+<meta property="article:published_time" content="2021-02-23T06:12:26.000Z">
+<meta property="article:modified_time" content="2021-02-24T02:52:10.578Z">
 <meta property="article:author" content="jjiey">
+<meta property="article:tag" content="JVM Tool">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yangsanity.me/404/">
+<link rel="canonical" href="http://yangsanity.me/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
 
 
 <script id="page-configurations">
@@ -38,13 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Tencent Commonweal 404 | Yangsanity's Blog
-</title>
+  <title>jps 基本命令 | Yangsanity's Blog</title>
   
 
 
@@ -176,48 +178,202 @@
       <div class="main-inner">
         <div class="content-wrap">
           
-  
-  
 
-          <div class="content page posts-expand">
+          <div class="content post posts-expand">
             
 
     
-    
-    
-    <div class="post-block" lang="zh-CN">
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
       <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jps 基本命令
+        </h1>
 
-<h1 class="post-title" itemprop="name headline">Tencent Commonweal 404
-</h1>
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
 
-<div class="post-meta">
+              <time title="创建时间：2021-02-23 14:12:26" itemprop="dateCreated datePublished" datetime="2021-02-23T14:12:26+08:00">2021-02-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jps 基本命令" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/02/23/jps-基本命令/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
   
 
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>jps (JVM Process Status Tool): 虚拟机进程状况工具</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>列出正在运行的虚拟机进程，并显示虚拟机执行主类(Main Class，main() 函数所在的类)名称以及这些进程的本地虚拟机唯一 ID(LVMID)。</p>
+<h3 id="LVMID"><a href="#LVMID" class="headerlink" title="LVMID"></a>LVMID</h3><p>LVMID (Local Virtual Machine Identifier): 本地虚拟机进程的唯一 ID</p>
+<p>PID (Process Identifier): 操作系统的进程 ID</p>
+<p>LVMID 与 PID 是一致的。</p>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>jps [ options ] [ hostid ]</p>
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-q</td>
+<td align="center">只输出 LVMID，省略主类的名称</td>
+</tr>
+<tr>
+<td align="center">-m</td>
+<td align="center">输出虚拟机进程启动时传递给主类 main() 函数的参数</td>
+</tr>
+<tr>
+<td align="center">-l</td>
+<td align="center">输出主类的全名，如果进程执行的是 jar 包，则输出 jar 路径</td>
+</tr>
+<tr>
+<td align="center">-v</td>
+<td align="center">输出虚拟机进程启动时的 JVM 参数</td>
+</tr>
+</tbody></table>
+<h3 id="hostid"><a href="#hostid" class="headerlink" title="hostid"></a>hostid</h3><p>jps 还可以通过 RMI 协议查询开启了 RMI 服务的远程虚拟机进程状态，参数 hostid 为RMI注册表中注册的主机名。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" title="jps 基本命令">http://yangsanity.me/2021/02/23/jps-基本命令/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
 </div>
 
-</header>
+        
 
-      
-      
-      
-      <div class="post-body">
-          <script type="text/javascript" src="//qzonestyle.gtimg.cn/qzone/hybrid/app/404/search_children.js" charset="utf-8" homepageurl="/" homepagename='back to the homepage'></script>
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
 
-      </div>
-      
-      
-      
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
     </div>
-    
+  </div>
 
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JVM-Tool/" rel="tag"># JVM Tool</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" rel="prev" title="插入排序">
+      <i class="fa fa-chevron-left"></i> 插入排序
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" rel="next" title="jstat 基本命令">
+      jstat 基本命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
     
-    
-    
+  </article>
+  
+  
+  
+
 
 
           </div>
           
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -264,6 +420,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LVMID"><span class="nav-number">1.1.</span> <span class="nav-text">LVMID</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">命令格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#options"><span class="nav-number">2.1.</span> <span class="nav-text">options</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hostid"><span class="nav-number">2.2.</span> <span class="nav-text">hostid</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,6 +644,26 @@
   }
   // defer loading until the whole page loading is completed
   window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/";
+    this.page.identifier = "2021/02/23/jps-基本命令/";
+    this.page.title = "jps 基本命令";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
 </script>
 
 </body>
