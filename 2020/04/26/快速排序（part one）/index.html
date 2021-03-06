@@ -27,18 +27,18 @@
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
 <meta property="og:description" content="快速排序（quick sort）又称分区交换排序（partition-exchange sort），简称快排。它的鼎鼎大名，在排序界无人不知，无人不晓，重要性更是无需多言。毕竟敢叫这么直白的名字，那“实力”肯定也是没话讲的。 快排还有一个响亮的 title，它被称为20世纪对世界影响最大的算法之一。当然，它必须也是面试中算法的一个高频考察点。（必须要再次提到面试，原因你懂的） 我猜你可能知道单路快">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yangsanity.me/images/6-1.gif">
-<meta property="og:image" content="http://yangsanity.me/images/6-2.gif">
-<meta property="og:image" content="http://yangsanity.me/images/6-3.gif">
-<meta property="og:image" content="http://yangsanity.me/images/6-4.gif">
-<meta property="og:image" content="http://yangsanity.me/images/6-5.gif">
+<meta property="og:image" content="http://yangsanity.me/images/6-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-2.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-3.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-4.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-5.png">
 <meta property="og:image" content="http://yangsanity.me/images/6-6.gif">
 <meta property="article:published_time" content="2020-04-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-06T14:23:01.208Z">
+<meta property="article:modified_time" content="2021-03-06T16:43:26.613Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="sorting">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yangsanity.me/images/6-1.gif">
+<meta name="twitter:image" content="http://yangsanity.me/images/6-1.png">
 
 <link rel="canonical" href="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/">
 
@@ -289,10 +289,10 @@
 </table>
 
 <p>首先我们必须定义几个变量来辅助我们理解整个过程。如下图，定义 pivot 为基准值；i 为当前正在遍历的元素；j 为小于基准值的区域边界。</p>
-<p><img src="/images/6-1.gif"></p>
+<p><img src="/images/6-1.png"></p>
 <p>在整个遍历过程中，要一直保证 [left + 1, j] 区间的元素都是小于基准值的，[j + 1, i - 1] 区间的元素都是大于等于基准值的（这里把等于基准值的元素放到了 [j + 1, i - 1] 区间中，当然也可以放到 [left + 1, j] 区间中）。所以在遍历的过程中，只有当 i 当前指向的值小于 pivot 时，我们才需要把当前 i 位置的值和 j + 1 位置的值进行交换；当遍历完成时，再把 pivot 和 j 位置的值进行交换即可。</p>
 <p>第一轮 partition 的详细过程为：</p>
-<p>（1）8 &gt; 5，保持不变；2 &lt; 5，i 和 j + 1 位置的值进行交换，即 2 和 8 进行交换<br><img src="/images/6-2.gif"><br>（2）4 &lt; 5，i 和 j + 1 位置的值进行交换，即 4 和 8 进行交换<br><img src="/images/6-3.gif"><br>（3）7 &gt; 5，保持不变；9 &gt; 5，保持不变；1 &lt; 5，i 和 j + 1 位置的值进行交换，即 1 和 8 进行交换<br><img src="/images/6-4.gif"><br>（4）6 &gt; 5，保持不变；3 &lt; 5，i 和 j + 1 位置的值进行交换，即 3 和 7 进行交换<br><img src="/images/6-5.gif"><br>（5）此时，遍历完成，把 pivot 和 j 位置的值进行交换，即 5 和 3 进行交换。此时，数组中所有比 5 小的元素都在它的左边，所有比 5 大的元素都在它的右边</p>
+<p>（1）8 &gt; 5，保持不变；2 &lt; 5，i 和 j + 1 位置的值进行交换，即 2 和 8 进行交换<br><img src="/images/6-2.png"><br>（2）4 &lt; 5，i 和 j + 1 位置的值进行交换，即 4 和 8 进行交换<br><img src="/images/6-3.png"><br>（3）7 &gt; 5，保持不变；9 &gt; 5，保持不变；1 &lt; 5，i 和 j + 1 位置的值进行交换，即 1 和 8 进行交换<br><img src="/images/6-4.png"><br>（4）6 &gt; 5，保持不变；3 &lt; 5，i 和 j + 1 位置的值进行交换，即 3 和 7 进行交换<br><img src="/images/6-5.png"><br>（5）此时，遍历完成，把 pivot 和 j 位置的值进行交换，即 5 和 3 进行交换。此时，数组中所有比 5 小的元素都在它的左边，所有比 5 大的元素都在它的右边</p>
 <table>
 <tr>
 <td style="text-align: center;" bgcolor="#FFD7D5">3</td>
