@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">6</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">8</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,363 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/05/03/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20two%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/05/03/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20two%EF%BC%89/" class="post-title-link" itemprop="url">快速排序（part two）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-05-03 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-03T00:00:00+08:00">2020-05-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/05/03/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20two%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="快速排序（part two）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/05/03/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20two%EF%BC%89/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/03/快速排序（part two）/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>快排完结篇终于来了。</p>
+<h2 id="从上篇遗留问题说起"><a href="#从上篇遗留问题说起" class="headerlink" title="从上篇遗留问题说起"></a>从上篇遗留问题说起</h2><p>接着上篇最后留下的问题说：当待排序数组有非常多的重复值时，随着数据量增大，快排此时依然会退化到最坏时间复杂度 O(n^2)。为什么呢？</p>
+<p>仍然从快排递归生成的递归树来考虑。当待排序数组有非常多的重复值时，上篇单路快排的 partition 操作还是会把整个数组分成极度不平衡的两部分。因为单路快排的 partition 方式会把等于基准值的数都放在基准值的某一边（左边或者右边）。如果待排序数组有大量重复元素，此时无论选择的基准值是什么，都会导致生成的递归树严重往一边倾斜。这种情况下，快排当然又会退化到最坏时间复杂度 O(n^2)。</p>
+<h2 id="双路快速排序思路"><a href="#双路快速排序思路" class="headerlink" title="双路快速排序思路"></a>双路快速排序思路</h2><h3 id="解决方案一：用双路快排的方式来重写-partition。"><a href="#解决方案一：用双路快排的方式来重写-partition。" class="headerlink" title="解决方案一：用双路快排的方式来重写 partition。"></a>解决方案一：用双路快排的方式来重写 partition。</h3><p>接下来用个简单的demo来演示一下整个过程吧。这里仍然规定直接简单选取数组第一个元素作为基准值，待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">1</td>
+</tr>
+</table>
+
+<p>首先我们必须定义几个变量来辅助我们理解整个过程。如下图，定义 pivot 为基准值；i 为从左往右正在遍历的元素；j 为从右往左正在遍历的元素。</p>
+<p><img src="/images/7-1.png"></p>
+<p>在整个遍历过程中，要一直保证 [left + 1, i - 1] 区间的元素都是小于等于基准值的，[j + 1, right] 区间的元素都是大于等于基准值的。</p>
+<p>partition 过程为：</p>
+<p>先从 i 开始向后扫描（或者，也可以先从 j 开始向前扫描），如果还没有遍历到 right 位置且当前值小于基准值，则不处理，继续查看下一个元素，直到找到一个值大于等于基准值；<br>这时从 j 开始向前扫描，如果还没有遍历到 left + 1 位置且当前值大于基准值，则不处理，继续查看下一个元素，直到找到一个值小于等于基准值；<br>此时，如果 i &lt;= j，则交换 i 和 j 位置的值，之后 i 和 j 再分别指向下一个元素；否则跳出循环；<br>跳出循环后，现在应该把基准值放到合适的位置。那么这个位置是 i 还是 j 呢？分析一下：此时 i 的位置，是从前往后第一个大于等于基准值的元素；此时 j 的位置，是从后往前第一个（也就是从前往后最后一个）小于等于基准值的元素；而基准值是处在小于等于基准值的这一端，所以要将 pivot 和 j 位置的值进行交换即可。</p>
+<p>第一轮 partition 的详细过程为：<br>（1）i：3 &lt; 5，保持不变；9 &gt; 5，停止；<br>j：1 &lt; 5，停止；<br>i 和 j 位置的值进行交换，即 9 和 1 进行交换<br><img src="/images/7-2.png"><br>（2）i：5 = 5，停止；<br>j：8 &gt; 5，保持不变；5 = 5，停止；<br>i 和 j 位置的值进行交换，即 5 和 5 进行交换（不要觉得这步多余哦）<br><img src="/images/7-3.png"><br>（3）i：2 &lt; 5，保持不变；4 &lt; 5，保持不变；5 = 5，停止；<br>j：4 &lt; 5，停止；<br>此时 i &gt; j，结束整个遍历过程<br><img src="/images/7-4.png"><br>（4）遍历结束，把 pivot 和 j 位置的值进行交换，即 5 和 4 进行交换。此时，数组中所有小于等于 5 的元素都在它的左边，所有大于等于 5 的元素都在它的右边</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">5</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
+</tr>
+</table>
+（5）接下来只需要对 [4, 3, 1, 5, 2] 和 [5, 8, 9] 分别进行递归处理即可
+
+<p>第二步的最后，括号中写了不要觉得这一步多余，但是按理说，5 和 5 相等，交换也没有什么意义，直接跳过还能节省交换的时间，那么为什么还要进行交换呢？</p>
+<p>从上一篇中我们知道，我们必须要保证排序过程中递归生成的递归树尽量平衡，才能避免快排的时间复杂度退化到 O(n^2)。第二步的交换操作正是为了这个原因。</p>
+<p>举个例子，假如待排序数组为 [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]，如果 i 和 j 指向的 0 不进行交换，那么第一轮 partition 的结果是数组的第一个位置；如果交换，那么第一轮 partition 的结果是 4。可以看到，如果相同值不进行交换，会导致递归树平衡度不够好，从而影响排序性能。</p>
+<h2 id="双路快速排序代码"><a href="#双路快速排序代码" class="headerlink" title="双路快速排序代码"></a>双路快速排序代码</h2><p>这里给出的代码也直接应用了上篇中提到的两个优化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort双路快排</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">    quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用双路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 优化1：对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">    <span class="keyword">if</span>(right - left &lt;= <span class="number">15</span>)&#123;</span><br><span class="line">        insertSort(data, left, right);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">    <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">    quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">    quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，双路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 优化2：随机在 data[left...right] 范围中, 选择一个位置作为基准值</span></span><br><span class="line">    <span class="keyword">int</span> randomIndex = (<span class="keyword">int</span>) (Math.random() * (right - left + <span class="number">1</span>)) + left;</span><br><span class="line">    <span class="keyword">int</span> temp = data[left];</span><br><span class="line">    data[left] = data[randomIndex];</span><br><span class="line">    data[randomIndex] = temp;</span><br><span class="line">    <span class="comment">// pivot，i，j 的定义在上边已经介绍</span></span><br><span class="line">    <span class="keyword">int</span> pivot = data[left], i = left + <span class="number">1</span>, j = right;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (i &lt;= right &amp;&amp; data[i] &lt; pivot) &#123;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span> (j &gt;= left + <span class="number">1</span> &amp;&amp; data[j] &gt; pivot) &#123;</span><br><span class="line">            j--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (i &gt; j) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// swap i and j</span></span><br><span class="line">        temp = data[i];</span><br><span class="line">        data[i] = data[j];</span><br><span class="line">        data[j] = temp;</span><br><span class="line">        i ++;</span><br><span class="line">        j --;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// swap left and j</span></span><br><span class="line">    data[left] = data[j];</span><br><span class="line">    data[j] = pivot;</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 为了方便大家观看，这个插入排序的代码是直接从上一篇中拿过来的</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="双路快速排序总结"><a href="#双路快速排序总结" class="headerlink" title="双路快速排序总结"></a>双路快速排序总结</h2><p>回到最初的问题，我们再来分析一下为什么双路快排可以解决大量重复元素的问题。</p>
+<p>对比上篇单路快排，双路快排的 partition 方式会把等于基准值的元素分散放在基准值的两边（左边和右边），所以生成的递归树平衡度就会好很多。因此在大量重复值的情况下，双路快排能够防止时间复杂度退化到 O(n^2)。</p>
+<h2 id="三路快速排序思路"><a href="#三路快速排序思路" class="headerlink" title="三路快速排序思路"></a>三路快速排序思路</h2><h3 id="解决方案二：用三路快排的方式来重写快排。"><a href="#解决方案二：用三路快排的方式来重写快排。" class="headerlink" title="解决方案二：用三路快排的方式来重写快排。"></a>解决方案二：用三路快排的方式来重写快排。</h3><p>接下来用个简单的demo来演示一下整个过程吧。这里仍然规定直接简单选取数组第一个元素作为基准值，待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">1</td>
+</tr>
+</table>
+
+<p>同样，首先我们必须定义几个变量来辅助我们理解整个过程。如下图，定义 pivot 为基准值；i 为从左往右正在遍历的元素；lt（less than） 为小于基准值部分的最后一个元素；gt（greater than） 为大于基准值部分的第一个元素。</p>
+<p><img src="/images/7-5.png"></p>
+<p>在整个遍历过程中，要一直保证 [left + 1, lt] 区间的元素都是小于基准值的，[gt, right] 区间的元素都是大于基准值的，[lt + 1, i - 1] 区间的元素都是等于基准值的，[i, gt) 是 i 要扫描的区间。</p>
+<p>partition 过程为：</p>
+<p>从 i 开始向后扫描，如果还没有遍历到 gt 位置，且当前值等于基准值，则不处理，继续查看下一个元素；<br>如果还没有遍历到 gt 位置，且当前值小于基准值，则交换 i 和 lt + 1 位置的值；然后 i 和 lt 都指向下一个元素；<br>如果还没有遍历到 gt 位置，且当前值大于基准值，则交换 i 和 gt - 1 位置的值；然后 gt 指向下一个元素。注意此时 i 是不用动的；<br>i 遍历结束后，再把 pivot 和 lt 位置的值进行交换即可。</p>
+<p>第一轮 partition 的详细过程为：<br>（1）3 &lt; 5，i 和 lt + 1 位置的值进行交换，即 3 不用动；然后 i 和 lt 都指向下一个元素<br><img src="/images/7-6.png"><br>（2）9 &gt; 5，i 和 gt - 1 位置的值进行交换，即 9 和 1 进行交换；然后 gt 指向下一个元素（注意此时 i 不用动）<br><img src="/images/7-7.png"><br>（3）（不要忘了 i 没有动）1 &lt; 5，i 和 lt + 1 位置的值进行交换，即 1 不用动；然后 i 和 lt 都指向下一个元素<br><img src="/images/7-8.png"><br>（4）5 = 5，保持不变；2 &lt; 5，i 和 lt + 1 位置的值进行交换，即 2 和 5 进行交换；然后 i 和 lt 都指向下一个元素<br><img src="/images/7-9.png"><br>（5）4 &lt; 5，i 和 lt + 1 位置的值进行交换，即 4 和 5 进行交换；然后 i 和 lt 都指向下一个元素；5 = 5，保持不变<br><img src="/images/7-10.png"><br>（6）遍历结束，把 pivot 和 lt 位置的值进行交换，即 5 和 4 进行交换。此时，数组中所有等于 5 的元素都位于数组中间，所有小于 5 的元素都在数组左边，所有大于 5 的元素都在数组右边</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">9</td>
+</tr>
+</table>
+（7）接下来只需要对 [4, 3, 1, 2] 和 [8, 9] 分别进行递归处理即可
+
+<h2 id="三路快速排序代码"><a href="#三路快速排序代码" class="headerlink" title="三路快速排序代码"></a>三路快速排序代码</h2><p>这里给出的代码也直接应用了上篇中提到的两个优化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort三路快排</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">    quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用三路快排排序</span></span><br><span class="line"><span class="comment"> * 直接包含了对数组 [left, right] 部分进行 partition 操作的代码</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 优化1：对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">    <span class="keyword">if</span> (right - left &lt;= <span class="number">15</span>) &#123;</span><br><span class="line">        insertSort(data, left, right);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* partition start */</span></span><br><span class="line">    <span class="comment">// 优化2：随机在 data[left...right] 范围中, 选择一个位置作为基准值</span></span><br><span class="line">    <span class="keyword">int</span> randomIndex = (<span class="keyword">int</span>) (Math.random() * (right - left + <span class="number">1</span>)) + left;</span><br><span class="line">    <span class="keyword">int</span> temp = data[left];</span><br><span class="line">    data[left] = data[randomIndex];</span><br><span class="line">    data[randomIndex] = temp;</span><br><span class="line">    <span class="comment">// pivot，i，lt，gt 的定义在上边已经介绍</span></span><br><span class="line">    <span class="keyword">int</span> pivot = data[left], lt = left, gt = right + <span class="number">1</span>, i = left + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; gt) &#123;</span><br><span class="line">        <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">            <span class="comment">// swap i and lt + 1</span></span><br><span class="line">            temp = data[i];</span><br><span class="line">            data[i] = data[lt + <span class="number">1</span>];</span><br><span class="line">            data[lt + <span class="number">1</span>] = temp;</span><br><span class="line">            i ++;</span><br><span class="line">            lt ++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (data[i] &gt; pivot) &#123;</span><br><span class="line">            <span class="comment">// swap i and gt - 1</span></span><br><span class="line">            temp = data[i];</span><br><span class="line">            data[i] = data[gt - <span class="number">1</span>];</span><br><span class="line">            data[gt - <span class="number">1</span>] = temp;</span><br><span class="line">            gt --;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// if (data[i] == pivot)</span></span><br><span class="line">            i ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// swap left and lt</span></span><br><span class="line">    data[left] = data[lt];</span><br><span class="line">    data[lt] = pivot;</span><br><span class="line">    <span class="comment">/* partition end */</span></span><br><span class="line">    <span class="comment">// 递归排序数组左部分</span></span><br><span class="line">    quickSortHelper(data, left, lt - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 递归排序数组右部分</span></span><br><span class="line">    quickSortHelper(data, gt, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 为了方便大家观看，这个插入排序的代码是直接从上一篇中拿过来的</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三路快速排序总结"><a href="#三路快速排序总结" class="headerlink" title="三路快速排序总结"></a>三路快速排序总结</h2><p>为什么我们这次不是重写 partition，而是直接把 partition 的部分写在了 quickSortHelper 里呢？</p>
+<p>相信大家也都明白了，对于三路快排的 partition 来说，不只是简单的返回索引位置，每次 partition 结束后中间部分都是一个区间，这就导致没办法把 partition 部分的代码再单独设计成一个函数了。</p>
+<p>其实解决大量重复元素最经典的方式就是三路快排，这种方式在大量重复值的情况下效率更高。因为对比双路快排，三路快排会把数组分成小于基准值、等于基准值和大于基准值三部分，这样在每次 partition 结束后，等于基准值的部分就已经放到了数组正确的位置，在后续递归过程中这部分就不用再处理了，只需要再递归处理小于基准值和大于基准值的部分即可。</p>
+<p>可以看到三路快排的优点是不需要对大量等于基准值的元素进行重复操作，如果等于基准值的元素非常多，在后续递归过程中就可以一次性少处理很多元素。所以在大量重复值的情况下，这个优化会非常明显。</p>
+<h2 id="复杂度和稳定性分析"><a href="#复杂度和稳定性分析" class="headerlink" title="复杂度和稳定性分析"></a>复杂度和稳定性分析</h2><ol>
+<li>时间复杂度</li>
+</ol>
+<ul>
+<li><p>最优时间复杂度：O(n * logn)</p>
+<ul>
+<li>分析过程可以类似于归并排序，都是分治法。</li>
+</ul>
+</li>
+<li><p>最坏时间复杂度：O(n^2)</p>
+</li>
+<li><p>平均时间复杂度：O(n * logn)</p>
+</li>
+</ul>
+<ol start="2">
+<li>空间复杂度：O(logn) ~ O(n)</li>
+</ol>
+<ul>
+<li>我们的快排代码是通过递归调用实现的，所以需要一个栈空间来辅助递归。最好情况下，类似于归并排序，所需栈的最大深度为 logn；最坏情况下，所需栈的最大深度为 n。所以，快排的空间复杂度为 O(logn) ~ O(n)。</li>
+</ul>
+<ol start="3">
+<li>快速排序是一种不稳定排序。</li>
+</ol>
+<ul>
+<li>上面双路快排的 demo 已经能够说明。</li>
+</ul>
+<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>到此为止，终于把快排分析完了。感谢你看到了这里，希望文章能够对你有些帮助。如果再遇到快排相关面试的话，希望你能够侃侃而谈。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/" class="post-title-link" itemprop="url">快速排序（part one）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-26T00:00:00+08:00">2020-04-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="快速排序（part one）" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/26/快速排序（part one）/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>快速排序（quick sort）又称分区交换排序（partition-exchange sort），简称快排。它的鼎鼎大名，在排序界无人不知，无人不晓，重要性更是无需多言。毕竟敢叫这么直白的名字，那“实力”肯定也是没话讲的。</p>
+<p>快排还有一个响亮的 title，它被称为20世纪对世界影响最大的算法之一。当然，它必须也是面试中算法的一个高频考察点。（必须要再次提到面试，原因你懂的）</p>
+<p>我猜你可能知道单路快排，那么你知道还有双路快排吗？甚至三路快排吗？知道如何优化快排吗？废话不多说，赶快上车。</p>
+<h2 id="快速排序思想"><a href="#快速排序思想" class="headerlink" title="快速排序思想"></a>快速排序思想</h2><p>和归并排序一样，快排也是使用了分治法（Divide and Conquer）的思想，把一个待排序数组以基准值为界，分为两个子数组，左边都比基准值小，右边都比基准值大，然后再递归地对两个子数组进行排序。</p>
+<p>快排大概可以分为三个步骤：</p>
+<ol>
+<li><p>从当前待排序的数组中选择一个元素作为基准值（pivot）；</p>
+</li>
+<li><p>把基准值移动到当数组排好序时它应该处于的正确位置上，并且使得数组中所有比基准值小的元素放在基准值左边，所有比基准值大的元素放在基准值右边（与基准值相等的数可以到任何一边）。这个操作一般称为 partition；</p>
+</li>
+<li><p>对基准数左边数组和右边数组再分别继续使用相同的思路进行排序，逐渐递归下去，直到完成整个排序过程。</p>
+</li>
+</ol>
+<h2 id="单路快速排序思路"><a href="#单路快速排序思路" class="headerlink" title="单路快速排序思路"></a>单路快速排序思路</h2><p>接下来用个简单的demo来演示一下整个过程吧。这里先规定直接简单选取数组第一个元素作为基准值，待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+</table>
+
+<p>首先我们必须定义几个变量来辅助我们理解整个过程。如下图，定义 pivot 为基准值；i 为当前正在遍历的元素；j 为小于基准值的区域边界。</p>
+<p><img src="/images/6-1.gif"></p>
+<p>在整个遍历过程中，要一直保证 [left + 1, j] 区间的元素都是小于基准值的，[j + 1, i - 1] 区间的元素都是大于等于基准值的（这里把等于基准值的元素放到了 [j + 1, i - 1] 区间中，当然也可以放到 [left + 1, j] 区间中）。所以在遍历的过程中，只有当 i 当前指向的值小于 pivot 时，我们才需要把当前 i 位置的值和 j + 1 位置的值进行交换；当遍历完成时，再把 pivot 和 j 位置的值进行交换即可。</p>
+<p>第一轮 partition 的详细过程为：</p>
+<p>（1）8 &gt; 5，保持不变；2 &lt; 5，i 和 j + 1 位置的值进行交换，即 2 和 8 进行交换<br><img src="/images/6-2.gif"><br>（2）4 &lt; 5，i 和 j + 1 位置的值进行交换，即 4 和 8 进行交换<br><img src="/images/6-3.gif"><br>（3）7 &gt; 5，保持不变；9 &gt; 5，保持不变；1 &lt; 5，i 和 j + 1 位置的值进行交换，即 1 和 8 进行交换<br><img src="/images/6-4.gif"><br>（4）6 &gt; 5，保持不变；3 &lt; 5，i 和 j + 1 位置的值进行交换，即 3 和 7 进行交换<br><img src="/images/6-5.gif"><br>（5）此时，遍历完成，把 pivot 和 j 位置的值进行交换，即 5 和 3 进行交换。此时，数组中所有比 5 小的元素都在它的左边，所有比 5 大的元素都在它的右边</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">9</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">8</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">6</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">7</td>
+</tr>
+</table>
+（6）接下来，对 5 左右两边的数组再分别继续使用相同的方法进行排序，直到完成整个排序过程。
+
+<p>注：上面是从左到右使用单路快排的思路，为了开拓思维，当然也可以使用从右到左单路快排的思路。</p>
+<h2 id="单路快速排序代码"><a href="#单路快速排序代码" class="headerlink" title="单路快速排序代码"></a>单路快速排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort单路快排</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">  quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用单路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (left &gt;= right) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">  <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">  quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">  <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">  quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，从左往右单路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// pivot，i，j的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> pivot = data[left], j = left, temp;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span> ; i &lt;= right; i ++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">          j++;</span><br><span class="line">          <span class="comment">// swap i and j + 1</span></span><br><span class="line">          temp = data[j];</span><br><span class="line">          data[j] = data[i];</span><br><span class="line">          data[i] = temp;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// swap left and j</span></span><br><span class="line">  data[left] = data[j];</span><br><span class="line">  data[j] = pivot;</span><br><span class="line">  <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单路快速排序优化"><a href="#单路快速排序优化" class="headerlink" title="单路快速排序优化"></a>单路快速排序优化</h2><p>首先第一个优化相信大家看了上一篇归并排序优化的话肯定能想到，那就是当递归到数据量比较小时，转而使用插入排序提高性能。</p>
+<p>除此之外，其实这里还有一个非常重要的问题：如果当待排序数组是近乎有序或者完全有序的情况下，会发生什么事情？</p>
+<p>大家可以在自己的 ide 上测试一下，会发现，当随着数据量增大，快排会越来越慢。这是为什么呢？</p>
+<p>我们对比着归并排序来分析一下。归并排序和快速排序都是使用的分治法的思想，都是要把待排序数组一分为二，不同的是，归并排序能保证每次都是把数组平均一分为二，而快排是以基准值一分为二，所以一般情况下，快排分出来的子数组都是一大一小的。</p>
+<p>所以对于两者递归生成的递归树，归并排序的平衡度要更好，并且可以保证递归树的高度为logn，而快排生成的递归树高度非常有可能要比logn高。最差情况就是当整个待排序数组本来就近乎有序或者完全有序时，此时快排的时间复杂度会退化到最坏的时间复杂度 O(n^2)。</p>
+<p>一句话概括造成这种情况的原因，就是基准值选的不够好。不能简单粗暴的直接选数组中第一个值作为基准值，我们希望的最好情况是能够选择数组排好序时中间的元素作为基准值。可是这个值又不好准确的定位，其实，我们只需要在数组中随机选择一个元素即可。</p>
+<p>在这种情况下，快排的时间复杂度退化为 O(n^2) 的可能性是非常非常低的，几乎为 0。</p>
+<p>具体在代码优化实现上，我们只需要在上边 partition 代码开始时加一行代码，把 left 和随机位置的值进行交换即可，后边的代码都不用动。</p>
+<h2 id="单路快速排序优化代码"><a href="#单路快速排序优化代码" class="headerlink" title="单路快速排序优化代码"></a>单路快速排序优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort单路快排优化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">  quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用单路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 优化1：对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">    <span class="keyword">if</span>(right - left &lt;= <span class="number">15</span>)&#123;</span><br><span class="line">        insertSort(data, left, right);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">    <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">    quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">    quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，从左往右单路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 优化2：随机在 data[left...right] 范围中, 选择一个位置作为基准值</span></span><br><span class="line">    <span class="keyword">int</span> randomIndex = (<span class="keyword">int</span>) (Math.random() * (right - left + <span class="number">1</span>)) + left;</span><br><span class="line">    <span class="keyword">int</span> temp = data[left];</span><br><span class="line">    data[left] = data[randomIndex];</span><br><span class="line">    data[randomIndex] = temp;</span><br><span class="line">    <span class="comment">// 下面逻辑完全不变</span></span><br><span class="line">    <span class="comment">// pivot，i，j的定义在上边已经介绍</span></span><br><span class="line">    <span class="keyword">int</span> pivot = data[left], j = left;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span> ; i &lt;= right; i ++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">            j++;</span><br><span class="line">            <span class="comment">// swap i and j + 1</span></span><br><span class="line">            temp = data[j];</span><br><span class="line">            data[j] = data[i];</span><br><span class="line">            data[i] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// swap left and j</span></span><br><span class="line">    data[left] = data[j];</span><br><span class="line">    data[j] = pivot;</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 为了方便大家观看，这个插入排序的代码是直接从上一篇中拿过来的</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单路快速排序总结"><a href="#单路快速排序总结" class="headerlink" title="单路快速排序总结"></a>单路快速排序总结</h2><p>到此为止，我们的快排已经能够完美解决随机数组和几乎有序数组的排序问题。</p>
+<p>可以看到，为了避免快排的时间复杂度退化为最坏的时间复杂度 O(n^2)，我们实际上是用随机函数来编写了一个随机化算法（randomized algorithm）。也就是说，我们不能保证我们的算法是一定非常快的，但是可以保证我们的算法在非常非常高的概率下都能非常快。</p>
+<p><img src="/images/6-6.gif"></p>
+<h2 id="为什么还有双路、三路快排？"><a href="#为什么还有双路、三路快排？" class="headerlink" title="为什么还有双路、三路快排？"></a>为什么还有双路、三路快排？</h2><p>我们的代码完美了吗？当然还不够，因为还是忽略了一种情况：如果当待排序数组有非常多的重复值时，会发生什么事情？</p>
+<p>大家仍然可以在自己的 ide 上测试一下，会发现，当随着数据量增大，快排依然会越来越慢，说明此时快排又退化到了最坏时间复杂度 O(n^2)。这又是为什么呢？</p>
+<p>当然小标题已经暴露了解决方案，大家可以自己先想想，分析一下。</p>
+<p>因为已经写的够长啦，大家可以先消化一下，欲知后事如何且听下回分解…</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -540,7 +897,7 @@ step = 1；[1, 5, 2, 6, 3, 8, 4, 9, 7]
 </tr>
 </table>
 
-<h2 id="希尔排序代码"><a href="#希尔排序代码" class="headerlink" title="希尔排序代码"></a>希尔排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * shellSort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] shellSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="keyword">int</span> len = data.length, e, j, before;</span><br><span class="line">  <span class="comment">// 第一层循环控制每轮的步长</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> step = len / <span class="number">2</span>; step &gt;= <span class="number">1</span>; step /= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="comment">// 细心的同学肯定会发现：下面两层 for 循环的代码，当 step = 1 时，其实就是插入排序的代码</span></span><br><span class="line">    <span class="comment">// 这里直接用插入排序的优化版来写。当然也可以继续改写成用二分查找优化的版本（插入排序文章中已经介绍，有兴趣的同学可以自己改写）</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = step; i &lt; len; i++) &#123;</span><br><span class="line">      e = data[i];</span><br><span class="line">      <span class="keyword">for</span>(j = i; (before = j - step) &gt;= <span class="number">0</span> &amp;&amp; data[before] &gt; e; j = before) &#123;</span><br><span class="line">        data[j] = data[before];</span><br><span class="line">      &#125;</span><br><span class="line">      data[j] = e;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="希尔排序代码"><a href="#希尔排序代码" class="headerlink" title="希尔排序代码"></a>希尔排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * shellSort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] shellSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="keyword">int</span> len = data.length, e, j, before;</span><br><span class="line">  <span class="comment">// 第一层循环控制每轮的步长</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> step = len / <span class="number">2</span>; step &gt;= <span class="number">1</span>; step /= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="comment">// 细心的同学肯定会发现：下面两层 for 循环的代码，当 step = 1 时，其实就是插入排序的代码</span></span><br><span class="line">    <span class="comment">// 这里直接用插入排序的优化版来写。当然也可以继续改写成用二分查找优化的版本（插入排序文章中已经介绍，有兴趣的同学可以自己改写）</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = step; i &lt; len; i++) &#123;</span><br><span class="line">      e = data[i];</span><br><span class="line">      <span class="keyword">for</span>(j = i; (before = j - step) &gt;= <span class="number">0</span> &amp;&amp; data[before] &gt; e; j = before) &#123;</span><br><span class="line">        data[j] = data[before];</span><br><span class="line">      &#125;</span><br><span class="line">      data[j] = e;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="希尔排序优化"><a href="#希尔排序优化" class="headerlink" title="希尔排序优化"></a>希尔排序优化</h2><p>在某些极端情况下，希尔排序是比插入排序还要慢的。比如下面这种情况，仍然假设初始“步长”为数组长度，“步长”的计算方式为：step = 前一次step / 2，待排序数组如下：</p>
 <table>
 <tr>
@@ -1604,7 +1961,7 @@ step = 1；[1, 5, 2, 6, 3, 8, 4, 9, 7]
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
