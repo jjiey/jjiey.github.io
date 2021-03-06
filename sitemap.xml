@@ -2,16 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yangsanity.me/2021/02/23/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/</loc>
+    <loc>http://yangsanity.me/2020/04/21/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/</loc>
     
-    <lastmod>2021-02-24</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yangsanity.me/2021/02/23/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/</loc>
-    
-    <lastmod>2021-02-24</lastmod>
+    <lastmod>2021-03-05</lastmod>
     
   </url>
   
@@ -102,7 +95,7 @@
 
   <url>
     <loc>http://yangsanity.me/</loc>
-    <lastmod>2021-02-24</lastmod>
+    <lastmod>2021-03-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -110,21 +103,14 @@
   
   <url>
     <loc>http://yangsanity.me/tags/Hello-World-tags/</loc>
-    <lastmod>2021-02-24</lastmod>
+    <lastmod>2021-03-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yangsanity.me/tags/sorting/</loc>
-    <lastmod>2021-02-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yangsanity.me/tags/JVM-Tool/</loc>
-    <lastmod>2021-02-24</lastmod>
+    <lastmod>2021-03-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -133,21 +119,14 @@
   
   <url>
     <loc>http://yangsanity.me/categories/Hello-World-categories/</loc>
-    <lastmod>2021-02-24</lastmod>
+    <lastmod>2021-03-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yangsanity.me/categories/algorithm/</loc>
-    <lastmod>2021-02-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yangsanity.me/categories/JVM/</loc>
-    <lastmod>2021-02-24</lastmod>
+    <lastmod>2021-03-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
