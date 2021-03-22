@@ -20,20 +20,27 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="在本文开始前，先抛出一个问题：在计算机系统中，数字一律用补码的形式来表示和存储。为什么？ 希望通过本文能够解释这个问题。 重要：为了简洁说明，约定本文以下内容中都使用一个字节，也就是 8 个 bit 来表示二进制数。 原码原码（True form）是指“未经更改”的码，是指一个二进制数左边加上符号位后所得到的码。 计算机中所有的数字均用 0 和 1 编码表示，数字的正负号也不例外，如果一个机器数字">
+  <meta name="description" content="这篇文章来看看浮点数是怎么进行四则运算的。 加减思路首先来看两个十进制的小数如何进行相加和相减： 1234(1.6 * 10⁻⁵) + (0.3 * 10⁻⁶)&#x3D; (1.6 * 10⁻⁵) + (0.03 * 10⁻⁵)&#x3D; (1.6 + 0.03) * 10⁻⁵&#x3D; 1.63 * 10⁻⁵ 1234(1.6 * 10⁻⁵) - (0.3 * 10⁻⁶)&#x3D; (1">
 <meta property="og:type" content="article">
-<meta property="og:title" content="搞懂原码、反码、补码">
-<meta property="og:url" content="http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/index.html">
+<meta property="og:title" content="什么是 IEEE 754">
+<meta property="og:url" content="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
-<meta property="og:description" content="在本文开始前，先抛出一个问题：在计算机系统中，数字一律用补码的形式来表示和存储。为什么？ 希望通过本文能够解释这个问题。 重要：为了简洁说明，约定本文以下内容中都使用一个字节，也就是 8 个 bit 来表示二进制数。 原码原码（True form）是指“未经更改”的码，是指一个二进制数左边加上符号位后所得到的码。 计算机中所有的数字均用 0 和 1 编码表示，数字的正负号也不例外，如果一个机器数字">
+<meta property="og:description" content="这篇文章来看看浮点数是怎么进行四则运算的。 加减思路首先来看两个十进制的小数如何进行相加和相减： 1234(1.6 * 10⁻⁵) + (0.3 * 10⁻⁶)&#x3D; (1.6 * 10⁻⁵) + (0.03 * 10⁻⁵)&#x3D; (1.6 + 0.03) * 10⁻⁵&#x3D; 1.63 * 10⁻⁵ 1234(1.6 * 10⁻⁵) - (0.3 * 10⁻⁶)&#x3D; (1">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-07-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-12T15:33:18.241Z">
+<meta property="og:image" content="http://yangsanity.me/images/21-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/21-2.png">
+<meta property="og:image" content="http://yangsanity.me/images/21-3.png">
+<meta property="og:image" content="http://yangsanity.me/images/21-4.png">
+<meta property="og:image" content="http://yangsanity.me/images/21-5.png">
+<meta property="og:image" content="http://yangsanity.me/images/21-6.png">
+<meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-03-22T13:01:36.900Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="basics">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yangsanity.me/images/21-1.png">
 
-<link rel="canonical" href="http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/">
+<link rel="canonical" href="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/">
 
 
 <script id="page-configurations">
@@ -46,7 +53,7 @@
   };
 </script>
 
-  <title>搞懂原码、反码、补码 | Yangsanity's Blog</title>
+  <title>什么是 IEEE 754 | Yangsanity's Blog</title>
   
 
 
@@ -186,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -199,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          搞懂原码、反码、补码
+          什么是 IEEE 754
         </h1>
 
         <div class="post-meta">
@@ -209,7 +216,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-07-22 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-22T00:00:00+08:00">2020-07-22</time>
+              <time title="创建时间：2020-09-13 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-13T00:00:00+08:00">2020-09-13</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -217,16 +224,12 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
                 </span>
             </span>
 
           
-            <span id="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂原码、反码、补码" title="阅读次数">
+            <span id="/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/" class="post-meta-item leancloud_visitors" data-flag-title="什么是 IEEE 754" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -241,8 +244,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/07/22/搞懂原码、反码、补码/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/13/浮点数的运算/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -257,102 +260,129 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在本文开始前，先抛出一个问题：在计算机系统中，数字一律用补码的形式来表示和存储。为什么？</p>
-<p>希望通过本文能够解释这个问题。</p>
-<p><span style="color:#fff;">重要</span>：为了简洁说明，约定本文以下内容中都使用一个字节，也就是 8 个 bit 来表示二进制数。</p>
-<h2 id="原码"><a href="#原码" class="headerlink" title="原码"></a>原码</h2><p>原码（True form）是指“未经更改”的码，是指一个二进制数左边加上符号位后所得到的码。</p>
-<p>计算机中所有的数字均用 0 和 1 编码表示，数字的正负号也不例外，如果一个机器数字长是 n 位的话，约定最左边 1 位用作符号位，其余 n - 1 位用于表示数值，这部分也称为数值域。</p>
-<p>因此，当二进制数大于 0 时，符号位为 0；当二进制数小于 0 时，符号位为 1；当二进制数等于 0 时，符号位可以为 0 或 1 (+0 / -0)。</p>
-<p>举个例子：</p>
-<table>
-<thead>
-<tr>
-<th align="center">十进制</th>
-<th align="center">原码</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">2</td>
-<td align="center">0000 0010</td>
-</tr>
-<tr>
-<td align="center">-2</td>
-<td align="center">1000 0010</td>
-</tr>
-</tbody></table>
-<p>可以看到，一个数字用二进制原码表示的话，其取值范围是 -111 1111 ~ +111 1111，换算成十进制就是 -127 ~ +127。</p>
-<p>为了便于算术逻辑单元（Arithmetic Logic Unit, ALU）的设计，后面又发展出了反码、补码等经过转换过的码。</p>
-<h2 id="反码"><a href="#反码" class="headerlink" title="反码"></a>反码</h2><p>对于二进制数而言，对其进行取反操作就是将 0 变为 1，1 变为 0。</p>
-<p>正数的反码（Ones’ complement）等于其原码，负数的反码则通过保留其符号位，然后将原码的数值位取反得到。</p>
-<p>举个例子：</p>
-<table>
-<thead>
-<tr>
-<th align="center">十进制</th>
-<th align="center">原码</th>
-<th align="center">反码</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">2</td>
-<td align="center">0000 0010</td>
-<td align="center">0000 0010</td>
-</tr>
-<tr>
-<td align="center">-2</td>
-<td align="center">1000 0010</td>
-<td align="center">1111 1101</td>
-</tr>
-</tbody></table>
-<p>为什么会出现反码？</p>
-<p>在数学中有加减乘除四则运算，但这对于计算机而言却太麻烦了。我们希望最好能够只有一种情况，比如只有加法，这样才能够让计算机变得简单高效。</p>
-<p>而这完全可以做到。举个例子，在数学中 5 - 3 = 2，它完全等价于 5 + (-3) = 2，这样就做到了用加法来表示减法，而乘法是加法的累积（例如 3 * 5 = 3 + 3 + 3 + 3 + 3 = 15），除法是减法的累积（例如 10 / 3 = 10 - 3 - 3 - 3 = 1 mod 3）。所以在计算机中只有加法就够了。</p>
-<p>但是，如果直接用原码来进行加法，计算机需要先识别该二进制原码的符号位，来确定该数字是正数还是负数，然后再进行加法运算，这样显然效率不高。</p>
-<p>为了提高效率，让计算机能够在运算时统一处理符号位和数值域，或者说让符号位也能参与运算，所以就产生了反码。</p>
-<p>至此，问题好像得到了解决。接下来我们验证一下。</p>
-<p>仍然以上面的 5 - 3 为例：5 的原码为 0000 0101，反码为 0000 0101；-3 的原码为 1000 0011，反码为 1111 1100。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">5 - 3</span><br><span class="line">&#x3D; 5 + (-3)</span><br><span class="line">&#x3D; 0000 0101(反码) + 1111 1100(反码)</span><br><span class="line">&#x3D; 0000 0001(反码)</span><br><span class="line">&#x3D; 0000 0001(原码)</span><br><span class="line">&#x3D; 1</span><br></pre></td></tr></table></figure>
-<p>结果竟然差了 1 ？！</p>
-<p>不急，我们再来看两个特殊的运算：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 - 1</span><br><span class="line">&#x3D; 1 + (-1)</span><br><span class="line">&#x3D; 0000 0001(反码) + 1111 1110(反码)</span><br><span class="line">&#x3D; 1111 1111(反码)</span><br><span class="line">&#x3D; 1000 0000(原码)</span><br><span class="line">&#x3D; -0</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0 + 0</span><br><span class="line">&#x3D; 0000 0000(反码) + 0000 0000(反码)</span><br><span class="line">&#x3D; 0000 0000(反码)</span><br><span class="line">&#x3D; 0000 0000(原码)</span><br><span class="line">&#x3D; 0</span><br></pre></td></tr></table></figure>
-<p>可以看到，虽然 -0 和 0 是一样的，但是在反码中却有两种表示方式。也可以这么理解：当用一个字节表示数字的取值范围时，这些数字中多了个 -0。</p>
-<p>因此，虽然用反码进行运算时符号位可以直接参加运算，但是结果却是不对的。</p>
-<h2 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h2><p>补码（Two’s complement）的出现就是为了解决上面反码的问题。</p>
-<p>正数的补码和其原码、反码一样，负数的补码是其反码 + 1。</p>
-<p>举个例子：</p>
-<table>
-<thead>
-<tr>
-<th align="center">十进制</th>
-<th align="center">原码</th>
-<th align="center">反码</th>
-<th align="center">补码</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">2</td>
-<td align="center">0000 0010</td>
-<td align="center">0000 0010</td>
-<td align="center">0000 0010</td>
-</tr>
-<tr>
-<td align="center">-2</td>
-<td align="center">1000 0010</td>
-<td align="center">1111 1101</td>
-<td align="center">1111 1110</td>
-</tr>
-</tbody></table>
-<p>同样，接下来我们用补码验证一下。</p>
-<p>仍然以 5 - 3 为例：5 的原码为 0000 0101，反码为 0000 0101，补码为 0000 0101；-3 的原码为 1000 0011，反码为 1111 1100，补码为 1111 1101。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">5 - 3</span><br><span class="line">&#x3D; 5 + (-3)</span><br><span class="line">&#x3D; 0000 0101(补码) + 1111 1101(补码)</span><br><span class="line">&#x3D; 0000 0010(补码)</span><br><span class="line">&#x3D; 0000 0010(原码)</span><br><span class="line">&#x3D; 2</span><br></pre></td></tr></table></figure>
-<p>结果没问题。再来看那两个特殊的运算：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 - 1</span><br><span class="line">&#x3D; 1 + (-1)</span><br><span class="line">&#x3D; 0000 0001(补码) + 1111 1111(补码)</span><br><span class="line">&#x3D; 0000 0000(补码)</span><br><span class="line">&#x3D; 0000 0000(原码)</span><br><span class="line">&#x3D; 0</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0 + 0</span><br><span class="line">&#x3D; 0000 0000(补码) + 0000 0000(补码)</span><br><span class="line">&#x3D; 0000 0000(补码)</span><br><span class="line">&#x3D; 0000 0000(原码)</span><br><span class="line">&#x3D; 0</span><br></pre></td></tr></table></figure>
-<p>结果仍然没问题，至此，问题终于得到了解决。</p>
-<p>同时这也解释了一开始的问题，在计算机系统中，数字一律用补码的形式来表示和存储。</p>
-<p>原码、反码、补码，你搞懂了吗？</p>
-<hr>
+        <p>这篇文章来看看浮点数是怎么进行四则运算的。</p>
+<h2 id="加减思路"><a href="#加减思路" class="headerlink" title="加减思路"></a>加减思路</h2><p>首先来看两个十进制的小数如何进行相加和相减：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(1.6 * 10⁻⁵) + (0.3 * 10⁻⁶)</span><br><span class="line">&#x3D; (1.6 * 10⁻⁵) + (0.03 * 10⁻⁵)</span><br><span class="line">&#x3D; (1.6 + 0.03) * 10⁻⁵</span><br><span class="line">&#x3D; 1.63 * 10⁻⁵</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(1.6 * 10⁻⁵) - (0.3 * 10⁻⁶)</span><br><span class="line">&#x3D; (1.6 * 10⁻⁵) - (0.03 * 10⁻⁵)</span><br><span class="line">&#x3D; (1.6 - 0.03) * 10⁻⁵</span><br><span class="line">&#x3D; 1.57 * 10⁻⁵</span><br></pre></td></tr></table></figure>
+<p>可以看到，两个十进制小数的加法或减法，要先做这一步：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(1.6 * 10⁻⁵) + (0.3 * 10⁻⁶) </span><br><span class="line">&#x3D; (1.6 * 10⁻⁵) + (0.03 * 10⁻⁵)</span><br><span class="line">或</span><br><span class="line">(1.6 * 10⁻⁵) - (0.3 * 10⁻⁶) </span><br><span class="line">&#x3D; (1.6 * 10⁻⁵) - (0.03 * 10⁻⁵)</span><br></pre></td></tr></table></figure>
+<p>原因很简单：两个小数相加，首先得把这两个数的小数点位置对齐。这么做的目的就是为了对齐小数点。然后就可以将相同的指数值作为公因数提出来，尾数再进行加减运算。</p>
+<p>类比十进制，对于 IEEE 754 标准表示的二进制浮点数的加减运算，我们首先也要对齐小数点。从前面的文章我们知道，二进制浮点数其实也是科学计数法表示，要对齐小数点就要让两个浮点数科学计数法表示中的指数值相同，即要让两个浮点数的二进制表示中的阶码相同。这一步叫做<em>对阶</em>。</p>
+<p>关于对阶，有个原则：小阶对大阶。意思就是指数小的浮点数的阶码要调整成指数大的浮点数的阶码。</p>
+<p>这是因为对于二进制表示的浮点数来说，指数每升高一位，尾数就要右移一位，即尾数低位移出；反之，指数每降低一位，尾数就要左移一位，即尾数高位移出。相比之下，显然采用小阶对大阶损失的精度会更小，结果更准确。</p>
+<p>所以，对阶的具体方法就是：小阶码加上大阶码和小阶码的差值，使之与大阶码相等，同时将小阶码对应的浮点数的尾数右移相应位数，以保证该浮点数的值不变（虽然还是避免不了损失一点精度）。</p>
+<p>对阶之后，接下来进行<em>尾数加减运算</em>。</p>
+<p>如果尾数进行加减运算后的结果是非规格化形式，需要依照 IEEE754 标准通过左规或右规来进行<em>规格化</em>操作（简单说就是转为 1.xxx * 2ⁿ 的形式）。</p>
+<p>再多啰嗦一句，左规：尾数左移，阶码减值；右规：尾数右移，阶码加值。而右规操作一般只需将尾数右移一位即可，因为这种情况出现只会是尾数的最高位运算时出现了进位。</p>
+<p>如果尾数过长，需要进行<em>舍入处理</em>。</p>
+<p>浮点运算在对阶或右规时，尾数需要右移，被右移出去的位会被丢掉，从而造成运算结果精度的损失。为了减少这种精度损失，可以将一定位数的移出位先保留起来，在规格化后用于进行舍入处理。</p>
+<p>关于这舍入处理，IEEE 754 标准给出了五种舍入规则：</p>
+<p><img src="/images/21-1.png"></p>
+<p>英文其实也不是很难，我用 Chrome 插件翻译了一下，中文有点不太准确，但是对照着应该也不耽误理解。。</p>
+<p><img src="/images/21-2.png"></p>
+<p>对于二进制舍入，一般我们用 0 舍 1 入法（类似于十进制中的 4 舍 5 入法）即可，即溢出数的最高位为 0 则直接舍去，为 1 则前一位进 1。</p>
+<p>（这跟上一篇文章中将 -36.35 转为单精度二进制的例子第四步是一样的，当时少说了这一嘴，直接给了结果）</p>
+<p>最后就要对结果做<em>溢出判断</em>。浮点数的溢出是根据其运算结果后阶码的值是否产生溢出来判断的。</p>
+<p>如果阶码的值超过了阶码所能表示的最大正数，则为上溢，进一步，若此时浮点数为正数，则为正上溢，记为 +∞，若浮点数为负数，则为负上溢，记为 -∞；如果阶码的值超过了阶码所能表示的最小负数，则为下溢，进一步，若此时浮点数为正数，则为正下溢，若浮点数为负数，则为负下溢。正下溢和负下溢都作为 0 处理。</p>
+<p>至此，浮点数加减法的思路就说完了。</p>
+<h2 id="乘除思路"><a href="#乘除思路" class="headerlink" title="乘除思路"></a>乘除思路</h2><p>同样，先来看两个十进制的小数如何进行相乘和相除：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(1.2 * 10²) * (1.3 * 10³)</span><br><span class="line">&#x3D; (1.2 * 1.3) * 10²⁺³</span><br><span class="line">&#x3D; 1.56 * 10⁵</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(1.2 * 10²) &#x2F; (1.2 * 10³)</span><br><span class="line">&#x3D; (1.2 &#x2F; 1.2) * 10²⁻³</span><br><span class="line">&#x3D; 1 * 10⁻¹</span><br></pre></td></tr></table></figure>
+<p>可以看到，相乘：尾数相乘，指数相加；相除：尾数相除，指数相减。</p>
+<p>类比十进制，对于 IEEE 754 标准表示的二进制浮点数的乘除运算，也是类似的。</p>
+<p>但是最终结果的阶码可不只是两个数阶码简单的直接相加或相减。</p>
+<p>用单精度浮点数来举例子，假设 a 的阶码为 Ea，指数的实际值为 x，b 的阶码为 E𝖻，指数的实际值为 y。那么 Ea = x + 127，E𝖻 = y + 127。</p>
+<p>a * b 需要 Ea + E𝖻，但是结果的阶码可不仅仅是 Ea + E𝖻，因为 Ea + E𝖻 = (x + 127) + (y + 127) = (x + y) + 254，看到问题了吧，所以最终结果的二进制阶码为 Ea + E𝖻 - 127。</p>
+<p>a / b 需要 Ea - E𝖻，但是结果的阶码也不仅仅是 Ea - E𝖻，因为 Ea - E𝖻 = (x + 127) - (y + 127) = x - y，看到问题了吧，所以最终结果的二进制阶码为 Ea - E𝖻 + 127。</p>
+<p>当然，最终结果的阶码也可以直接用 x 和 y 相加减后的结果加上 127 再转为二进制。</p>
+<p>接下来，尾数运算，规格化，舍入处理，判断溢出都同上。</p>
+<p>至此，浮点数乘除法的思路也说完了。</p>
+<h2 id="加法-example"><a href="#加法-example" class="headerlink" title="加法 example"></a>加法 example</h2><p>例：<em>计算 1.6 + 0.3</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(1.6)₁₀ &#x3D; (0 01111111 10011001100110011001101)₂</span><br><span class="line">(0.3)₁₀ &#x3D; (0 01111101 00110011001100110011010)₂</span><br></pre></td></tr></table></figure>
+<ol>
+<li>对阶</li>
+</ol>
+<p>0.3 的阶码小，所以 0.3 的阶码调整为 <code>01111111</code>，对应尾数调整为：<code>0.01001100110011001100110 10</code>（最后的 10 先保留起来）</p>
+<ol start="2">
+<li>尾数运算</li>
+</ol>
+<p><img src="/images/21-3.png"></p>
+<ol start="3">
+<li><p>规格化，本例无需规格化</p>
+</li>
+<li><p>舍入处理</p>
+</li>
+</ol>
+<p><code>1.11100110011001100110011‬ 10</code> 舍入处理后为 <code>1.11100110011001100110100</code></p>
+<p>所以最终尾数为：<code>11100110011001100110100</code></p>
+<ol start="5">
+<li>溢出判断</li>
+</ol>
+<p>没有溢出，所以最终结果为：(0 01111111 11100110011001100110100)₂</p>
+<h2 id="减法-example"><a href="#减法-example" class="headerlink" title="减法 example"></a>减法 example</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(1.6)₁₀ &#x3D; (0 01111111 10011001100110011001101)₂</span><br><span class="line">(0.3)₁₀ &#x3D; (0 01111101 00110011001100110011010)₂</span><br></pre></td></tr></table></figure>
+<p>例：<em>计算 1.6 - 0.3</em></p>
+<ol>
+<li><p>对阶，同上</p>
+</li>
+<li><p>尾数运算</p>
+</li>
+</ol>
+<p><img src="/images/21-4.png"></p>
+<ol start="3">
+<li><p>规格化，本例无需规格化</p>
+</li>
+<li><p>舍入处理</p>
+</li>
+</ol>
+<p><code>1.01001100110011001100110 01</code> 舍入处理后为 <code>1.01001100110011001100110</code></p>
+<p>所以最终尾数为：<code>01001100110011001100110</code></p>
+<ol start="5">
+<li>溢出判断</li>
+</ol>
+<p>没有溢出，所以最终结果为：(0 01111111 01001100110011001100110)₂</p>
+<h2 id="乘法-example"><a href="#乘法-example" class="headerlink" title="乘法 example"></a>乘法 example</h2><p>例：*计算 1.5 * 0.3*</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(1.5)₁₀ &#x3D; (0 01111111 10000000000000000000000)₂</span><br><span class="line">(0.3)₁₀ &#x3D; (0 01111101 00110011001100110011010)₂</span><br></pre></td></tr></table></figure>
+<ol>
+<li>计算结果阶码</li>
+</ol>
+<p><img src="/images/21-5.png"></p>
+<ol start="2">
+<li>尾数运算</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.1 * 1.00110011001100110011010</span><br><span class="line">&#x3D; 1.110011001100110011001110</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>规格化，本例无需规格化</p>
+</li>
+<li><p>舍入处理</p>
+</li>
+</ol>
+<p><code>1.11001100110011001100111 0</code> 舍入处理后为 <code>1.11001100110011001100111</code></p>
+<p>所以最终尾数为：<code>11001100110011001100111</code></p>
+<ol start="5">
+<li>溢出判断</li>
+</ol>
+<p>没有溢出，所以最终结果为：(0 01111101 11001100110011001100111)₂</p>
+<h2 id="除法-example"><a href="#除法-example" class="headerlink" title="除法 example"></a>除法 example</h2><p>例：<em>计算 1.5 / 0.3</em></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(1.5)₁₀ &#x3D; (0 01111111 10000000000000000000000)₂</span><br><span class="line">(0.3)₁₀ &#x3D; (0 01111101 00110011001100110011010)₂</span><br></pre></td></tr></table></figure>
+<ol>
+<li>计算结果阶码</li>
+</ol>
+<p><img src="/images/21-6.png"></p>
+<ol start="2">
+<li>尾数运算</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.1 &#x2F; 1.00110011001100110011001 1001...</span><br><span class="line">&#x3D; 1.01</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>规格化，本例无需规格化</p>
+</li>
+<li><p>舍入处理，本例也无需舍入</p>
+</li>
+</ol>
+<p>所以最终尾数为：<code>01000000000000000000000</code></p>
+<ol start="5">
+<li>溢出判断</li>
+</ol>
+<p>没有溢出，所以最终结果为：(0 10000001 01000000000000000000000)₂</p>
 
     </div>
 
@@ -368,7 +398,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/" title="搞懂原码、反码、补码">http://yangsanity.me/2020/07/22/搞懂原码、反码、补码/</a>
+    <a href="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/" title="什么是 IEEE 754">http://yangsanity.me/2020/09/13/浮点数的运算/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -417,13 +447,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" rel="prev" title="leetcode之704.二分查找">
-      <i class="fa fa-chevron-left"></i> leetcode之704.二分查找
+    <a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" rel="prev" title="什么是 IEEE 754">
+      <i class="fa fa-chevron-left"></i> 什么是 IEEE 754
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/" rel="next" title="搞懂位移运算">
-      搞懂位移运算 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -489,7 +516,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81"><span class="nav-number">1.</span> <span class="nav-text">原码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">反码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">补码</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E5%87%8F%E6%80%9D%E8%B7%AF"><span class="nav-number">1.</span> <span class="nav-text">加减思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%98%E9%99%A4%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">乘除思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95-example"><span class="nav-number">3.</span> <span class="nav-text">加法 example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%8F%E6%B3%95-example"><span class="nav-number">4.</span> <span class="nav-text">减法 example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%98%E6%B3%95-example"><span class="nav-number">5.</span> <span class="nav-text">乘法 example</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%A4%E6%B3%95-example"><span class="nav-number">6.</span> <span class="nav-text">除法 example</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -716,9 +743,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/";
-    this.page.identifier = "2020/07/22/搞懂原码、反码、补码/";
-    this.page.title = "搞懂原码、反码、补码";
+    this.page.url = "http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/";
+    this.page.identifier = "2020/09/13/浮点数的运算/";
+    this.page.title = "什么是 IEEE 754";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
