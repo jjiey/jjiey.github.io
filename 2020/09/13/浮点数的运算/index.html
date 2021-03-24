@@ -22,7 +22,7 @@
 
   <meta name="description" content="这篇文章来看看浮点数是怎么进行四则运算的。 加减思路首先来看两个十进制的小数如何进行相加和相减： 1234(1.6 * 10⁻⁵) + (0.3 * 10⁻⁶)&#x3D; (1.6 * 10⁻⁵) + (0.03 * 10⁻⁵)&#x3D; (1.6 + 0.03) * 10⁻⁵&#x3D; 1.63 * 10⁻⁵ 1234(1.6 * 10⁻⁵) - (0.3 * 10⁻⁶)&#x3D; (1">
 <meta property="og:type" content="article">
-<meta property="og:title" content="什么是 IEEE 754">
+<meta property="og:title" content="浮点数的运算">
 <meta property="og:url" content="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
 <meta property="og:description" content="这篇文章来看看浮点数是怎么进行四则运算的。 加减思路首先来看两个十进制的小数如何进行相加和相减： 1234(1.6 * 10⁻⁵) + (0.3 * 10⁻⁶)&#x3D; (1.6 * 10⁻⁵) + (0.03 * 10⁻⁵)&#x3D; (1.6 + 0.03) * 10⁻⁵&#x3D; 1.63 * 10⁻⁵ 1234(1.6 * 10⁻⁵) - (0.3 * 10⁻⁶)&#x3D; (1">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://yangsanity.me/images/21-5.png">
 <meta property="og:image" content="http://yangsanity.me/images/21-6.png">
 <meta property="article:published_time" content="2020-09-12T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-22T13:01:36.900Z">
+<meta property="article:modified_time" content="2021-03-24T06:30:16.886Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="basics">
 <meta name="twitter:card" content="summary">
@@ -53,7 +53,7 @@
   };
 </script>
 
-  <title>什么是 IEEE 754 | Yangsanity's Blog</title>
+  <title>浮点数的运算 | Yangsanity's Blog</title>
   
 
 
@@ -206,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          什么是 IEEE 754
+          浮点数的运算
         </h1>
 
         <div class="post-meta">
@@ -229,7 +229,7 @@
             </span>
 
           
-            <span id="/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/" class="post-meta-item leancloud_visitors" data-flag-title="什么是 IEEE 754" title="阅读次数">
+            <span id="/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/" class="post-meta-item leancloud_visitors" data-flag-title="浮点数的运算" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -398,7 +398,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/" title="什么是 IEEE 754">http://yangsanity.me/2020/09/13/浮点数的运算/</a>
+    <a href="http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/" title="浮点数的运算">http://yangsanity.me/2020/09/13/浮点数的运算/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -745,7 +745,7 @@
   var disqus_config = function() {
     this.page.url = "http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/";
     this.page.identifier = "2020/09/13/浮点数的运算/";
-    this.page.title = "什么是 IEEE 754";
+    this.page.title = "浮点数的运算";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
