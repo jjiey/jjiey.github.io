@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">23</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">24</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,155 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/" class="post-title-link" itemprop="url">搞懂位移运算</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-23 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-23T00:00:00+08:00">2020-07-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂位移运算" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/07/23/搞懂位移运算/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>搞懂了上篇文章，这篇就会比较容易。上篇文章传送门：<a href="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/">搞懂原码、反码、补码</a></p>
+<p>在 Java 中有三个位移运算：</p>
+<ol>
+<li>&lt;&lt;：左移</li>
+<li>&#62;&#62;：右移</li>
+<li>&#62;&#62;&#62;：无符号右移</li>
+</ol>
+<h1 id="正数位移运算"><a href="#正数位移运算" class="headerlink" title="正数位移运算"></a>正数位移运算</h1><p>首先来看结果：</p>
+<p><img src="/images/18-1.png" alt="正数位移运算结果"></p>
+<p>十进制 2 转换为二进制原码、反码、补码都为 <code>00000000 00000000 00000000 00000010</code></p>
+<p>2 &lt;&lt; 1</p>
+<ul>
+<li>符号位固定不动，二进制左移一位，高位丢弃，低位补 0，结果为 <code>00000000 00000000 00000000 00000100</code></li>
+<li>其反码、原码都和该补码一样</li>
+<li>换算成十进制为 4</li>
+</ul>
+<p>2 &gt;&gt; 1：</p>
+<ul>
+<li>符号位固定不动，二进制右移一位，低位丢弃，高位补 0，结果为 <code>00000000 00000000 00000000 00000001</code></li>
+<li>其反码、原码都和该补码一样</li>
+<li>换算成十进制为 1</li>
+</ul>
+<h2 id="负数位移运算"><a href="#负数位移运算" class="headerlink" title="负数位移运算"></a>负数位移运算</h2><p>首先来看结果：</p>
+<p><img src="/images/18-2.png" alt="负数位移运算结果"></p>
+<p>十进制 -2 转换为二进制原码为 <code>10000000 00000000 00000000 00000010</code>，反码为 <code>11111111 11111111 11111111 11111101</code>，补码为 <code>11111111 11111111 11111111 11111110</code></p>
+<p>-2 &lt;&lt; 1：</p>
+<ul>
+<li>符号位固定不动，二进制左移一位，高位丢弃，低位补 0，结果为 <code>11111111 11111111 11111111 11111100</code></li>
+<li>该补码对应的反码为 <code>11111111 11111111 11111111 11111011</code></li>
+<li>该反码对应的原码为 <code>10000000 00000000 00000000 00000100</code></li>
+<li>换算成十进制为 -4</li>
+</ul>
+<p>-2 &gt;&gt; 1：</p>
+<ul>
+<li>符号位固定不动，二进制右移一位，低位丢弃，高位补 1，结果为 <code>11111111 11111111 11111111 11111111</code></li>
+<li>该补码对应的反码为 <code>11111111 11111111 11111111 11111110</code></li>
+<li>该反码对应的原码为 <code>10000000 00000000 00000000 00000001</code></li>
+<li>换算成十进制为 -1</li>
+</ul>
+<h2 id="无符号右移"><a href="#无符号右移" class="headerlink" title="无符号右移"></a>无符号右移</h2><p>首先来看结果：</p>
+<p><img src="/images/18-3.png" alt="无符号右移结果"></p>
+<p>前面 &lt;&lt; 和 &gt;&gt; 都是符号位固定不动，而无符号右移则是符号位跟着一起右移。</p>
+<p>十进制 2 转换为二进制补码为 <code>00000000 00000000 00000000 00000010</code>；十进制 -2 转换为二进制补码为 <code>11111111 11111111 11111111 11111110</code></p>
+<p>2 &gt;&gt;&gt; 1：</p>
+<ul>
+<li>二进制符号位跟着右移，低位丢弃，高位补 0，结果为 <code>00000000 00000000 00000000 00000001</code></li>
+<li>其反码、原码都和该补码一样</li>
+<li>换算成十进制为 1</li>
+</ul>
+<p>-2 &gt;&gt;&gt; 1：</p>
+<ul>
+<li>二进制符号位跟着右移，低位丢弃，高位补 0，结果为 <code>01111111 11111111 11111111 11111111</code></li>
+<li>其反码、原码都和该补码一样</li>
+<li>换算成十进制为 2147483647</li>
+</ul>
+<p>无符号右移有个经典应用，在之前二分查找的文章中也说过，就是求两个整数的平均值：int mid = (l + r) &gt;&gt;&gt; 1</p>
+<p>位移运算，你搞懂了吗？</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -749,109 +898,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" class="post-title-link" itemprop="url">leetcode之1.两数之和</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-06-09 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-09T00:00:00+08:00">2020-06-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之1.两数之和" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/09/leetcode之1.两数之和/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/13-1.png"></p>
-<h2 id="暴力"><a href="#暴力" class="headerlink" title="暴力"></a>暴力</h2><p>暴力查找，两层 for 循环搞定。唯一要注意的点就是题干要求数组中同一个元素不能使用两遍，所以内层循环要取外层循环之后的元素。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 暴力求解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; nums.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] + nums[j] == target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i, j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 题干说一定有结果，所以返回 null 也没关系</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>两层循环，时间复杂度为 O(n ^ 2)；没有用到额外空间，空间复杂度为 O(1)。</p>
-<h2 id="两遍哈希表"><a href="#两遍哈希表" class="headerlink" title="两遍哈希表"></a>两遍哈希表</h2><p>之前在归并排序的文章中说过，如果数据存储空间不是算法过程中的瓶颈，我们设计的算法通常优先考虑时间复杂度。</p>
-<p>本题也可以用空间换时间的思路来进行加速。</p>
-<p>那么我们需要一种数据结构，它既可以保存数组中每个元素与其索引的关系，又可以快速的找到某个值的索引。很显然，可以用哈希表。在 java 中我们可以直接用 HashMap。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 遍历两遍哈希表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="comment">// 规定大小，避免扩容。K-&gt;val; V-&gt;index</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(nums.length);</span><br><span class="line">    <span class="comment">// 1.将 nums 中所有值和索引存入哈希表</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        map.put(nums[i], i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.遍历 nums，在哈希表中寻找 target - nums[i] 的值</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> another = target - nums[i];</span><br><span class="line">        <span class="comment">// 注意还要判断一下索引不相同</span></span><br><span class="line">        <span class="keyword">if</span> (map.containsKey(another) &amp;&amp; map.get(another) != i) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(another), i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 题干说一定有结果，所以返回 null 也没关系</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>两遍循环，时间复杂度为 O(2n)，省略常数后为 O(n)；用到额外空间存储数组元素，空间复杂度为 O(n)。</p>
-<h2 id="一遍哈希表"><a href="#一遍哈希表" class="headerlink" title="一遍哈希表"></a>一遍哈希表</h2><p>时间复杂度已经为 O(n) 了，但是当 n 比较大的时候，这个常数还是会对算法造成一定的消耗。</p>
-<p>其实，稍微换一下思路，只遍历一遍数组也能够完成。</p>
-<p>在遍历数组时，除了将元素存入到哈希表中，还可以再回头来检查一下哈希表中是否已经存在当前元素所对应的目标元素。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 遍历一遍哈希表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="comment">// 规定大小，避免扩容。K-&gt;val; V-&gt;index</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(nums.length);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> another = target - nums[i];</span><br><span class="line">        <span class="comment">// 如果哈希表中存在目标元素，返回</span></span><br><span class="line">        <span class="keyword">if</span> (map.containsKey(another)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(another), i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果哈希表中不存在目标元素，将当前元素存入哈希表</span></span><br><span class="line">        map.put(nums[i], i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 题干说一定有结果，所以返回 null 也没关系</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一遍循环，时间复杂度为 O(n)；用到额外空间存储数组元素，空间复杂度为 O(n)。</p>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>这道题还是比较简单的，相信很多人刚开始刷 leetcode 就是从这道题开始，这篇文章就当是回顾一下思路吧。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -923,7 +969,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
