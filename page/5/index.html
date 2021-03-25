@@ -124,17 +124,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">5</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">6</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">5</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">22</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">23</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,256 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">选择排序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-19T00:00:00+08:00">2020-04-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" class="post-meta-item leancloud_visitors" data-flag-title="选择排序" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/19/选择排序/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>选择排序（selection sort）在排序算法中也是比较基础的一个，来，一起看看。</p>
+<h2 id="选择排序思想"><a href="#选择排序思想" class="headerlink" title="选择排序思想"></a>选择排序思想</h2><p>和冒泡排序的名字一样，它的名字也是足够直白的。“选择”两个字对于人生来说真算的上是一个比较艰难的字眼，不过在选择排序中不用担心，这里做选择没那么难。具体来说，<strong>我们可以把数组看作两部分，一部分为有序区，一部分为无序区，我们每次只需要在数组无序区中选择出指定的值，然后把它放到有序区，直到无序区没有元素（具体操作来说，只需要把有序区和无序区两个值的位置交换即可）</strong>。</p>
+<p>那什么是指定的值？我也不是故意要用这个含糊其辞的说法，正所谓“命运只有一个，而人生却有多种选择”，在这里也有多种选择。对于这个值，我们可以选择无序区的最大值；也可以选择无序区的最小值；甚至可以既选择无序区的最大值，又选择无序区的最小值。其实最后一种选择相当于是对前两种选择的一种优化，在下面会说到。</p>
+<p>当然不同的选择也会导致放到有序区的规则不同。这里以数组从小到大排序为例，假如数组前半段为有序区，后半段为无序区，那么每次需要在无序区中选择出最小值，将它放到有序区的末尾即可；假如数组前半段为无序区，后半段为有序区，那么每次需要在无序区中选择出最大值，将它放到有序区的开头即可。</p>
+<p><img src="/images/2-1.gif" alt="使用选择排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
+<p>接下来就用个简单的demo来演示一下整个过程吧。假如数组前半段为有序区，后半段为无序区，待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+</table>
+
+<p>比较和交换的详细过程为：<br>（1）记录数组第一个位置，从第二个位置开始一直到数组末尾，找到其中的最小值对应的位置，交换两元素位置</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+</table>
+（2）接下来都以此类推，记录数组第二个位置，从第三个位置开始一直到数组末尾寻找最小值，交换位置；记录数组第三个位置，从第四个位置开始一直到数组末尾寻找最小值，交换位置...
+
+<p>接下来直接给出所有轮次的结果如下：</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">4</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr>
+<td style="text-align: center;" bgcolor="#FFDAA9">1</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">2</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">3</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">4</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">5</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">6</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">7</td>
+<td style="text-align: center;" bgcolor="#FFDAA9">8</td>
+<td style="text-align: center;">9</td>
+</tr>
+</table>
+
+<p>当然，假如数组前半段为无序区，后半段为有序区的情况，和上边的demo相似，就不赘述了。</p>
+<h2 id="选择排序代码"><a href="#选择排序代码" class="headerlink" title="选择排序代码"></a>选择排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 每次选择最小值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] selectionSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">    <span class="comment">// minIndex 为最小值的下标；temp为 swap 时用到的临时变量</span></span><br><span class="line">    <span class="keyword">int</span> minIndex, temp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; data.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        minIndex = i;</span><br><span class="line">        <span class="comment">// 找出最小值的下标</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; data.length; j ++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (data[j] &lt; data[minIndex]) &#123;</span><br><span class="line">                minIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果找到的最小值下标不是 i，两位置元素交换位置</span></span><br><span class="line">        <span class="keyword">if</span> (minIndex &gt; i) &#123;</span><br><span class="line">            <span class="comment">// swap</span></span><br><span class="line">            temp = data[i];</span><br><span class="line">            data[i] = data[minIndex];</span><br><span class="line">            data[minIndex] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 每次选择最大值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] selectionSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">    <span class="keyword">int</span> maxIndex, temp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = data.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        maxIndex = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (data[j] &gt; data[maxIndex]) &#123;</span><br><span class="line">                maxIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (maxIndex &lt; i) &#123;</span><br><span class="line">            <span class="comment">// swap</span></span><br><span class="line">            temp = data[i];</span><br><span class="line">            data[i] = data[maxIndex];</span><br><span class="line">            data[maxIndex] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="选择排序优化"><a href="#选择排序优化" class="headerlink" title="选择排序优化"></a>选择排序优化</h2><p>在前面说选择排序思想时已经卖了这个关子，在这里具体说说是怎么回事。在上面的介绍中，每次我们在选择指定值时，只选择最小值或最大值，然后每次只交换一对元素，那怎么给它提速呢？当然很简单，那我们每次选两个值，既选择最小值，又选择最大值，把每次遍历交换的元素增加一个，这样自然是能够减少遍历的次数，让排序提点速。</p>
+<p>具体在代码优化实现上，有个点需要注意一下。当选出最小值和最大值后进行位置交换时，如果先交换的是最小值的位置，那么此时可能有一种情况，就是最小值的位置上原本放的是数组中的最大值，这种情况下需要更新一下最大值所在的位置。</p>
+<p>好像有点绕，举个例子来说一下，假如待排序数组为 [4, 2, 1, 3]，第一轮找到最小值为 1，最大值为 4，先交换最小值，4 和 1 交换位置，此时最大值 4 的位置被交换到了原来 1 的位置，这时要把最大值的位置更新为原来 1 的位置，然后再交换最大值。</p>
+<h2 id="选择排序优化代码"><a href="#选择排序优化代码" class="headerlink" title="选择排序优化代码"></a>选择排序优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 每次选择最小值和最大值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] selectionSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">    <span class="keyword">int</span> minIndex, maxIndex, temp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> left = <span class="number">0</span>, right = data.length - <span class="number">1</span>; left &lt; right; left++, right--) &#123;</span><br><span class="line">        minIndex = left;</span><br><span class="line">        maxIndex = right;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = left; i &lt;= right; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (data[i] &lt; data[minIndex]) &#123;</span><br><span class="line">                minIndex = i;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (data[i] &gt; data[maxIndex]) &#123;</span><br><span class="line">                maxIndex = i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (minIndex &gt; left) &#123;</span><br><span class="line">            <span class="comment">// swap left and minIndex first</span></span><br><span class="line">            temp = data[left];</span><br><span class="line">            data[left] = data[minIndex];</span><br><span class="line">            data[minIndex] = temp;</span><br><span class="line">            <span class="comment">// 先交换的是最小值的位置，所以需要考虑如果最大值位置原本就在 left 位置时的情况</span></span><br><span class="line">            <span class="comment">// 如果是该情况，那么当最小值被交换后，最大值此时的位置为 minIndex</span></span><br><span class="line">            <span class="keyword">if</span> (left == maxIndex) &#123;</span><br><span class="line">                maxIndex = minIndex;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (maxIndex &lt; right) &#123;</span><br><span class="line">            <span class="comment">// swap right and maxIndex</span></span><br><span class="line">            temp = data[right];</span><br><span class="line">            data[right] = data[maxIndex];</span><br><span class="line">            data[maxIndex] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="复杂度和稳定性分析"><a href="#复杂度和稳定性分析" class="headerlink" title="复杂度和稳定性分析"></a>复杂度和稳定性分析</h2><ol>
+<li>时间复杂度</li>
+</ol>
+<ul>
+<li><p>最优时间复杂度：O(n^2)</p>
+<ul>
+<li>当用优化后的选择排序代码进行排序时，虽然遍历的次数减少了一半，时间复杂度变为O(n/2 * n/2)，运行时间确实有所减少，但是省略常数后，它的算法时间复杂度仍然为O(n^2)级别。</li>
+</ul>
+</li>
+<li><p>最坏时间复杂度：O(n^2)</p>
+</li>
+<li><p>平均时间复杂度：O(n^2)</p>
+</li>
+</ul>
+<ol start="2">
+<li>空间复杂度：O(1)</li>
+</ol>
+<ul>
+<li>整个过程都是原地排序，并没有用到其它辅助的空间。</li>
+</ul>
+<ol start="3">
+<li>选择排序是一种不稳定排序。</li>
+</ol>
+<ul>
+<li>这个应该很好举例，假如待排序数组为 [4, 3, 4, 1, 2]。</li>
+</ul>
+<p><em><span style="color:red;">原地排序和稳定性的概念在<a href="/2020/04/18/%E4%BB%8E%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E5%BC%80%E5%A7%8B/">从冒泡排序开始</a>最后中有解释，就不赘述了。</span></em></p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -711,20 +961,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

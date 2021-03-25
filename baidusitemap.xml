@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://yangsanity.me/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</loc>
+    <lastmod>2021-03-25</lastmod>
+  </url>
+  <url>
+    <loc>http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/</loc>
+    <lastmod>2021-03-24</lastmod>
+  </url>
+  <url>
     <loc>http://yangsanity.me/2020/09/13/%E6%B5%AE%E7%82%B9%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97/</loc>
     <lastmod>2021-03-24</lastmod>
   </url>
@@ -14,10 +22,6 @@
   </url>
   <url>
     <loc>http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/</loc>
-    <lastmod>2021-03-12</lastmod>
-  </url>
-  <url>
-    <loc>http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/</loc>
     <lastmod>2021-03-12</lastmod>
   </url>
   <url>
