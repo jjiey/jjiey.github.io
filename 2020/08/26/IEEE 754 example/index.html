@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="todo">
+  <meta name="description" content="上篇文章（传送门）大家可能看得晕晕乎乎的，这篇就来举一些例子来帮助大家更直观的理解 IEEE 754 标准。 本文的举例对象仍然是单精确度浮点数（32位）。 首先回顾一下上篇最后的总结：    形式 指数 小数部分    零 全为 0 全为 0   非规约形式 全为 0 大于 0 小于 1   规约形式 1 到 2ᵉ - 2（不全为 0 也不全为 1） 大于等于 1 小于 2   无穷 2ᵉ -">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IEEE 754 example">
 <meta property="og:url" content="http://yangsanity.me/2020/08/26/IEEE%20754%20example/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
-<meta property="og:description" content="todo">
+<meta property="og:description" content="上篇文章（传送门）大家可能看得晕晕乎乎的，这篇就来举一些例子来帮助大家更直观的理解 IEEE 754 标准。 本文的举例对象仍然是单精确度浮点数（32位）。 首先回顾一下上篇最后的总结：    形式 指数 小数部分    零 全为 0 全为 0   非规约形式 全为 0 大于 0 小于 1   规约形式 1 到 2ᵉ - 2（不全为 0 也不全为 1） 大于等于 1 小于 2   无穷 2ᵉ -">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-08-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-25T08:48:16.901Z">
+<meta property="article:modified_time" content="2021-03-25T10:16:36.106Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="basics">
 <meta name="twitter:card" content="summary">
@@ -253,7 +253,125 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>todo</p>
+        <p>上篇文章（<a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">传送门</a>）大家可能看得晕晕乎乎的，这篇就来举一些例子来帮助大家更直观的理解 IEEE 754 标准。</p>
+<p>本文的举例对象仍然是单精确度浮点数（32位）。</p>
+<p>首先回顾一下上篇最后的总结：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形式</th>
+<th align="center">指数</th>
+<th align="center">小数部分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">零</td>
+<td align="center">全为 0</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">非规约形式</td>
+<td align="center">全为 0</td>
+<td align="center">大于 0 小于 1</td>
+</tr>
+<tr>
+<td align="center">规约形式</td>
+<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
+<td align="center">大于等于 1 小于 2</td>
+</tr>
+<tr>
+<td align="center">无穷</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">NaN</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">非 0</td>
+</tr>
+</tbody></table>
+<h2 id="non-number"><a href="#non-number" class="headerlink" title="non-number"></a>non-number</h2><p>先看那三个简单且很好理解的特殊值：</p>
+<ol>
+<li><p>+0：<code>0 00000000 00000000000000000000000</code></p>
+</li>
+<li><p>-0：<code>1 00000000 00000000000000000000000</code></p>
+</li>
+<li><p>+infinity：<code>0 11111111 00000000000000000000000</code></p>
+</li>
+<li><p>-infinity：<code>1 11111111 00000000000000000000000</code></p>
+</li>
+<li><p>NaN：<code>s 11111111 fraction</code></p>
+</li>
+</ol>
+<p><em>对于 NaN 来说，s 可 0 可 1，fraction 不全为 0 即可</em></p>
+<h2 id="normal-number"><a href="#normal-number" class="headerlink" title="normal number"></a>normal number</h2><p>规约形式的浮点数无疑是日常使用最多的。</p>
+<h3 id="例：将-36-35-转为单精度二进制"><a href="#例：将-36-35-转为单精度二进制" class="headerlink" title="例：将 -36.35 转为单精度二进制"></a>例：<em>将 -36.35 转为单精度二进制</em></h3><ol>
+<li>整数部分转二进制</li>
+</ol>
+<p>36₁₀ = (00100100)₂</p>
+<ol start="2">
+<li>小数部分转二进制</li>
+</ol>
+<p>之前的文章说过小数怎么转二进制，再复习一下吧：</p>
+<ul>
+<li>小数部分乘以 2，取结果的整数部分，直到小数部分为 0 或者位数已达到所要求的精度为止<ul>
+<li>0.35 x 2 = 0.7，整数部分为 0</li>
+<li>0.7 x 2 = 1.4，整数部分为 1</li>
+<li>0.4 x 2 = 0.8，整数部分为 0</li>
+<li>0.8 x 2 = 1.6，整数部分为 1</li>
+<li>0.6 x 2 = 1.2，整数部分为 1</li>
+<li>0.2 x 2 = 0.4，整数部分为 0</li>
+<li>0.4 x 2 = 0.8，从这里开始接下来无限循环 0 1 1 0 …</li>
+</ul>
+</li>
+</ul>
+<p>所以 0.35₁₀ = (01011001100110011000110…)₂</p>
+<ol start="3">
+<li>计算阶码</li>
+</ol>
+<p>整数二进制.小数二进制 = <code>00100100.01011001100110011000110</code></p>
+<p>移动小数点，使二进制变成 1.xxx * 2ⁿ 的形式：</p>
+<p>1.0010001011001100110011000110 * 2⁵</p>
+<p>指数的实际值是 5，单精度浮点数的固定偏移值为 127，所以指数域编码值为 5 + 127 = 132。</p>
+<p>(132)₁₀ = (10000100)₂，所以阶码为 <code>10000100</code></p>
+<ol start="4">
+<li>单精确度浮点数的尾数部分为 23 位，所以取 1.xxx 小数点后 23 位得到尾数部分为：</li>
+</ol>
+<p><code>00100010110011001100110</code></p>
+<ol start="5">
+<li>负数符号位为 1，所以 -36.35 的单精度二进制表示为：</li>
+</ol>
+<p><code>1 10000100 00100010110011001100110</code></p>
+<h3 id="例：将-00111001001010111110100000000000-转为小数"><a href="#例：将-00111001001010111110100000000000-转为小数" class="headerlink" title="例：将 00111001001010111110100000000000 转为小数"></a>例：<em>将 <code>00111001001010111110100000000000</code> 转为小数</em></h3><ol>
+<li>这是一个正数，是一个规约形式的浮点数，先分为三段</li>
+</ol>
+<p><code>0 01110010 01010111110100000000000</code></p>
+<ol start="2">
+<li>计算指数的实际值</li>
+</ol>
+<p>(01110010)₂ = 114₁₀，减去单精度浮点数的固定偏移值 127 得指数的实际值为 114 - 127 = -13</p>
+<ol start="3">
+<li>在尾数前加上隐藏的整数 1，然后转为 1.xxx * 2ⁿ 的形式：</li>
+</ol>
+<p>1.01010111110100000000000 * 2⁻¹³</p>
+<p>指数实际值为负数，所以整数部分为 0，小数部分二进制为：</p>
+<p><code>0.000000000000101010111110100000000000</code></p>
+<ol start="4">
+<li>计算小数</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 * 2⁻¹³ + 1 * 2⁻¹⁵ + 1 * 2⁻¹⁷ + 1 * 2⁻¹⁹ + 1 * 2⁻²⁰ + 1 * 2⁻²¹ + 1 * 2⁻²² + 1 * 2⁻²³ + 1 * 2⁻²⁵</span><br><span class="line">&#x3D; 0.000163942575455</span><br></pre></td></tr></table></figure>
+<h2 id="subnormal-number"><a href="#subnormal-number" class="headerlink" title="subnormal number"></a>subnormal number</h2><p>非规约形式的浮点数转换方法其实也很简单。因为非规约形式的浮点数整数部分为 0，所以非规约形式的浮点数转换就相当于上边的小数部分转二进制。</p>
+<p>从上篇文章我们知道，非规约形式的浮点数指数实际值为 -126，即最终转为 0.xxx * 2⁻¹²⁶ 的形式，也就是说按照小数部分转二进制的方法，当出现第 127 个数时，这个数就作为尾数的第一个数，后边的依次补上，直到小数部分为 0 或者位数已达到所要求的精度为止。这个就不举例了。</p>
+<p>同理，将非规约形式的浮点数转为小数将更简单。</p>
+<h3 id="例：将-00000000001000000000000000000000-转为小数"><a href="#例：将-00000000001000000000000000000000-转为小数" class="headerlink" title="例：将 00000000001000000000000000000000 转为小数"></a>例：<em>将 <code>00000000001000000000000000000000</code> 转为小数</em></h3><ol>
+<li>这是一个正数，是一个非规约形式的浮点数，先分为三段</li>
+</ol>
+<p><code>0 00000000 01000000000000000000000</code></p>
+<ol start="2">
+<li>计算小数</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2⁻¹²⁸</span><br><span class="line">≈ 2.938735877056 * 10⁻³⁹</span><br></pre></td></tr></table></figure>
+<p>怎么样，对于 IEEE 754 的理解是不是更深刻了些？</p>
 <hr>
 
     </div>
@@ -391,6 +509,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#non-number"><span class="nav-number">1.</span> <span class="nav-text">non-number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#normal-number"><span class="nav-number">2.</span> <span class="nav-text">normal number</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%EF%BC%9A%E5%B0%86-36-35-%E8%BD%AC%E4%B8%BA%E5%8D%95%E7%B2%BE%E5%BA%A6%E4%BA%8C%E8%BF%9B%E5%88%B6"><span class="nav-number">2.1.</span> <span class="nav-text">例：将 -36.35 转为单精度二进制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%EF%BC%9A%E5%B0%86-00111001001010111110100000000000-%E8%BD%AC%E4%B8%BA%E5%B0%8F%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">例：将 00111001001010111110100000000000 转为小数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#subnormal-number"><span class="nav-number">3.</span> <span class="nav-text">subnormal number</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%EF%BC%9A%E5%B0%86-00000000001000000000000000000000-%E8%BD%AC%E4%B8%BA%E5%B0%8F%E6%95%B0"><span class="nav-number">3.1.</span> <span class="nav-text">例：将 00000000001000000000000000000000 转为小数</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
