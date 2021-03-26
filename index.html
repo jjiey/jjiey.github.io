@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">26</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">27</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,113 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" class="post-title-link" itemprop="url">leetcode之208.实现 Trie (前缀树)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-07 00:00:00" itemprop="dateCreated datePublished" datetime="2020-11-07T00:00:00+08:00">2020-11-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之208.实现 Trie (前缀树)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/07/leetcode之208.实现 Trie (前缀树)/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>今天立冬，祝大家立冬快乐哦！</p>
+<p><img src="/images/26-1.png"></p>
+<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>在上篇文章（<a href="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/">传送门</a>）中，我们已经详细介绍并用两种数据结构实现了 Trie。实际上把上篇文章中的任何一版代码提交给 leetcode 都完全可以解答本题，所以本文的意义并不在于如何解答这道题。</p>
+<p>写 java 的人，肯定都知道，面向对象的三大特征：封装、继承、多态。而本文就是我从官方题解中得到的一点点关于「封装」的体会，做个小小的分享。</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>先回顾一下我们上篇文章中的代码，其实对于 Node 的封装做得并不好，可以说几乎就没有封装。问题如以下两点：</p>
+<ol>
+<li>出于封装性和安全性的考虑，对于 Node 的两个成员变量，我们不应该直接访问，而应该通过成员方法去访问。</li>
+</ol>
+<p>因为，首先，将成员变量设置为 public 权限，对于该成员变量的访问和修改的控制就不再由封装它的对象来控制，而是由调用它的类来控制，这样就破坏了 java 面向对象的封装性；其次，程序何时何地修改成员变量的值也很难控制和排查，从而影响安全性。</p>
+<ol start="2">
+<li>假如我们想达到这个目的：随意切换底层数据结构（比如从数组切换到 Map，或反之），但是不想影响到原本已经实现的代码功能。</li>
+</ol>
+<p>如果要用上篇文章中的代码实现这个目的，那么大多数方法都需要修改一些实现细节。比如判断当前节点是否包含指向下一个字符的指针，获取下一个节点，往当前节点之后插入一个节点等。</p>
+<p>修改的地方越多，出问题的概率就越大。最好能做到上层代码尽量不要动，这样的改动才是最放心的。</p>
+<p>所以，我们可以把这些操作细节抽象出来，在 Node 中做一些封装，提供给上层代码使用。</p>
+<h2 id="对-Node-进行封装"><a href="#对-Node-进行封装" class="headerlink" title="对 Node 进行封装"></a>对 Node 进行封装</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 抽象类，可作为具体数据结构实现的父类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setEndingChar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        isEndingChar = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isEndingChar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> isEndingChar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">notContainsKey</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !<span class="keyword">this</span>.containsKey(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前节点是否包含指向下一个字符的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">char</span> c)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取下一个节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> Node <span class="title">get</span><span class="params">(<span class="keyword">char</span> c)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 往当前节点之后插入一个节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">char</span> c)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数组实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayTrieNode</span> <span class="keyword">extends</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ArrayTrieNode[] next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ArrayTrieNode</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">        next = <span class="keyword">new</span> ArrayTrieNode[<span class="number">26</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayTrieNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next[c - <span class="string">&#x27;a&#x27;</span>] != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">get</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next[c - <span class="string">&#x27;a&#x27;</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        next[c - <span class="string">&#x27;a&#x27;</span>] = <span class="keyword">new</span> ArrayTrieNode();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HashMap 实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashMapTrieNode</span> <span class="keyword">extends</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Character, HashMapTrieNode&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">HashMapTrieNode</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">        next = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HashMapTrieNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next.containsKey(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">get</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next.get(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        next.put(c, <span class="keyword">new</span> HashMapTrieNode());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="上层代码"><a href="#上层代码" class="headerlink" title="上层代码"></a>上层代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Implement Trie (Prefix Tree)</span></span><br><span class="line"><span class="comment"> * 实现 Trie（前缀树）</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The root node.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initialize the data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 修改处</span></span><br><span class="line">        root = <span class="keyword">new</span> ArrayTrieNode();</span><br><span class="line">        <span class="comment">// root = new HashMapTrieNode();</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts a word into the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> curLetter = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (node.notContainsKey(curLetter)) &#123;</span><br><span class="line">                node.put(curLetter);</span><br><span class="line">            &#125;</span><br><span class="line">            node = node.get(curLetter);</span><br><span class="line">        &#125;</span><br><span class="line">        node.setEndingChar();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * search a prefix or whole key in trie and returns the node where search ends</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> curLetter = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (node.notContainsKey(curLetter)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            node = node.get(curLetter);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if the word is in the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEndingChar();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(prefix);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过对 Node 节点的封装，当需要切换底层数据结构时，只需要在 Trie 构造方法中初始化不同的底层数据结构实现即可，其它代码我们一行都不需要修改！</p>
+<p>通过两篇文章的代码对比，可以看到，通过良好的封装，可以使代码的可读性大大提高，而且底层数据结构的变更完全不会给上层代码带来影响，这会带来不错的体验。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -870,213 +977,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/08/26/IEEE%20754%20example/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/26/IEEE%20754%20example/" class="post-title-link" itemprop="url">IEEE 754 example</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-08-26T00:00:00+08:00">2020-08-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/08/26/IEEE%20754%20example/" class="post-meta-item leancloud_visitors" data-flag-title="IEEE 754 example" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/08/26/IEEE%20754%20example/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/26/IEEE 754 example/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>上篇文章（<a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">传送门</a>）大家可能看得晕晕乎乎的，这篇就来举一些例子来帮助大家更直观的理解 IEEE 754 标准。</p>
-<p>本文的举例对象仍然是单精确度浮点数（32位）。</p>
-<p>首先回顾一下上篇最后的总结：</p>
-<table>
-<thead>
-<tr>
-<th align="center">形式</th>
-<th align="center">指数</th>
-<th align="center">小数部分</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">零</td>
-<td align="center">全为 0</td>
-<td align="center">全为 0</td>
-</tr>
-<tr>
-<td align="center">非规约形式</td>
-<td align="center">全为 0</td>
-<td align="center">大于 0 小于 1</td>
-</tr>
-<tr>
-<td align="center">规约形式</td>
-<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
-<td align="center">大于等于 1 小于 2</td>
-</tr>
-<tr>
-<td align="center">无穷</td>
-<td align="center">2ᵉ - 1（全为 1）</td>
-<td align="center">全为 0</td>
-</tr>
-<tr>
-<td align="center">NaN</td>
-<td align="center">2ᵉ - 1（全为 1）</td>
-<td align="center">非 0</td>
-</tr>
-</tbody></table>
-<h2 id="non-number"><a href="#non-number" class="headerlink" title="non-number"></a>non-number</h2><p>先看那三个简单且很好理解的特殊值：</p>
-<ol>
-<li><p>+0：<code>0 00000000 00000000000000000000000</code></p>
-</li>
-<li><p>-0：<code>1 00000000 00000000000000000000000</code></p>
-</li>
-<li><p>+infinity：<code>0 11111111 00000000000000000000000</code></p>
-</li>
-<li><p>-infinity：<code>1 11111111 00000000000000000000000</code></p>
-</li>
-<li><p>NaN：<code>s 11111111 fraction</code></p>
-</li>
-</ol>
-<p><em>对于 NaN 来说，s 可 0 可 1，fraction 不全为 0 即可</em></p>
-<h2 id="normal-number"><a href="#normal-number" class="headerlink" title="normal number"></a>normal number</h2><p>规约形式的浮点数无疑是日常使用最多的。</p>
-<h3 id="例：将-36-35-转为单精度二进制"><a href="#例：将-36-35-转为单精度二进制" class="headerlink" title="例：将 -36.35 转为单精度二进制"></a>例：<em>将 -36.35 转为单精度二进制</em></h3><ol>
-<li>整数部分转二进制</li>
-</ol>
-<p>36₁₀ = (00100100)₂</p>
-<ol start="2">
-<li>小数部分转二进制</li>
-</ol>
-<p>之前的文章说过小数怎么转二进制，再复习一下吧：</p>
-<ul>
-<li>小数部分乘以 2，取结果的整数部分，直到小数部分为 0 或者位数已达到所要求的精度为止<ul>
-<li>0.35 x 2 = 0.7，整数部分为 0</li>
-<li>0.7 x 2 = 1.4，整数部分为 1</li>
-<li>0.4 x 2 = 0.8，整数部分为 0</li>
-<li>0.8 x 2 = 1.6，整数部分为 1</li>
-<li>0.6 x 2 = 1.2，整数部分为 1</li>
-<li>0.2 x 2 = 0.4，整数部分为 0</li>
-<li>0.4 x 2 = 0.8，从这里开始接下来无限循环 0 1 1 0 …</li>
-</ul>
-</li>
-</ul>
-<p>所以 0.35₁₀ = (01011001100110011000110…)₂</p>
-<ol start="3">
-<li>计算阶码</li>
-</ol>
-<p>整数二进制.小数二进制 = <code>00100100.01011001100110011000110</code></p>
-<p>移动小数点，使二进制变成 1.xxx * 2ⁿ 的形式：</p>
-<p>1.0010001011001100110011000110 * 2⁵</p>
-<p>指数的实际值是 5，单精度浮点数的固定偏移值为 127，所以指数域编码值为 5 + 127 = 132。</p>
-<p>(132)₁₀ = (10000100)₂，所以阶码为 <code>10000100</code></p>
-<ol start="4">
-<li>单精确度浮点数的尾数部分为 23 位，所以取 1.xxx 小数点后 23 位得到尾数部分为：</li>
-</ol>
-<p><code>00100010110011001100110</code></p>
-<ol start="5">
-<li>负数符号位为 1，所以 -36.35 的单精度二进制表示为：</li>
-</ol>
-<p><code>1 10000100 00100010110011001100110</code></p>
-<h3 id="例：将-00111001001010111110100000000000-转为小数"><a href="#例：将-00111001001010111110100000000000-转为小数" class="headerlink" title="例：将 00111001001010111110100000000000 转为小数"></a>例：<em>将 <code>00111001001010111110100000000000</code> 转为小数</em></h3><ol>
-<li>这是一个正数，是一个规约形式的浮点数，先分为三段</li>
-</ol>
-<p><code>0 01110010 01010111110100000000000</code></p>
-<ol start="2">
-<li>计算指数的实际值</li>
-</ol>
-<p>(01110010)₂ = 114₁₀，减去单精度浮点数的固定偏移值 127 得指数的实际值为 114 - 127 = -13</p>
-<ol start="3">
-<li>在尾数前加上隐藏的整数 1，然后转为 1.xxx * 2ⁿ 的形式：</li>
-</ol>
-<p>1.01010111110100000000000 * 2⁻¹³</p>
-<p>指数实际值为负数，所以整数部分为 0，小数部分二进制为：</p>
-<p><code>0.000000000000101010111110100000000000</code></p>
-<ol start="4">
-<li>计算小数</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 * 2⁻¹³ + 1 * 2⁻¹⁵ + 1 * 2⁻¹⁷ + 1 * 2⁻¹⁹ + 1 * 2⁻²⁰ + 1 * 2⁻²¹ + 1 * 2⁻²² + 1 * 2⁻²³ + 1 * 2⁻²⁵</span><br><span class="line">&#x3D; 0.000163942575455</span><br></pre></td></tr></table></figure>
-<h2 id="subnormal-number"><a href="#subnormal-number" class="headerlink" title="subnormal number"></a>subnormal number</h2><p>非规约形式的浮点数转换方法其实也很简单。因为非规约形式的浮点数整数部分为 0，所以非规约形式的浮点数转换就相当于上边的小数部分转二进制。</p>
-<p>从上篇文章我们知道，非规约形式的浮点数指数实际值为 -126，即最终转为 0.xxx * 2⁻¹²⁶ 的形式，也就是说按照小数部分转二进制的方法，当出现第 127 个数时，这个数就作为尾数的第一个数，后边的依次补上，直到小数部分为 0 或者位数已达到所要求的精度为止。这个就不举例了。</p>
-<p>同理，将非规约形式的浮点数转为小数将更简单。</p>
-<h3 id="例：将-00000000001000000000000000000000-转为小数"><a href="#例：将-00000000001000000000000000000000-转为小数" class="headerlink" title="例：将 00000000001000000000000000000000 转为小数"></a>例：<em>将 <code>00000000001000000000000000000000</code> 转为小数</em></h3><ol>
-<li>这是一个正数，是一个非规约形式的浮点数，先分为三段</li>
-</ol>
-<p><code>0 00000000 01000000000000000000000</code></p>
-<ol start="2">
-<li>计算小数</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2⁻¹²⁸</span><br><span class="line">≈ 2.938735877056 * 10⁻³⁹</span><br></pre></td></tr></table></figure>
-<p>怎么样，对于 IEEE 754 的理解是不是更深刻了些？</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1148,7 +1048,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
