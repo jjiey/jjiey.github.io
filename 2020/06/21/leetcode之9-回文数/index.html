@@ -20,22 +20,23 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="暴力暴力查找，两层 for 循环搞定。唯一要注意的点就是题干要求数组中同一个元素不能使用两遍，所以内层循环要取外层循环之后的元素。 1234567891011121314&#x2F;** * 暴力求解 *&#x2F;public int[] twoSum(int[] nums, int target) &amp;#123;    for (int i &#x3D; 0; i &lt; nums.length; i++) &amp;#123;">
+  <meta name="description" content="有两点很明确：  负数不可能是回文数； 除了 0 以外，所有个位是 0 的数字不可能是回文数。  1将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。 但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。 1234567891011121314public boolean isPalindrome(int x) &amp;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leetcode之1.两数之和">
-<meta property="og:url" content="http://yangsanity.me/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/index.html">
+<meta property="og:title" content="leetcode之9-回文数">
+<meta property="og:url" content="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
-<meta property="og:description" content="暴力暴力查找，两层 for 循环搞定。唯一要注意的点就是题干要求数组中同一个元素不能使用两遍，所以内层循环要取外层循环之后的元素。 1234567891011121314&#x2F;** * 暴力求解 *&#x2F;public int[] twoSum(int[] nums, int target) &amp;#123;    for (int i &#x3D; 0; i &lt; nums.length; i++) &amp;#123;">
+<meta property="og:description" content="有两点很明确：  负数不可能是回文数； 除了 0 以外，所有个位是 0 的数字不可能是回文数。  1将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。 但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。 1234567891011121314public boolean isPalindrome(int x) &amp;">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yangsanity.me/images/13-1.png">
-<meta property="article:published_time" content="2020-06-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-09T12:00:59.044Z">
+<meta property="og:image" content="http://yangsanity.me/images/15-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/15-2.png">
+<meta property="article:published_time" content="2020-06-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-04-01T01:57:39.087Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="leetcode">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yangsanity.me/images/13-1.png">
+<meta name="twitter:image" content="http://yangsanity.me/images/15-1.png">
 
-<link rel="canonical" href="http://yangsanity.me/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
+<link rel="canonical" href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/">
 
 
 <script id="page-configurations">
@@ -48,7 +49,7 @@
   };
 </script>
 
-  <title>leetcode之1.两数之和 | Yangsanity's Blog</title>
+  <title>leetcode之9-回文数 | Yangsanity's Blog</title>
   
 
 
@@ -139,7 +140,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">30</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">31</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -188,7 +189,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -201,7 +202,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          leetcode之1.两数之和
+          leetcode之9-回文数
         </h1>
 
         <div class="post-meta">
@@ -211,7 +212,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-06-09 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-09T00:00:00+08:00">2020-06-09</time>
+              <time title="创建时间：2020-06-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-21T00:00:00+08:00">2020-06-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -224,7 +225,7 @@
             </span>
 
           
-            <span id="/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之1.两数之和" title="阅读次数">
+            <span id="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之9-回文数" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -239,8 +240,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/09/leetcode之1.两数之和/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/21/leetcode之9-回文数/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -255,21 +256,34 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="/images/13-1.png"></p>
-<h2 id="暴力"><a href="#暴力" class="headerlink" title="暴力"></a>暴力</h2><p>暴力查找，两层 for 循环搞定。唯一要注意的点就是题干要求数组中同一个元素不能使用两遍，所以内层循环要取外层循环之后的元素。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 暴力求解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; nums.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] + nums[j] == target) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;i, j&#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 题干说一定有结果，所以返回 null 也没关系</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>两层循环，时间复杂度为 O(n ^ 2)；没有用到额外空间，空间复杂度为 O(1)。</p>
-<h2 id="两遍哈希表"><a href="#两遍哈希表" class="headerlink" title="两遍哈希表"></a>两遍哈希表</h2><p>之前在归并排序的文章中说过，如果数据存储空间不是算法过程中的瓶颈，我们设计的算法通常优先考虑时间复杂度。</p>
-<p>本题也可以用空间换时间的思路来进行加速。</p>
-<p>那么我们需要一种数据结构，它既可以保存数组中每个元素与其索引的关系，又可以快速的找到某个值的索引。很显然，可以用哈希表。在 java 中我们可以直接用 HashMap。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 遍历两遍哈希表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="comment">// 规定大小，避免扩容。K-&gt;val; V-&gt;index</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(nums.length);</span><br><span class="line">    <span class="comment">// 1.将 nums 中所有值和索引存入哈希表</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        map.put(nums[i], i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2.遍历 nums，在哈希表中寻找 target - nums[i] 的值</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> another = target - nums[i];</span><br><span class="line">        <span class="comment">// 注意还要判断一下索引不相同</span></span><br><span class="line">        <span class="keyword">if</span> (map.containsKey(another) &amp;&amp; map.get(another) != i) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(another), i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 题干说一定有结果，所以返回 null 也没关系</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>两遍循环，时间复杂度为 O(2n)，省略常数后为 O(n)；用到额外空间存储数组元素，空间复杂度为 O(n)。</p>
-<h2 id="一遍哈希表"><a href="#一遍哈希表" class="headerlink" title="一遍哈希表"></a>一遍哈希表</h2><p>时间复杂度已经为 O(n) 了，但是当 n 比较大的时候，这个常数还是会对算法造成一定的消耗。</p>
-<p>其实，稍微换一下思路，只遍历一遍数组也能够完成。</p>
-<p>在遍历数组时，除了将元素存入到哈希表中，还可以再回头来检查一下哈希表中是否已经存在当前元素所对应的目标元素。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 遍历一遍哈希表</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">    <span class="comment">// 规定大小，避免扩容。K-&gt;val; V-&gt;index</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;(nums.length);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++) &#123;</span><br><span class="line">        <span class="keyword">int</span> another = target - nums[i];</span><br><span class="line">        <span class="comment">// 如果哈希表中存在目标元素，返回</span></span><br><span class="line">        <span class="keyword">if</span> (map.containsKey(another)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;map.get(another), i&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 如果哈希表中不存在目标元素，将当前元素存入哈希表</span></span><br><span class="line">        map.put(nums[i], i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 题干说一定有结果，所以返回 null 也没关系</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一遍循环，时间复杂度为 O(n)；用到额外空间存储数组元素，空间复杂度为 O(n)。</p>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>这道题还是比较简单的，相信很多人刚开始刷 leetcode 就是从这道题开始，这篇文章就当是回顾一下思路吧。</p>
+        <p><img src="/images/15-1.png"></p>
+<p>有两点很明确：</p>
+<ol>
+<li>负数不可能是回文数；</li>
+<li>除了 0 以外，所有个位是 0 的数字不可能是回文数。</li>
+</ol>
+<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。</p>
+<p>但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> copyx = x;</span><br><span class="line">    <span class="comment">// 翻转之后的数字可能超过整型的范围，用 long 来处理</span></span><br><span class="line">    <span class="keyword">long</span> y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (copyx != <span class="number">0</span>) &#123;</span><br><span class="line">        y = y * <span class="number">10</span> + copyx % <span class="number">10</span>;</span><br><span class="line">        copyx /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x == y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
+<h2 id="2"><a href="#2" class="headerlink" title="2"></a>2</h2><p>将数字转换为字符串，通过对比字符串前后对称位置的字符是否相等来检查原始数字是否为回文。</p>
+<p>有个可以优化的小点是我们只需遍历一半的字符串就够了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    String str = String.valueOf(x);</span><br><span class="line">    <span class="keyword">int</span> n = str.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n / <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 对比字符串前后对称位置的字符是否相等</span></span><br><span class="line">        <span class="keyword">if</span> (str.charAt(i) != str.charAt(n - <span class="number">1</span> - i)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 O(n / 2)，忽略常数后为 O(n)；空间复杂度为 O(n)，因为我们将数字转换为了字符串。</p>
+<h2 id="官方题解"><a href="#官方题解" class="headerlink" title="官方题解"></a>官方题解</h2><p>一个非常巧妙的办法，反转一半的数字，这必然不会导致溢出。</p>
+<p>其中我们要解决两个问题：</p>
+<ol>
+<li>如何知道反转数字的位数已经达到原始数字位数的一半？</li>
+<li>反转后的数字 revertedNumber 如何和原始数字 x 进行比较？</li>
+</ol>
+<p><img src="/images/15-2.png"></p>
+<p>可以看到：</p>
+<ol>
+<li>当原始数字 x 小于或等于反转后的数字 revertedNumber 时，就意味着已经处理了一半位数的数字了；</li>
+<li>如果是回文数，最终 revertedNumber 和 x 的关系必然如上图所示。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> revertedNumber = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 反转一半</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; revertedNumber) &#123;</span><br><span class="line">        revertedNumber = revertedNumber * <span class="number">10</span> + x % <span class="number">10</span>;</span><br><span class="line">        x /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断是否回文</span></span><br><span class="line">    <span class="keyword">return</span> x == revertedNumber || x == revertedNumber / <span class="number">10</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
 <hr>
 
     </div>
@@ -286,7 +300,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yangsanity.me/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" title="leetcode之1.两数之和">http://yangsanity.me/2020/06/09/leetcode之1.两数之和/</a>
+    <a href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" title="leetcode之9-回文数">http://yangsanity.me/2020/06/21/leetcode之9-回文数/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -335,12 +349,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/30/leetcode%E4%B9%8B215.%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/" rel="prev" title="leetcode之215.数组中的第K个最大元素">
-      <i class="fa fa-chevron-left"></i> leetcode之215.数组中的第K个最大元素
+    <a href="/2020/06/11/leetcode%E4%B9%8B7-%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" rel="prev" title="leetcode之7-整数反转">
+      <i class="fa fa-chevron-left"></i> leetcode之7-整数反转
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/06/11/leetcode%E4%B9%8B7.%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" rel="next" title="leetcode之7.整数反转">
-      leetcode之7.整数反转 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" rel="next" title="leetcode之704-二分查找">
+      leetcode之704-二分查找 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -407,7 +421,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9A%B4%E5%8A%9B"><span class="nav-number">1.</span> <span class="nav-text">暴力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%A4%E9%81%8D%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">2.</span> <span class="nav-text">两遍哈希表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E9%81%8D%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">一遍哈希表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%91%E5%AD%97%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">凑字数</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1"><span class="nav-number">1.</span> <span class="nav-text">1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2"><span class="nav-number">2.</span> <span class="nav-text">2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E9%A2%98%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">官方题解</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -423,7 +437,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -634,9 +648,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://yangsanity.me/2020/06/09/leetcode%E4%B9%8B1.%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/";
-    this.page.identifier = "2020/06/09/leetcode之1.两数之和/";
-    this.page.title = "leetcode之1.两数之和";
+    this.page.url = "http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/";
+    this.page.identifier = "2020/06/21/leetcode之9-回文数/";
+    this.page.title = "leetcode之9-回文数";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {

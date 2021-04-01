@@ -22,8 +22,8 @@
 
   <meta name="description" content="之前在插入排序的文章中介绍了一个用二分查找来优化的思路，但是没有细说二分查找，今天也算是补上这个坑。刚好也是 leetcode 上的一道题。  二分查找算法（binary search algorithm），也称折半搜索算法（half-interval search algorithm）、对数搜索算法（logarithmic search algorithm）等。 思想二分查找法是一种在有序数组中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leetcode之704.二分查找">
-<meta property="og:url" content="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/index.html">
+<meta property="og:title" content="leetcode之704-二分查找">
+<meta property="og:url" content="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
 <meta property="og:description" content="之前在插入排序的文章中介绍了一个用二分查找来优化的思路，但是没有细说二分查找，今天也算是补上这个坑。刚好也是 leetcode 上的一道题。  二分查找算法（binary search algorithm），也称折半搜索算法（half-interval search algorithm）、对数搜索算法（logarithmic search algorithm）等。 思想二分查找法是一种在有序数组中">
 <meta property="og:locale" content="zh_CN">
@@ -31,13 +31,13 @@
 <meta property="og:image" content="http://yangsanity.me/images/16-2.png">
 <meta property="og:image" content="http://yangsanity.me/images/16-3.png">
 <meta property="article:published_time" content="2020-06-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-09T13:36:11.074Z">
+<meta property="article:modified_time" content="2021-04-01T01:57:39.076Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="leetcode">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yangsanity.me/images/16-1.png">
 
-<link rel="canonical" href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
+<link rel="canonical" href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
 
 
 <script id="page-configurations">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>leetcode之704.二分查找 | Yangsanity's Blog</title>
+  <title>leetcode之704-二分查找 | Yangsanity's Blog</title>
   
 
 
@@ -141,7 +141,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">30</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">31</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -203,7 +203,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          leetcode之704.二分查找
+          leetcode之704-二分查找
         </h1>
 
         <div class="post-meta">
@@ -226,7 +226,7 @@
             </span>
 
           
-            <span id="/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之704.二分查找" title="阅读次数">
+            <span id="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之704-二分查找" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -241,8 +241,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/26/leetcode之704.二分查找/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/26/leetcode之704-二分查找/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -268,7 +268,7 @@
 </ol>
 <p><img src="/images/16-2.png" alt="二分查找算法（picture from Wikipedia）"></p>
 <h2 id="中间元素"><a href="#中间元素" class="headerlink" title="中间元素"></a>中间元素</h2><p>二分查找每次都从有序数组的中间元素开始，那必然要先找到中间元素的索引值 mid。假设有序数组 nums 的第一个元素索引值记为 l，最后一个元素索引值记为 r，怎么求 mid 的值呢？</p>
-<p>很简单，小学数学就学过：mid = (l + r) / 2。但是，在程序里可不一定是这样，前面在<a href="/2020/06/11/leetcode%E4%B9%8B7.%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">leetcode之7.整数反转</a>的文章里我们知道，整数是有范围的。虽然 l 和 r 都是正常的整数，但是 l + r 就有可能会超过整数的范围，也就是说会有溢出的风险。</p>
+<p>很简单，小学数学就学过：mid = (l + r) / 2。但是，在程序里可不一定是这样，前面在<a href="/2020/06/11/leetcode%E4%B9%8B7-%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">leetcode之7-整数反转</a>的文章里我们知道，整数是有范围的。虽然 l 和 r 都是正常的整数，但是 l + r 就有可能会超过整数的范围，也就是说会有溢出的风险。</p>
 <p>那如何安全的求两个整数的平均值呢？</p>
 <p>（1）你可能会想了， (l + r) / 2 改成 l / 2 + r / 2 不就行了吗？在数学里确实是这样，但是我们讨论的是在程序里的情况。举个例子，l = 1，r = 3，那么 mid = 1 / 2 + 3 / 2 = 0 + 1 = 1，但其实正确结果应该是 2。</p>
 <p>（2）换个角度来思考一下，既然我们知道了 l 和 r，那么我们给 l 加上 r - l 偏移量的一半不就行了，毕竟减法是不会溢出的。即 mid = l + (r - l) / 2。</p>
@@ -320,7 +320,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" title="leetcode之704.二分查找">http://yangsanity.me/2020/06/26/leetcode之704.二分查找/</a>
+    <a href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" title="leetcode之704-二分查找">http://yangsanity.me/2020/06/26/leetcode之704-二分查找/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -369,8 +369,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/21/leetcode%E4%B9%8B9.%E5%9B%9E%E6%96%87%E6%95%B0/" rel="prev" title="leetcode之9.回文数">
-      <i class="fa fa-chevron-left"></i> leetcode之9.回文数
+    <a href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" rel="prev" title="leetcode之9-回文数">
+      <i class="fa fa-chevron-left"></i> leetcode之9-回文数
     </a></div>
       <div class="post-nav-item">
     <a href="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/" rel="next" title="搞懂原码、反码、补码">
@@ -457,7 +457,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -668,9 +668,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704.%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/";
-    this.page.identifier = "2020/06/26/leetcode之704.二分查找/";
-    this.page.title = "leetcode之704.二分查找";
+    this.page.url = "http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/";
+    this.page.identifier = "2020/06/26/leetcode之704-二分查找/";
+    this.page.title = "leetcode之704-二分查找";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {

@@ -22,20 +22,20 @@
 
   <meta name="description" content="今天立冬，祝大家立冬快乐哦！  1在上篇文章（传送门）中，我们已经详细介绍并用两种数据结构实现了 Trie。实际上把上篇文章中的任何一版代码提交给 leetcode 都完全可以解答本题，所以本文的意义并不在于如何解答这道题。 写 java 的人，肯定都知道，面向对象的三大特征：封装、继承、多态。而本文就是我从官方题解中得到的一点点关于「封装」的体会，做个小小的分享。 问题先回顾一下我们上篇文章中的">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leetcode之208.实现 Trie (前缀树)">
-<meta property="og:url" content="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/index.html">
+<meta property="og:title" content="leetcode之208-实现 Trie (前缀树)">
+<meta property="og:url" content="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
 <meta property="og:description" content="今天立冬，祝大家立冬快乐哦！  1在上篇文章（传送门）中，我们已经详细介绍并用两种数据结构实现了 Trie。实际上把上篇文章中的任何一版代码提交给 leetcode 都完全可以解答本题，所以本文的意义并不在于如何解答这道题。 写 java 的人，肯定都知道，面向对象的三大特征：封装、继承、多态。而本文就是我从官方题解中得到的一点点关于「封装」的体会，做个小小的分享。 问题先回顾一下我们上篇文章中的">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://yangsanity.me/images/26-1.png">
 <meta property="article:published_time" content="2020-11-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-03-26T03:35:26.761Z">
+<meta property="article:modified_time" content="2021-04-01T01:57:39.067Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="leetcode">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yangsanity.me/images/26-1.png">
 
-<link rel="canonical" href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/">
+<link rel="canonical" href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/">
 
 
 <script id="page-configurations">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>leetcode之208.实现 Trie (前缀树) | Yangsanity's Blog</title>
+  <title>leetcode之208-实现 Trie (前缀树) | Yangsanity's Blog</title>
   
 
 
@@ -139,7 +139,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">30</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">31</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -188,7 +188,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -201,7 +201,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          leetcode之208.实现 Trie (前缀树)
+          leetcode之208-实现 Trie (前缀树)
         </h1>
 
         <div class="post-meta">
@@ -224,7 +224,7 @@
             </span>
 
           
-            <span id="/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之208.实现 Trie (前缀树)" title="阅读次数">
+            <span id="/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之208-实现 Trie (前缀树)" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -239,8 +239,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/07/leetcode之208.实现 Trie (前缀树)/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/07/leetcode之208-实现 Trie (前缀树)/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -290,7 +290,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" title="leetcode之208.实现 Trie (前缀树)">http://yangsanity.me/2020/11/07/leetcode之208.实现 Trie (前缀树)/</a>
+    <a href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" title="leetcode之208-实现 Trie (前缀树)">http://yangsanity.me/2020/11/07/leetcode之208-实现 Trie (前缀树)/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -427,7 +427,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -638,9 +638,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208.%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/";
-    this.page.identifier = "2020/11/07/leetcode之208.实现 Trie (前缀树)/";
-    this.page.title = "leetcode之208.实现 Trie (前缀树)";
+    this.page.url = "http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/";
+    this.page.identifier = "2020/11/07/leetcode之208-实现 Trie (前缀树)/";
+    this.page.title = "leetcode之208-实现 Trie (前缀树)";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
