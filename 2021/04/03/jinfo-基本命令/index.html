@@ -20,23 +20,27 @@
     var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="有两点很明确：  负数不可能是回文数； 除了 0 以外，所有个位是 0 的数字不可能是回文数。  1将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。 但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。 1234567891011121314public boolean isPalindrome(int x) &amp;">
+  <meta name="description" content="JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款： jinfo (Configuration Info for Java): Java配置信息工具 功能实时查看和调整虚拟机各项参数：  使用 jps -v 命令可以查看虚拟机启动时显式指定的参数列表，而使用 jinfo -flag 命令可以查">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leetcode之9-回文数">
-<meta property="og:url" content="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/index.html">
+<meta property="og:title" content="jinfo 基本命令">
+<meta property="og:url" content="http://yangsanity.me/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="Yangsanity&#39;s Blog">
-<meta property="og:description" content="有两点很明确：  负数不可能是回文数； 除了 0 以外，所有个位是 0 的数字不可能是回文数。  1将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。 但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。 1234567891011121314public boolean isPalindrome(int x) &amp;">
+<meta property="og:description" content="JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款： jinfo (Configuration Info for Java): Java配置信息工具 功能实时查看和调整虚拟机各项参数：  使用 jps -v 命令可以查看虚拟机启动时显式指定的参数列表，而使用 jinfo -flag 命令可以查">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://yangsanity.me/images/15-1.png">
-<meta property="og:image" content="http://yangsanity.me/images/15-2.png">
-<meta property="article:published_time" content="2020-06-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-04-01T01:57:39.087Z">
+<meta property="og:image" content="http://yangsanity.me/images/31-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/31-2.png">
+<meta property="og:image" content="http://yangsanity.me/images/31-3.png">
+<meta property="og:image" content="http://yangsanity.me/images/31-4.png">
+<meta property="og:image" content="http://yangsanity.me/images/31-5.png">
+<meta property="og:image" content="http://yangsanity.me/images/31-6.png">
+<meta property="article:published_time" content="2021-04-03T01:00:30.000Z">
+<meta property="article:modified_time" content="2021-04-02T14:49:11.879Z">
 <meta property="article:author" content="jjiey">
-<meta property="article:tag" content="leetcode">
+<meta property="article:tag" content="JVM Tool">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://yangsanity.me/images/15-1.png">
+<meta name="twitter:image" content="http://yangsanity.me/images/31-1.png">
 
-<link rel="canonical" href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/">
+<link rel="canonical" href="http://yangsanity.me/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
 
 
 <script id="page-configurations">
@@ -49,7 +53,7 @@
   };
 </script>
 
-  <title>leetcode之9-回文数 | Yangsanity's Blog</title>
+  <title>jinfo 基本命令 | Yangsanity's Blog</title>
   
 
 
@@ -189,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpeg">
@@ -202,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          leetcode之9-回文数
+          jinfo 基本命令
         </h1>
 
         <div class="post-meta">
@@ -212,7 +216,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-06-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-21T00:00:00+08:00">2020-06-21</time>
+              <time title="创建时间：2021-04-03 09:00:30" itemprop="dateCreated datePublished" datetime="2021-04-03T09:00:30+08:00">2021-04-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -220,12 +224,12 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
                 </span>
             </span>
 
           
-            <span id="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之9-回文数" title="阅读次数">
+            <span id="/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jinfo 基本命令" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -240,8 +244,8 @@
       </span>
       <span class="post-meta-item-text">Disqus：</span>
     
-    <a title="disqus" href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/21/leetcode之9-回文数/" itemprop="commentCount"></span>
+    <a title="disqus" href="/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/04/03/jinfo-基本命令/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -256,34 +260,71 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><img src="/images/15-1.png"></p>
-<p>有两点很明确：</p>
-<ol>
-<li>负数不可能是回文数；</li>
-<li>除了 0 以外，所有个位是 0 的数字不可能是回文数。</li>
-</ol>
-<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。</p>
-<p>但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> copyx = x;</span><br><span class="line">    <span class="comment">// 翻转之后的数字可能超过整型的范围，用 long 来处理</span></span><br><span class="line">    <span class="keyword">long</span> y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (copyx != <span class="number">0</span>) &#123;</span><br><span class="line">        y = y * <span class="number">10</span> + copyx % <span class="number">10</span>;</span><br><span class="line">        copyx /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x == y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
-<h2 id="2"><a href="#2" class="headerlink" title="2"></a>2</h2><p>将数字转换为字符串，通过对比字符串前后对称位置的字符是否相等来检查原始数字是否为回文。</p>
-<p>有个可以优化的小点是我们只需遍历一半的字符串就够了。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    String str = String.valueOf(x);</span><br><span class="line">    <span class="keyword">int</span> n = str.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n / <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 对比字符串前后对称位置的字符是否相等</span></span><br><span class="line">        <span class="keyword">if</span> (str.charAt(i) != str.charAt(n - <span class="number">1</span> - i)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(n / 2)，忽略常数后为 O(n)；空间复杂度为 O(n)，因为我们将数字转换为了字符串。</p>
-<h2 id="官方题解"><a href="#官方题解" class="headerlink" title="官方题解"></a>官方题解</h2><p>一个非常巧妙的办法，反转一半的数字，这必然不会导致溢出。</p>
-<p>其中我们要解决两个问题：</p>
-<ol>
-<li>如何知道反转数字的位数已经达到原始数字位数的一半？</li>
-<li>反转后的数字 revertedNumber 如何和原始数字 x 进行比较？</li>
-</ol>
-<p><img src="/images/15-2.png"></p>
-<p>可以看到：</p>
-<ol>
-<li>当原始数字 x 小于或等于反转后的数字 revertedNumber 时，就意味着已经处理了一半位数的数字了；</li>
-<li>如果是回文数，最终 revertedNumber 和 x 的关系必然如上图所示。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> revertedNumber = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 反转一半</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; revertedNumber) &#123;</span><br><span class="line">        revertedNumber = revertedNumber * <span class="number">10</span> + x % <span class="number">10</span>;</span><br><span class="line">        x /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断是否回文</span></span><br><span class="line">    <span class="keyword">return</span> x == revertedNumber || x == revertedNumber / <span class="number">10</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
+        <p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p>
+<p><strong>jinfo (Configuration Info for Java)</strong>: Java配置信息工具</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>实时查看和调整虚拟机各项参数：</p>
+<ul>
+<li><p>使用 <code>jps -v</code> 命令可以查看虚拟机启动时显式指定的参数列表，而使用 <code>jinfo -flag</code> 命令可以查询未被显式指定的参数的系统默认值。</p>
+<ul>
+<li>对于 JDK 6 及以上版本，还可以使用 <code>java- XX:+PrintFlagsFinal</code> 查看参数默认值(命令: <code>$ java -XX:+PrintFlagsFinal -version</code>)。</li>
+</ul>
+</li>
+<li><p>使用 <code>jinfo -sysprops</code> 命令可以打印虚拟机进程的 System.getProperties() 的内容。JDK 6 之后，该命令除了提供信息查询功能，还加入了在运行期修改部分参数值的能力(使用 <code>-flag[+/-]name 或 -flag name=value</code> 在运行期修改一部分运行期可写的虚拟机参数值)。</p>
+</li>
+</ul>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo [ option ] pid</span><br></pre></td></tr></table></figure>
+<h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>-flag &lt;name&gt;</code></td>
+<td align="center">打印虚拟机标记参数的值</td>
+</tr>
+<tr>
+<td align="center"><code>-flag [+/-]&lt;name&gt;</code></td>
+<td align="center">开启或关闭虚拟机标记参数</td>
+</tr>
+<tr>
+<td align="center"><code>-flag &lt;name&gt;=&lt;value&gt;</code></td>
+<td align="center">设置虚拟机标记参数</td>
+</tr>
+<tr>
+<td align="center">-flags</td>
+<td align="center">输出虚拟机参数</td>
+</tr>
+<tr>
+<td align="center">-sysprops</td>
+<td align="center">输出 Java 系统属性</td>
+</tr>
+<tr>
+<td align="center"><code>&lt;no option&gt;</code></td>
+<td align="center">输出以上所有</td>
+</tr>
+</tbody></table>
+<h2 id="执行样例"><a href="#执行样例" class="headerlink" title="执行样例"></a>执行样例</h2><h3 id="flag-lt-name-gt"><a href="#flag-lt-name-gt" class="headerlink" title="-flag &lt;name&gt;"></a><code>-flag &lt;name&gt;</code></h3><p>查询 CMSInitiatingOccupancyFraction 参数值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flag CMSInitiatingOccupancyFraction 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-1.png"></p>
+<h3 id="flag-lt-name-gt-1"><a href="#flag-lt-name-gt-1" class="headerlink" title="-flag [+/-]&lt;name&gt;"></a><code>-flag [+/-]&lt;name&gt;</code></h3><p>开启 / 关闭 PrintGC</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flag PrintGC 5511</span><br><span class="line">$ jinfo -flag +PrintGC 5511</span><br><span class="line">$ jinfo -flag PrintGC 5511</span><br><span class="line">$ jinfo -flag -PrintGC 5511</span><br><span class="line">$ jinfo -flag PrintGC 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-2.png"></p>
+<h3 id="flag-lt-name-gt-lt-value-gt"><a href="#flag-lt-name-gt-lt-value-gt" class="headerlink" title="-flag &lt;name&gt;=&lt;value&gt;"></a><code>-flag &lt;name&gt;=&lt;value&gt;</code></h3><p>设置 HeapDumpPath</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flag HeapDumpPath 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath&#x3D;&#x2F;root&#x2F;heapDump.hprof 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath&#x3D; 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-3.png"></p>
+<p>​但是不是每个参数都可以被动态修改的，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jinfo -flag CMSInitiatingOccupancyFraction&#x3D;1 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-4.png"></p>
+<h3 id="flags"><a href="#flags" class="headerlink" title="-flags"></a>-flags</h3><p>输出虚拟机参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flags</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-5.png"></p>
+<h3 id="sysprops"><a href="#sysprops" class="headerlink" title="-sysprops"></a>-sysprops</h3><p>输出 Java 系统属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -sysprops 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-6.png"></p>
+<h3 id="lt-no-option-gt"><a href="#lt-no-option-gt" class="headerlink" title="&lt;no option&gt;"></a><code>&lt;no option&gt;</code></h3><p>输出以上所有</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo 5511</span><br></pre></td></tr></table></figure>
 <hr>
 
     </div>
@@ -300,7 +341,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" title="leetcode之9-回文数">http://yangsanity.me/2020/06/21/leetcode之9-回文数/</a>
+    <a href="http://yangsanity.me/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" title="jinfo 基本命令">http://yangsanity.me/2021/04/03/jinfo-基本命令/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -340,7 +381,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/leetcode/" rel="tag"># leetcode</a>
+              <a href="/tags/JVM-Tool/" rel="tag"># JVM Tool</a>
           </div>
 
         
@@ -349,13 +390,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/06/11/leetcode%E4%B9%8B7-%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/" rel="prev" title="leetcode之7-整数反转">
-      <i class="fa fa-chevron-left"></i> leetcode之7-整数反转
+    <a href="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" rel="prev" title="jstat 基本命令">
+      <i class="fa fa-chevron-left"></i> jstat 基本命令
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" rel="next" title="leetcode之704-二分查找">
-      leetcode之704-二分查找 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -421,7 +459,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1"><span class="nav-number">1.</span> <span class="nav-text">1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2"><span class="nav-number">2.</span> <span class="nav-text">2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E9%A2%98%E8%A7%A3"><span class="nav-number">3.</span> <span class="nav-text">官方题解</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">命令格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#option"><span class="nav-number">2.1.</span> <span class="nav-text">option</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%A0%B7%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">执行样例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#flag-lt-name-gt"><span class="nav-number">3.1.</span> <span class="nav-text">-flag &lt;name&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flag-lt-name-gt-1"><span class="nav-number">3.2.</span> <span class="nav-text">-flag [+&#x2F;-]&lt;name&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flag-lt-name-gt-lt-value-gt"><span class="nav-number">3.3.</span> <span class="nav-text">-flag &lt;name&gt;&#x3D;&lt;value&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flags"><span class="nav-number">3.4.</span> <span class="nav-text">-flags</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sysprops"><span class="nav-number">3.5.</span> <span class="nav-text">-sysprops</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-no-option-gt"><span class="nav-number">3.6.</span> <span class="nav-text">&lt;no option&gt;</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -648,9 +686,9 @@
 </script>
 <script>
   var disqus_config = function() {
-    this.page.url = "http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/";
-    this.page.identifier = "2020/06/21/leetcode之9-回文数/";
-    this.page.title = "leetcode之9-回文数";
+    this.page.url = "http://yangsanity.me/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/";
+    this.page.identifier = "2021/04/03/jinfo-基本命令/";
+    this.page.title = "jinfo 基本命令";
     };
   NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
     if (window.DISQUS) {
