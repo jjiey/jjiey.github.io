@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">32</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">33</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,193 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/" class="post-title-link" itemprop="url">搞懂原码、反码、补码</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-07-22 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-22T00:00:00+08:00">2020-07-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂原码、反码、补码" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/07/22/搞懂原码、反码、补码/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>在本文开始前，先抛出一个问题：在计算机系统中，数字一律用补码的形式来表示和存储。为什么？</p>
+<p>希望通过本文能够解释这个问题。</p>
+<p><span style="color:#fff;">重要</span>：为了简洁说明，约定本文以下内容中都使用一个字节，也就是 8 个 bit 来表示二进制数。</p>
+<h2 id="原码"><a href="#原码" class="headerlink" title="原码"></a>原码</h2><p>原码（True form）是指“未经更改”的码，是指一个二进制数左边加上符号位后所得到的码。</p>
+<p>计算机中所有的数字均用 0 和 1 编码表示，数字的正负号也不例外，如果一个机器数字长是 n 位的话，约定最左边 1 位用作符号位，其余 n - 1 位用于表示数值，这部分也称为数值域。</p>
+<p>因此，当二进制数大于 0 时，符号位为 0；当二进制数小于 0 时，符号位为 1；当二进制数等于 0 时，符号位可以为 0 或 1 (+0 / -0)。</p>
+<p>举个例子：</p>
+<table>
+<thead>
+<tr>
+<th align="center">十进制</th>
+<th align="center">原码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2</td>
+<td align="center">0000 0010</td>
+</tr>
+<tr>
+<td align="center">-2</td>
+<td align="center">1000 0010</td>
+</tr>
+</tbody></table>
+<p>可以看到，一个数字用二进制原码表示的话，其取值范围是 -111 1111 ~ +111 1111，换算成十进制就是 -127 ~ +127。</p>
+<p>为了便于算术逻辑单元（Arithmetic Logic Unit, ALU）的设计，后面又发展出了反码、补码等经过转换过的码。</p>
+<h2 id="反码"><a href="#反码" class="headerlink" title="反码"></a>反码</h2><p>对于二进制数而言，对其进行取反操作就是将 0 变为 1，1 变为 0。</p>
+<p>正数的反码（Ones’ complement）等于其原码，负数的反码则通过保留其符号位，然后将原码的数值位取反得到。</p>
+<p>举个例子：</p>
+<table>
+<thead>
+<tr>
+<th align="center">十进制</th>
+<th align="center">原码</th>
+<th align="center">反码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2</td>
+<td align="center">0000 0010</td>
+<td align="center">0000 0010</td>
+</tr>
+<tr>
+<td align="center">-2</td>
+<td align="center">1000 0010</td>
+<td align="center">1111 1101</td>
+</tr>
+</tbody></table>
+<p>为什么会出现反码？</p>
+<p>在数学中有加减乘除四则运算，但这对于计算机而言却太麻烦了。我们希望最好能够只有一种情况，比如只有加法，这样才能够让计算机变得简单高效。</p>
+<p>而这完全可以做到。举个例子，在数学中 5 - 3 = 2，它完全等价于 5 + (-3) = 2，这样就做到了用加法来表示减法，而乘法是加法的累积（例如 3 * 5 = 3 + 3 + 3 + 3 + 3 = 15），除法是减法的累积（例如 10 / 3 = 10 - 3 - 3 - 3 = 1 mod 3）。所以在计算机中只有加法就够了。</p>
+<p>但是，如果直接用原码来进行加法，计算机需要先识别该二进制原码的符号位，来确定该数字是正数还是负数，然后再进行加法运算，这样显然效率不高。</p>
+<p>为了提高效率，让计算机能够在运算时统一处理符号位和数值域，或者说让符号位也能参与运算，所以就产生了反码。</p>
+<p>至此，问题好像得到了解决。接下来我们验证一下。</p>
+<p>仍然以上面的 5 - 3 为例：5 的原码为 0000 0101，反码为 0000 0101；-3 的原码为 1000 0011，反码为 1111 1100。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">5 - 3</span><br><span class="line">&#x3D; 5 + (-3)</span><br><span class="line">&#x3D; 0000 0101(反码) + 1111 1100(反码)</span><br><span class="line">&#x3D; 0000 0001(反码)</span><br><span class="line">&#x3D; 0000 0001(原码)</span><br><span class="line">&#x3D; 1</span><br></pre></td></tr></table></figure>
+<p>结果竟然差了 1 ？！</p>
+<p>不急，我们再来看两个特殊的运算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 - 1</span><br><span class="line">&#x3D; 1 + (-1)</span><br><span class="line">&#x3D; 0000 0001(反码) + 1111 1110(反码)</span><br><span class="line">&#x3D; 1111 1111(反码)</span><br><span class="line">&#x3D; 1000 0000(原码)</span><br><span class="line">&#x3D; -0</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0 + 0</span><br><span class="line">&#x3D; 0000 0000(反码) + 0000 0000(反码)</span><br><span class="line">&#x3D; 0000 0000(反码)</span><br><span class="line">&#x3D; 0000 0000(原码)</span><br><span class="line">&#x3D; 0</span><br></pre></td></tr></table></figure>
+<p>可以看到，虽然 -0 和 0 是一样的，但是在反码中却有两种表示方式。也可以这么理解：当用一个字节表示数字的取值范围时，这些数字中多了个 -0。</p>
+<p>因此，虽然用反码进行运算时符号位可以直接参加运算，但是结果却是不对的。</p>
+<h2 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h2><p>补码（Two’s complement）的出现就是为了解决上面反码的问题。</p>
+<p>正数的补码和其原码、反码一样，负数的补码是其反码 + 1。</p>
+<p>举个例子：</p>
+<table>
+<thead>
+<tr>
+<th align="center">十进制</th>
+<th align="center">原码</th>
+<th align="center">反码</th>
+<th align="center">补码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">2</td>
+<td align="center">0000 0010</td>
+<td align="center">0000 0010</td>
+<td align="center">0000 0010</td>
+</tr>
+<tr>
+<td align="center">-2</td>
+<td align="center">1000 0010</td>
+<td align="center">1111 1101</td>
+<td align="center">1111 1110</td>
+</tr>
+</tbody></table>
+<p>同样，接下来我们用补码验证一下。</p>
+<p>仍然以 5 - 3 为例：5 的原码为 0000 0101，反码为 0000 0101，补码为 0000 0101；-3 的原码为 1000 0011，反码为 1111 1100，补码为 1111 1101。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">5 - 3</span><br><span class="line">&#x3D; 5 + (-3)</span><br><span class="line">&#x3D; 0000 0101(补码) + 1111 1101(补码)</span><br><span class="line">&#x3D; 0000 0010(补码)</span><br><span class="line">&#x3D; 0000 0010(原码)</span><br><span class="line">&#x3D; 2</span><br></pre></td></tr></table></figure>
+<p>结果没问题。再来看那两个特殊的运算：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1 - 1</span><br><span class="line">&#x3D; 1 + (-1)</span><br><span class="line">&#x3D; 0000 0001(补码) + 1111 1111(补码)</span><br><span class="line">&#x3D; 0000 0000(补码)</span><br><span class="line">&#x3D; 0000 0000(原码)</span><br><span class="line">&#x3D; 0</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0 + 0</span><br><span class="line">&#x3D; 0000 0000(补码) + 0000 0000(补码)</span><br><span class="line">&#x3D; 0000 0000(补码)</span><br><span class="line">&#x3D; 0000 0000(原码)</span><br><span class="line">&#x3D; 0</span><br></pre></td></tr></table></figure>
+<p>结果仍然没问题，至此，问题终于得到了解决。</p>
+<p>同时这也解释了一开始的问题，在计算机系统中，数字一律用补码的形式来表示和存储。</p>
+<p>原码、反码、补码，你搞懂了吗？</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -665,120 +852,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/05/30/leetcode%E4%B9%8B215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/30/leetcode%E4%B9%8B215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/" class="post-title-link" itemprop="url">leetcode之215-数组中的第K个最大元素</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-30 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-30T00:00:00+08:00">2020-05-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/05/30/leetcode%E4%B9%8B215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之215-数组中的第K个最大元素" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/05/30/leetcode%E4%B9%8B215-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E7%AC%ACK%E4%B8%AA%E6%9C%80%E5%A4%A7%E5%85%83%E7%B4%A0/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/30/leetcode之215-数组中的第K个最大元素/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>今天同样带来一道 leetcode 的算法题，主题同样是之前写的排序算法可不只是为了面试用的。</p>
-<p><img src="/images/12-1.png"></p>
-<h2 id="暴力"><a href="#暴力" class="headerlink" title="暴力"></a>暴力</h2><p>没啥好说的，暴力查找。我的这个写法有点类似于插入查找的思路，不同的是要从大到小进行排序，循环 k 次即可。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 暴力求解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length, maxIndex, temp;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= k; i++) &#123;</span><br><span class="line">        <span class="comment">// [i, len] 区间中的最大值索引</span></span><br><span class="line">        maxIndex = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; len; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[j] &gt; nums[maxIndex]) &#123;</span><br><span class="line">                maxIndex = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 每次找到的最大值放在左边有序区</span></span><br><span class="line">        <span class="keyword">if</span> (maxIndex &gt; i) &#123;</span><br><span class="line">            <span class="comment">// swap count and maxIndex</span></span><br><span class="line">            temp = nums[i];</span><br><span class="line">            nums[i] = nums[maxIndex];</span><br><span class="line">            nums[maxIndex] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> nums[k - <span class="number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>平均时间复杂度为 O(k * n)，空间复杂度为 O(1)。</p>
-<p>（我以为暴力法通不过，没想到竟然也过了）</p>
-<p><img src="/images/12-2.png"></p>
-<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><p>最朴素的方法，也是比较容易想到的，现成的库函数也有。（虽然也算一种方法，但直接调用库函数来排序肯定会被鄙视。。）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 排序后求解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    Arrays.sort(nums);</span><br><span class="line">    <span class="keyword">return</span> nums[nums.length - k];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(nlogn)，空间复杂度为 O(1)，原地排序。</p>
-<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆的性质及两个类型大家肯定还记得，解本题用一个小顶堆即可。</p>
-<p>我们要保证堆中只有 k 个元素，当堆中元素超过 k 个时，就让最小元素（堆顶元素）出队。这样当所有元素经过这个操作后，堆中剩下的元素是待查找数组中的 k 个最大元素，而堆顶元素是这 k 个元素中的最小值，也就是答案。</p>
-<p>java 中刚好也提供了现成的类可以用，那就是 PriorityQueue，而且它默认就是小顶堆，可真是省了不少事。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 利用小顶堆性质求解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 小顶堆，k + 1 防止没必要的扩容（看过源码就会知道）</span></span><br><span class="line">    PriorityQueue&lt;Integer&gt; heap = <span class="keyword">new</span> PriorityQueue&lt;&gt;(k + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> n: nums) &#123;</span><br><span class="line">        heap.add(n);</span><br><span class="line">        <span class="comment">// 保证小顶堆中只有 k 个元素</span></span><br><span class="line">        <span class="keyword">if</span> (heap.size() &gt; k) &#123;</span><br><span class="line">            heap.poll();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 直接返回堆顶元素</span></span><br><span class="line">    <span class="keyword">return</span> heap.poll();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(nlogk)，空间复杂度为 O(k)，用于存储堆元素。</p>
-<h2 id="利用快排思路"><a href="#利用快排思路" class="headerlink" title="利用快排思路"></a>利用快排思路</h2><p>传送门：<a href="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/">快速排序</a></p>
-<p>之前的文章详细介绍过快排，那么我们知道两点：</p>
-<ol>
-<li>数组中的第 k 个最大元素也就是第 n - k 个最小元素；</li>
-<li>快排的 partition 操作，每次返回基准值在数组中排好序后的正确位置。</li>
-</ol>
-<p>快排在每次 partition 结束后，还会再对基准值左右两边的子数组进行 partition 操作。而对于这道题，根据上边的第一点，我们可以在每次 partition 结束后，判断出正确结果在基准值左边还是右边，直接对某一边的子数组进行 partition 即可，直到找到正确结果。</p>
-<p>这个算法和快排都是 Tony Hoare 发明的，因此也被称为 Hoare 选择算法。</p>
-<p>之前详细介绍过快排，这里直接用三路快排来实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 利用快排思路求解</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findKthLargest</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> findKthLargestHelper(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>, nums.length - k);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">findKthLargestHelper</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> randomIndex = (<span class="keyword">int</span>) (Math.random() * (right - left + <span class="number">1</span>)) + left;</span><br><span class="line">    <span class="keyword">int</span> temp = nums[left];</span><br><span class="line">    nums[left] = nums[randomIndex];</span><br><span class="line">    nums[randomIndex] = temp;</span><br><span class="line">    <span class="keyword">int</span> pivot = nums[left], lt = left, gt = right + <span class="number">1</span>, i = left + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt; gt) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[i] &lt; pivot) &#123;</span><br><span class="line">            temp = nums[i];</span><br><span class="line">            nums[i] = nums[lt + <span class="number">1</span>];</span><br><span class="line">            nums[lt + <span class="number">1</span>] = temp;</span><br><span class="line">            i ++;</span><br><span class="line">            lt ++;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[i] &gt; pivot) &#123;</span><br><span class="line">            temp = nums[i];</span><br><span class="line">            nums[i] = nums[gt - <span class="number">1</span>];</span><br><span class="line">            nums[gt - <span class="number">1</span>] = temp;</span><br><span class="line">            gt --;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            i ++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    nums[left] = nums[lt];</span><br><span class="line">    nums[lt] = pivot;</span><br><span class="line">    <span class="keyword">if</span> (k &lt; lt) &#123;</span><br><span class="line">        <span class="keyword">return</span> findKthLargestHelper(nums, left, lt - <span class="number">1</span>, k);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (k &gt; gt - <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> findKthLargestHelper(nums, gt, right, k);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> pivot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>平均时间复杂度为 O(n)，空间复杂度为 O(1)，原地查找。不得不说，这个时间复杂度还是比较令人满意的。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -850,7 +923,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
