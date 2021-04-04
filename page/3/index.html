@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">33</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">34</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,214 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">Float Double 部分源码解析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-16T00:00:00+08:00">2020-09-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/source-code/" itemprop="url" rel="index"><span itemprop="name">source code</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="Float Double 部分源码解析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/16/Float Double 部分源码解析/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>前几篇一直在说 <a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">IEEE 754 标准</a>，搞明白了这个标准，再来看 java 中 Float.java 和 Double.java 的源码，很多变量和方法就能理解了。</p>
+<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>Float 和 Double 都是继承了 Number 类并实现了 Comparable 接口。</p>
+<p>Comparable 接口大家都熟悉，它只有一个 compareTo 方法，用来比较两个数值的大小。这个方法在 Float.java 和 Double.java 里都有实现，相关源码在下面会说到。</p>
+<p>Number 类是个抽象类，里面一共 6 个方法，分别可以表示转换为基本类型 byte、 double、 float、 int、 long 和 short 的数值，但是转换的特定语义和转换细节是由子类实现来定义。</p>
+<p><img src="/images/23-1.png"></p>
+<p>另外从 Number 类的类注释上也可以获得一个重要信息：转换可能会丢失关于数值总体大小的信息，可能会丢失精度，甚至可能返回与输入符号不同的结果。</p>
+<p><img src="/images/23-2.png"></p>
+<h2 id="Float-属性"><a href="#Float-属性" class="headerlink" title="Float 属性"></a>Float 属性</h2><p>这些属性都和前面介绍的 IEEE 754 标准有关，先回顾下第一篇文章中的总结：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形式</th>
+<th align="center">指数</th>
+<th align="center">小数部分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">零</td>
+<td align="center">全为 0</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">非规约形式</td>
+<td align="center">全为 0</td>
+<td align="center">大于 0 小于 1</td>
+</tr>
+<tr>
+<td align="center">规约形式</td>
+<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
+<td align="center">大于等于 1 小于 2</td>
+</tr>
+<tr>
+<td align="center">无穷</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">NaN</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">非 0</td>
+</tr>
+</tbody></table>
+<h3 id="正无穷"><a href="#正无穷" class="headerlink" title="正无穷"></a>正无穷</h3><p>二进制表示为：<code>0 11111111 00000000000000000000000</code></p>
+<p><img src="/images/23-3.png"></p>
+<h3 id="负无穷"><a href="#负无穷" class="headerlink" title="负无穷"></a>负无穷</h3><p>二进制表示为：<code>1 11111111 00000000000000000000000</code></p>
+<p><img src="/images/23-4.png"></p>
+<h3 id="NaN"><a href="#NaN" class="headerlink" title="NaN"></a>NaN</h3><p>二进制表示为：<code>0 11111111 10000000000000000000000</code></p>
+<p><img src="/images/23-5.png"></p>
+<h3 id="最大值"><a href="#最大值" class="headerlink" title="最大值"></a>最大值</h3><p>二进制表示为：<code>0 11111110 11111111111111111111111</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(1.11111111111111111111111)₂ * 2¹²⁷</span><br><span class="line">&#x3D; (2 - 2 ^ -23)₁₀ * 2¹²⁷</span><br></pre></td></tr></table></figure>
+<p><img src="/images/23-6.png"></p>
+<h3 id="最小正标准值"><a href="#最小正标准值" class="headerlink" title="最小正标准值"></a>最小正标准值</h3><p>二进制表示为：<code>0 00000001 00000000000000000000000</code></p>
+<p>其实就是第一篇介绍 IEEE 754 文章中提到的：大于 0 部分的规约形式浮点数的最小值。</p>
+<p><img src="/images/23-7.png"></p>
+<h3 id="最小值"><a href="#最小值" class="headerlink" title="最小值"></a>最小值</h3><p>二进制表示为：<code>0 00000000 00000000000000000000001</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0.00000000000000000000001 * 2⁻¹²⁶</span><br><span class="line">&#x3D; 1 * 2⁻⁽¹²⁶⁺²³⁾</span><br><span class="line">&#x3D; 2⁻¹⁴⁹</span><br></pre></td></tr></table></figure>
+<p>其实就是第一篇介绍 IEEE 754 文章中提到的：大于 0 部分的非规约形式浮点数的最小值。</p>
+<p>注意：虽然变量名叫 MIN_VALUE，但其实是个大于 0 的数。</p>
+<p><img src="/images/23-8.png"></p>
+<h3 id="最大指数"><a href="#最大指数" class="headerlink" title="最大指数"></a>最大指数</h3><p><img src="/images/23-9.png"></p>
+<h3 id="最小指数"><a href="#最小指数" class="headerlink" title="最小指数"></a>最小指数</h3><p><img src="/images/23-10.png"></p>
+<h3 id="位数"><a href="#位数" class="headerlink" title="位数"></a>位数</h3><p><img src="/images/23-11.png"></p>
+<h3 id="字节数"><a href="#字节数" class="headerlink" title="字节数"></a>字节数</h3><p><img src="/images/23-12.png"></p>
+<h2 id="Float-方法"><a href="#Float-方法" class="headerlink" title="Float 方法"></a>Float 方法</h2><h3 id="Float-floatToRawIntBits"><a href="#Float-floatToRawIntBits" class="headerlink" title="Float.floatToRawIntBits"></a>Float.floatToRawIntBits</h3><p>是个 native 方法。它的作用是：将 float 浮点数转换为其 IEEE 754 标准二进制形式对应的 int 值。因为 float 和 int 都是 32 位，所以每一个 float 总有对应的 int 值。</p>
+<p>如果参数为正无穷，则结果为 0x7f800000；如果参数为负无穷，则结果为 0xff800000；如果参数为 NaN，结果是表示实际 NaN 值的整数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">int</span> <span class="title">floatToRawIntBits</span><span class="params">(<span class="keyword">float</span> value)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>举两个例子大家就明白了：</p>
+<ol>
+<li>1.0f</li>
+</ol>
+<p>对应的二进制为 <code>0 01111111 00000000000000000000000</code></p>
+<p>那么 Float.floatToIntBits(1.0f) 的结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2²³ + 2²⁴ + 2²⁵ + 2²⁶ + 2²⁷ + 2²⁸ + 2²⁹</span><br><span class="line">&#x3D; 1065353216</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>-1.0f</li>
+</ol>
+<p>对应的二进制为 <code>1 01111111 00000000000000000000000</code></p>
+<p>那么 Float.floatToIntBits(-1.0f) 的结果为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2²³ + 2²⁴ + 2²⁵ + 2²⁶ + 2²⁷ + 2²⁸ + 2²⁹ + 2³¹</span><br><span class="line">&#x3D; 3212836864</span><br><span class="line">&#x3D; -1082130432</span><br></pre></td></tr></table></figure>
+<p>（不要忘了整数会溢出，所以最终结果为溢出后的值）</p>
+<h3 id="Float-floatToIntBits"><a href="#Float-floatToIntBits" class="headerlink" title="Float.floatToIntBits"></a>Float.floatToIntBits</h3><p>和 Float.floatToRawIntBits 方法几乎一样，唯一的区别是：对 NaN 作了检测，如果结果为 NaN，直接返回 0x7fc00000（即 Float.NaN）。</p>
+<p>如果参数为正无穷，则结果为 0x7f800000；如果参数为负无穷，则结果为 0xff800000；如果参数为 NaN，则结果为 0x7fc00000。</p>
+<p>前面的文章中介绍过，NaN 的阶码都为 1，尾数不全为 0，所以在 IEEE 754 标准中，NaN 并不是一个固定的值，而是一个范围。在 Java 中将 NaN 定义为了一个属性，在上边属性部分已经介绍过，它是一个固定的值。当结果处于 NaN 的范围中，此时会返回 Float.NaN 对应的值 0x7fc00000。</p>
+<p>这一点在源码中也有体现。先调用 floatToIntBits 方法获取对应的 int 值，接下来检测 NaN，如果是 NaN，给返回值赋值为 0x7fc00000。</p>
+<p>看看代码中是如何检测 NaN 的：</p>
+<ul>
+<li><p>FloatConsts.EXP_BIT_MASK 是一个常量 2139095040，其对应的二进制表示为 <code>0 11111111 00000000000000000000000</code></p>
+</li>
+<li><p>FloatConsts.SIGNIF_BIT_MASK 也是一个常量 8388607，其对应的二进制表示为 <code>0 00000000 11111111111111111111111</code></p>
+</li>
+<li><p>检测阶码：result &amp; FloatConsts.EXP_BIT_MASK，如果 result 是 NaN，那么 result 的阶码都为 1，运算结果仍然为 FloatConsts.EXP_BIT_MASK</p>
+</li>
+<li><p>检测尾数：result &amp; FloatConsts.SIGNIF_BIT_MASK，如果 result 是 NaN，那么 result 的尾数不全为 0，运算结果肯定不为 0</p>
+</li>
+<li><p>如果同时满足了这两个条件，那么 result 就是 NaN，给返回值赋值为 0x7fc00000</p>
+</li>
+</ul>
+<p><em>&amp; 运算：1 &amp; 1 = 1；0 &amp; 1 = 0；1 &amp; 0 = 0</em></p>
+<p><img src="/images/23-13.png"></p>
+<h3 id="Float-intBitsToFloat"><a href="#Float-intBitsToFloat" class="headerlink" title="Float.intBitsToFloat"></a>Float.intBitsToFloat</h3><p>是个 native 方法。它的作用是：返回与给定参数表示相对应的浮点值。可以这么理解，和 floatToIntBits 做的事情刚好相反（其实从方法名也能看出来）。</p>
+<p>如果参数为 0x7f800000，则结果为正无穷；如果参数为 0xff800000，则结果为负无穷；如果参数值在 0x7f800001 到 0x7fffffff 或在 0xff800001 到 0xffffffff 之间，则结果为 NaN。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">float</span> <span class="title">intBitsToFloat</span><span class="params">(<span class="keyword">int</span> bits)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>从它的方法注释上还能得到一些有用的信息，比如：</p>
+<ol>
+<li><p>Java 提供的任何 IEEE 754 浮点操作都不能区分具有不同位模式的两个同类型 NaN 值，不同的 NaN 值只能使用 Float.floatToRawIntBits 方法区分</p>
+</li>
+<li><p>根据参数如何求 s（符号位） e（阶码） m（尾数）：</p>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> s = ((bits &gt;&gt; <span class="number">31</span>) == <span class="number">0</span>) ? <span class="number">1</span> : -<span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> e = ((bits &gt;&gt; <span class="number">23</span>) &amp; <span class="number">0xff</span>);</span><br><span class="line"><span class="keyword">int</span> m = (e == <span class="number">0</span>) ? (bits &amp; <span class="number">0x7fffff</span>) &lt;&lt; <span class="number">1</span> : (bits &amp; <span class="number">0x7fffff</span>) | <span class="number">0x800000</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="Float-compareTo"><a href="#Float-compareTo" class="headerlink" title="Float.compareTo"></a>Float.compareTo</h3><p>该方法直接调用了 Float.compare 方法，所以我们直接来看 compare 方法。</p>
+<p>图中注释已经写的非常明白了，可以看到，两个浮点数的比较并不是想象中那么简单的，有一些特殊情况需要考虑。</p>
+<p><img src="/images/23-14.png"></p>
+<h3 id="Float-equals"><a href="#Float-equals" class="headerlink" title="Float.equals"></a>Float.equals</h3><p><img src="/images/23-15.png"></p>
+<h3 id="Float-hashCode"><a href="#Float-hashCode" class="headerlink" title="Float.hashCode"></a>Float.hashCode</h3><p>重点是最后调用了 floatToIntBits 方法。</p>
+<p><img src="/images/23-16.png"></p>
+<h3 id="Float-isNaN"><a href="#Float-isNaN" class="headerlink" title="Float.isNaN"></a>Float.isNaN</h3><p>该方法直接调用了 isNaN(value) 方法，所以我们直接来看 isNaN(value) 方法，这个方法的判断逻辑也特别有意思。</p>
+<p>可以看出，如果 v 为 NaN，则 v != v；如果 v 不为 NaN，则 v == v。</p>
+<p><img src="/images/23-17.png"></p>
+<h2 id="Double"><a href="#Double" class="headerlink" title="Double"></a>Double</h2><p>同 Float，举一反三之。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -964,155 +1172,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/" class="post-title-link" itemprop="url">搞懂位移运算</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-23 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-23T00:00:00+08:00">2020-07-23</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂位移运算" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/07/23/%E6%90%9E%E6%87%82%E4%BD%8D%E7%A7%BB%E8%BF%90%E7%AE%97/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/07/23/搞懂位移运算/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>搞懂了上篇文章，这篇就会比较容易。上篇文章传送门：<a href="/2020/07/22/%E6%90%9E%E6%87%82%E5%8E%9F%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81/">搞懂原码、反码、补码</a></p>
-<p>在 Java 中有三个位移运算：</p>
-<ol>
-<li>&lt;&lt;：左移</li>
-<li>&#62;&#62;：右移</li>
-<li>&#62;&#62;&#62;：无符号右移</li>
-</ol>
-<h1 id="正数位移运算"><a href="#正数位移运算" class="headerlink" title="正数位移运算"></a>正数位移运算</h1><p>首先来看结果：</p>
-<p><img src="/images/18-1.png" alt="正数位移运算结果"></p>
-<p>十进制 2 转换为二进制原码、反码、补码都为 <code>00000000 00000000 00000000 00000010</code></p>
-<p>2 &lt;&lt; 1</p>
-<ul>
-<li>符号位固定不动，二进制左移一位，高位丢弃，低位补 0，结果为 <code>00000000 00000000 00000000 00000100</code></li>
-<li>其反码、原码都和该补码一样</li>
-<li>换算成十进制为 4</li>
-</ul>
-<p>2 &gt;&gt; 1：</p>
-<ul>
-<li>符号位固定不动，二进制右移一位，低位丢弃，高位补 0，结果为 <code>00000000 00000000 00000000 00000001</code></li>
-<li>其反码、原码都和该补码一样</li>
-<li>换算成十进制为 1</li>
-</ul>
-<h2 id="负数位移运算"><a href="#负数位移运算" class="headerlink" title="负数位移运算"></a>负数位移运算</h2><p>首先来看结果：</p>
-<p><img src="/images/18-2.png" alt="负数位移运算结果"></p>
-<p>十进制 -2 转换为二进制原码为 <code>10000000 00000000 00000000 00000010</code>，反码为 <code>11111111 11111111 11111111 11111101</code>，补码为 <code>11111111 11111111 11111111 11111110</code></p>
-<p>-2 &lt;&lt; 1：</p>
-<ul>
-<li>符号位固定不动，二进制左移一位，高位丢弃，低位补 0，结果为 <code>11111111 11111111 11111111 11111100</code></li>
-<li>该补码对应的反码为 <code>11111111 11111111 11111111 11111011</code></li>
-<li>该反码对应的原码为 <code>10000000 00000000 00000000 00000100</code></li>
-<li>换算成十进制为 -4</li>
-</ul>
-<p>-2 &gt;&gt; 1：</p>
-<ul>
-<li>符号位固定不动，二进制右移一位，低位丢弃，高位补 1，结果为 <code>11111111 11111111 11111111 11111111</code></li>
-<li>该补码对应的反码为 <code>11111111 11111111 11111111 11111110</code></li>
-<li>该反码对应的原码为 <code>10000000 00000000 00000000 00000001</code></li>
-<li>换算成十进制为 -1</li>
-</ul>
-<h2 id="无符号右移"><a href="#无符号右移" class="headerlink" title="无符号右移"></a>无符号右移</h2><p>首先来看结果：</p>
-<p><img src="/images/18-3.png" alt="无符号右移结果"></p>
-<p>前面 &lt;&lt; 和 &gt;&gt; 都是符号位固定不动，而无符号右移则是符号位跟着一起右移。</p>
-<p>十进制 2 转换为二进制补码为 <code>00000000 00000000 00000000 00000010</code>；十进制 -2 转换为二进制补码为 <code>11111111 11111111 11111111 11111110</code></p>
-<p>2 &gt;&gt;&gt; 1：</p>
-<ul>
-<li>二进制符号位跟着右移，低位丢弃，高位补 0，结果为 <code>00000000 00000000 00000000 00000001</code></li>
-<li>其反码、原码都和该补码一样</li>
-<li>换算成十进制为 1</li>
-</ul>
-<p>-2 &gt;&gt;&gt; 1：</p>
-<ul>
-<li>二进制符号位跟着右移，低位丢弃，高位补 0，结果为 <code>01111111 11111111 11111111 11111111</code></li>
-<li>其反码、原码都和该补码一样</li>
-<li>换算成十进制为 2147483647</li>
-</ul>
-<p>无符号右移有个经典应用，在之前二分查找的文章中也说过，就是求两个整数的平均值：int mid = (l + r) &gt;&gt;&gt; 1</p>
-<p>位移运算，你搞懂了吗？</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1184,7 +1243,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
