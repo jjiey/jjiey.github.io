@@ -6,7 +6,7 @@
   <link href="http://yangsanity.me/atom.xml" rel="self"/>
   
   <link href="http://yangsanity.me/"/>
-  <updated>2021-04-04T14:35:38.846Z</updated>
+  <updated>2021-04-03T01:58:16.084Z</updated>
   <id>http://yangsanity.me/</id>
   
   <author>
@@ -17,19 +17,19 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>jstack 基本命令</title>
-    <link href="http://yangsanity.me/2021/04/06/jstack-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"/>
-    <id>http://yangsanity.me/2021/04/06/jstack-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/</id>
-    <published>2021-04-06T01:00:21.000Z</published>
-    <updated>2021-04-04T14:35:38.846Z</updated>
+    <title>jhat 基本命令</title>
+    <link href="http://yangsanity.me/2021/04/05/jhat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/"/>
+    <id>http://yangsanity.me/2021/04/05/jhat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/</id>
+    <published>2021-04-05T01:00:28.000Z</published>
+    <updated>2021-04-03T01:58:16.084Z</updated>
     
-    <content type="html"><![CDATA[<p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p><p><strong>jstack (Stack Trace for Java)</strong>: Java 堆栈跟踪工具</p><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>生成虚拟机当前时刻的线程快照(一般称为 threaddump 或者 javacore 文件)。</p><p>线程快照就是当前虚拟机内每一条线程正在执行的方法堆栈的集合，生成线程快照的目的通常是<em>定位线程出现长时间停顿的原因</em>，如线程间死锁、死循环、请求外部资源导致的长时间挂起等，都是导致线程长时间停顿的常见原因。</p><p>线程出现停顿时通过 jstack 来查看各个线程的调用堆栈，就可以获知没有响应的线程到底在后台做些什么事情，或者等待着什么资源。</p><h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack [ option ] vmid</span><br></pre></td></tr></table></figure><h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><table><thead><tr><th align="center">选项</th><th align="center">作用</th></tr></thead><tbody><tr><td align="center">-F</td><td align="center">当正常输出的请求不被响应时，强制输出线程堆栈</td></tr><tr><td align="center">-l</td><td align="center">除堆栈外，显示关于锁的附加信息</td></tr><tr><td align="center">-m</td><td align="center">如果调用到本地方法的话，可以显示 C/C++ 的堆栈</td></tr></tbody></table><h2 id="使用-jstack-查看线程堆栈"><a href="#使用-jstack-查看线程堆栈" class="headerlink" title="使用 jstack 查看线程堆栈"></a>使用 jstack 查看线程堆栈</h2><hr>]]></content>
+    <content type="html"><![CDATA[<p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p><p><strong>jhat (JVM Heap Analysis Tool)</strong>: 虚拟机堆转储快照分析工具</p><h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>与 jmap 搭配使用，分析 jmap 生成的堆转储快照。</p><h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><p>jhat 内置了一个微型的 HTTP/Web 服务器，生成堆转储快照的分析结果后，可以在浏览器中查看。</p><h3 id="使用情况"><a href="#使用情况" class="headerlink" title="使用情况"></a>使用情况</h3><p>在实际工作中，多数人是不会直接使用 jhat 命令来分析堆转储快照文件的，主要原因是：</p><ul><li><p>一般不会在部署应用程序的服务器上直接分析堆转储快照，即使可以这样做，也会尽量将堆转储快照文件复制到其他机器上进行分析，因为分析工作是一个耗时而且极为耗费硬件资源的过程（加载 dump 快照文件需要比生成 dump 更大的内存）。</p><ul><li>（话说回来，既然都要在其他机器上进行，还有必要再受命令行工具的限制吗？）</li></ul></li><li><p> jhat 的分析功能相对来说比较简陋，VisualVM 或 JProfiler 等工具也可以分析堆转储快照文件，而且能提供比 jhat 更强大专业的分析功能。</p></li></ul><h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jhat &lt;filename&gt;</span><br></pre></td></tr></table></figure><h2 id="使用-jhat-分析-dump-文件"><a href="#使用-jhat-分析-dump-文件" class="headerlink" title="使用 jhat 分析 dump 文件"></a>使用 jhat 分析 dump 文件</h2><p>以 <a href="https://github.com/alibaba/arthas/blob/master/README_CN.md">arthas 官网</a>提供的 arthas-demo.jar 为例。</p><ol><li>在本地启动 arthas-demo.jar，并将日志输出到指定文件：</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ nohup java -jar arthas-demo.jar &gt; demo.log &amp;</span><br></pre></td></tr></table></figure><ol start="2"><li>jps 查询 LVMID (进程 ID) 为 65034：</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jps -l | grep arthas-demo.jar</span><br></pre></td></tr></table></figure><ol start="3"><li>生成 Java 堆转储快照。</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jmap -dump:format&#x3D;b,file&#x3D;demo.bin 65034</span><br></pre></td></tr></table></figure><ol start="4"><li>jhat 分析</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jhat demo.bin</span><br></pre></td></tr></table></figure><p><img src="/images/33-1.png"></p><p>“Server is ready” 后，在浏览器中输入 <a href="http://localhost:7000/">http://localhost:7000/</a> 可以查看分析结果。</p><p><img src="/images/33-2.png"></p><p>分析结果默认以包为单位进行分组显示，分析内存泄漏问题主要会使用到<em>上图中的 “Show heap histogram”(与 <code>jmap-histo</code> 功能一样)</em> 与 <em>OQL 页签的功能（上图中的 “Execute Object Query Language (OQL) query”）</em>，前者可以找到内存中总容量最大的对象，后者是标准的对象查询语言，使用类似 SQL 的语法对内存中的对象进行查询统计。</p><hr>]]></content>
     
     
       
       
     <summary type="html">&lt;p&gt;JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;jstack (Stack Trace for Java)&lt;/strong&gt;: Ja</summary>
+&lt;p&gt;&lt;strong&gt;jhat (JVM Heap Analysis Tool)&lt;/strong&gt;: 虚拟</summary>
       
     
     
