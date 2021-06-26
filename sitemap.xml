@@ -340,6 +340,13 @@
   </url>
   
   <url>
+    <loc>http://yangsanity.me/tags/data-structure/</loc>
+    <lastmod>2021-06-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://yangsanity.me/tags/basics/</loc>
     <lastmod>2021-06-26</lastmod>
     <changefreq>daily</changefreq>
@@ -348,13 +355,6 @@
   
   <url>
     <loc>http://yangsanity.me/tags/jdk-source-code/</loc>
-    <lastmod>2021-06-26</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yangsanity.me/tags/data-structure/</loc>
     <lastmod>2021-06-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -398,6 +398,13 @@
   </url>
   
   <url>
+    <loc>http://yangsanity.me/categories/data-structure/</loc>
+    <lastmod>2021-06-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://yangsanity.me/categories/computer/</loc>
     <lastmod>2021-06-26</lastmod>
     <changefreq>daily</changefreq>
@@ -406,13 +413,6 @@
   
   <url>
     <loc>http://yangsanity.me/categories/source-code/</loc>
-    <lastmod>2021-06-26</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yangsanity.me/categories/data-structure/</loc>
     <lastmod>2021-06-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
