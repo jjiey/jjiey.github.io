@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-128x128.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文转载自公众号 “源码笔记”。 什么是自旋锁和互斥锁？由于CLH锁是一种自旋锁，那么我们先来看看自旋锁是什么？ 自旋锁说白了也是一种互斥锁，只不过没有抢到锁的线程会一直自旋等待锁的释放，处于busy-waiting的状态，此时等待锁的线程不会进入休眠状态，而是一直忙等待浪费CPU周期。因此自旋锁适用于锁占用时间短的场合。 这里谈到了自旋锁，那么我们也顺便说下互斥锁。这里的互斥锁说的是传统意义的互">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AQS 基础--多图详解 CLH 锁的原理与实现">
+<meta property="og:url" content="http://yangsanity.me/2021/08/10/CLHLock/index.html">
+<meta property="og:site_name" content="Yangsanity&#39;s Blog">
+<meta property="og:description" content="本文转载自公众号 “源码笔记”。 什么是自旋锁和互斥锁？由于CLH锁是一种自旋锁，那么我们先来看看自旋锁是什么？ 自旋锁说白了也是一种互斥锁，只不过没有抢到锁的线程会一直自旋等待锁的释放，处于busy-waiting的状态，此时等待锁的线程不会进入休眠状态，而是一直忙等待浪费CPU周期。因此自旋锁适用于锁占用时间短的场合。 这里谈到了自旋锁，那么我们也顺便说下互斥锁。这里的互斥锁说的是传统意义的互">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yangsanity.me/images/40-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-2.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-3.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-4.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-5.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-6.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-7.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-8.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-9.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-10.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-11.png">
+<meta property="og:image" content="http://yangsanity.me/images/40-12.png">
+<meta property="article:published_time" content="2021-08-10T06:25:36.000Z">
+<meta property="article:modified_time" content="2022-05-07T02:09:59.753Z">
+<meta property="article:author" content="jjiey">
+<meta property="article:tag" content="AQS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yangsanity.me/images/40-1.png">
+
+<link rel="canonical" href="http://yangsanity.me/2021/08/10/CLHLock/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>AQS 基础--多图详解 CLH 锁的原理与实现 | Yangsanity's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Yangsanity's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yangsanity's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life was like a box of chocolates</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">44</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/jjiey" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/08/10/CLHLock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AQS 基础--多图详解 CLH 锁的原理与实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-10 14:25:36" itemprop="dateCreated datePublished" datetime="2021-08-10T14:25:36+08:00">2021-08-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/source-code/" itemprop="url" rel="index"><span itemprop="name">source code</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/08/10/CLHLock/" class="post-meta-item leancloud_visitors" data-flag-title="AQS 基础--多图详解 CLH 锁的原理与实现" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/08/10/CLHLock/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/08/10/CLHLock/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文转载自公众号 “源码笔记”。</p>
+<h2 id="什么是自旋锁和互斥锁？"><a href="#什么是自旋锁和互斥锁？" class="headerlink" title="什么是自旋锁和互斥锁？"></a>什么是自旋锁和互斥锁？</h2><p>由于CLH锁是一种自旋锁，那么我们先来看看自旋锁是什么？</p>
+<p><em>自旋锁</em>说白了也是一种互斥锁，只不过没有抢到锁的线程会一直自旋等待锁的释放，处于<em>busy-waiting</em>的状态，此时等待锁的线程不会进入休眠状态，而是一直忙等待浪费CPU周期。<em>因此自旋锁适用于锁占用时间短的场合。</em></p>
+<p>这里谈到了自旋锁，那么我们也顺便说下互斥锁。这里的<em>互斥锁</em>说的是传统意义的互斥锁，就是多个线程并发竞争锁的时候，没有抢到锁的线程会进入休眠状态即<em>sleep-waiting</em>，当锁被释放的时候，处于休眠状态的一个线程会再次获取到锁。缺点就是这一些列过程需要线程切换，需要执行很多CPU指令，同样需要时间。如果CPU执行线程切换的时间比锁占用的时间还长，那么可能还不如使用自旋锁。<em>因此互斥锁适用于锁占用时间长的场合。</em></p>
+<h2 id="什么是CLH锁？"><a href="#什么是CLH锁？" class="headerlink" title="什么是CLH锁？"></a>什么是CLH锁？</h2><p><em>CLH锁</em>其实就是一种是基于逻辑队列非线程饥饿的一种自旋公平锁，由于是 Craig、Landin 和 Hagersten三位大佬的发明，因此命名为CLH锁。</p>
+<p><em>CLH锁原理如下：</em></p>
+<ol>
+<li>首先有一个尾节点指针，通过这个尾结点指针来构建等待线程的逻辑队列，因此能确保线程线程先到先服务的公平性，因此尾指针可以说是构建逻辑队列的桥梁；此外这个尾节点指针是原子引用类型，避免了多线程并发操作的线程安全性问题；</li>
+<li>通过等待锁的每个线程在自己的某个变量上自旋等待，这个变量将由前一个线程写入。由于某个线程获取锁操作时总是通过尾节点指针获取到前一线程写入的变量，而尾节点指针又是原子引用类型，因此确保了这个变量获取出来总是线程安全的。</li>
+</ol>
+<p>这么说肯定很抽象，有些小伙伴可能不理解，没关系，我们心中可以有个概念即可，后面我们会一步一图来彻彻底底把CLH锁弄明白。</p>
+<h2 id="为什么要学习CLH锁？"><a href="#为什么要学习CLH锁？" class="headerlink" title="为什么要学习CLH锁？"></a>为什么要学习CLH锁？</h2><p>好了，前面我们对CLH锁有了一个概念后，那么我们为什么要学习CLH锁呢？</p>
+<p>研究过AQS源码的小伙伴们应该知道，AQS是JUC的核心，而CLH锁又是AQS的基础，说核心也不为过，因为AQS就是用了变种的CLH锁。如果要学好Java并发编程，那么必定要学好JUC；学好JUC，必定要先学好AQS；学好AQS，那么必定先学好CLH。因此，这就是我们为什么要学习CLH锁的原因。</p>
+<h2 id="CLH锁详解"><a href="#CLH锁详解" class="headerlink" title="CLH锁详解"></a>CLH锁详解</h2><p>那么，下面我们先来看CLH锁实现代码，然后通过一步一图来详解CLH锁。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CLHLock.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CLHLock</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * CLH锁节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">CLHNode</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 锁状态：默认为false，表示线程没有获取到锁；true表示线程获取到锁或正在等待</span></span><br><span class="line">        <span class="comment">// 为了保证locked状态是线程间可见的，因此用volatile关键字修饰</span></span><br><span class="line">        <span class="keyword">volatile</span> <span class="keyword">boolean</span> locked = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 尾结点，总是指向最后一个CLHNode节点</span></span><br><span class="line">    <span class="comment">// 【注意】这里用了java的原子系列之AtomicReference，能保证原子更新</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AtomicReference&lt;CLHNode&gt; tailNode;</span><br><span class="line">    <span class="comment">// 当前节点的前继节点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ThreadLocal&lt;CLHNode&gt; predNode;</span><br><span class="line">    <span class="comment">// 当前节点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ThreadLocal&lt;CLHNode&gt; curNode;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// CLHLock构造函数，用于新建CLH锁节点时做一些初始化逻辑</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CLHLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 初始化时尾结点指向一个空的CLH节点</span></span><br><span class="line">        tailNode = <span class="keyword">new</span> AtomicReference&lt;&gt;(<span class="keyword">new</span> CLHNode());</span><br><span class="line">        <span class="comment">// 初始化当前的CLH节点</span></span><br><span class="line">        curNode = ThreadLocal.withInitial(CLHNode::<span class="keyword">new</span>);</span><br><span class="line">        <span class="comment">// 初始化前继节点，注意此时前继节点没有存储CLHNode对象，存储的是null</span></span><br><span class="line">        predNode = <span class="keyword">new</span> ThreadLocal&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 取出当前线程ThreadLocal存储的当前节点，初始化值总是一个新建的CLHNode，locked状态为false。</span></span><br><span class="line">        CLHNode currNode = curNode.get();</span><br><span class="line">        <span class="comment">// 此时把lock状态置为true，表示一个有效状态，</span></span><br><span class="line">        <span class="comment">// 即获取到了锁或正在等待锁的状态</span></span><br><span class="line">        currNode.locked = <span class="keyword">true</span>;</span><br><span class="line">        <span class="comment">// 当一个线程到来时，总是将尾结点取出来赋值给当前线程的前继节点；</span></span><br><span class="line">        <span class="comment">// 然后再把当前线程的当前节点赋值给尾节点</span></span><br><span class="line">        <span class="comment">// 【注意】在多线程并发情况下，这里通过AtomicReference类能防止并发问题</span></span><br><span class="line">        <span class="comment">// 【注意】哪个线程先执行到这里就会先执行predNode.set(preNode);语句，因此构建了一条逻辑线程等待链</span></span><br><span class="line">        <span class="comment">// 这条链避免了线程饥饿现象发生</span></span><br><span class="line">        CLHNode preNode = tailNode.getAndSet(currNode);</span><br><span class="line">        <span class="comment">// 将刚获取的尾结点（前一线程的当前节点）赋给当前线程的前继节点ThreadLocal</span></span><br><span class="line">        <span class="comment">// 【思考】这句代码也可以去掉吗，如果去掉有影响吗？</span></span><br><span class="line">        predNode.set(preNode);</span><br><span class="line">        <span class="comment">// 【1】若前继节点的locked状态为false，则表示获取到了锁，不用自旋等待；</span></span><br><span class="line">        <span class="comment">// 【2】若前继节点的locked状态为true，则表示前一线程获取到了锁或者正在等待，自旋等待</span></span><br><span class="line">        <span class="keyword">while</span> (preNode.locked) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 没能获取到锁，进行自旋等待。。。&quot;</span>);</span><br><span class="line">            Thread.yield();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 能执行到这里，说明当前线程获取到了锁</span></span><br><span class="line">        System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 获取到了锁！！！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 释放锁</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取当前线程的当前节点</span></span><br><span class="line">        CLHNode node = curNode.get();</span><br><span class="line">        <span class="comment">// 进行解锁操作</span></span><br><span class="line">        <span class="comment">// 这里将locked至为false，此时执行了lock方法正在自旋等待的后继节点将会获取到锁</span></span><br><span class="line">        <span class="comment">// 【注意】而不是所有正在自旋等待的线程去并发竞争锁</span></span><br><span class="line">        node.locked = <span class="keyword">false</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 释放了锁！！！&quot;</span>);</span><br><span class="line">        <span class="comment">// 小伙伴们可以思考下，下面两句代码的作用是什么？？</span></span><br><span class="line">        CLHNode newCurNode = <span class="keyword">new</span> CLHNode();</span><br><span class="line">        curNode.set(newCurNode);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 【优化】能提高GC效率和节省内存空间，请思考：这是为什么？</span></span><br><span class="line">        <span class="comment">// curNode.set(predNode.get());</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CLH锁的初始化逻辑"><a href="#CLH锁的初始化逻辑" class="headerlink" title="CLH锁的初始化逻辑"></a>CLH锁的初始化逻辑</h3><p>通过上面代码，我们缕一缕CLH锁的初始化逻辑先：</p>
+<ol>
+<li>定义了一个<code>CLHNode</code>节点，里面有一个<code>locked</code>属性，表示线程线程是否获得锁，默认为<code>false</code>。<code>false</code>表示线程没有获取到锁或已经释放锁；<code>true</code>表示线程获取到了锁或者正在自旋等待。<blockquote>
+<p>注意，为了保证<code>locked</code>属性线程间可见，该属性被<code>volatile</code>修饰。</p>
+</blockquote>
+</li>
+<li><code>CLHLock</code>有三个重要的成员变量尾节点指针<code>tailNode</code>,当前线程的前继节点<code>preNode</code>和当前节点<code>curNode</code>。其中<code>tailNode</code>是<code>AtomicReference</code>类型，目的是为了保证尾节点的线程安全性；此外，<code>preNode</code>和<code>curNode</code>都是<code>ThreadLocal</code>类型即线程本地变量类型，用来保存每个线程的前继<code>CLHNode</code>和当前<code>CLHNode</code>节点。</li>
+<li>最重要的是我们新建一把<code>CLHLock</code>对象时，此时会执行构造函数里面的初始化逻辑。此时给尾指针<code>tailNode</code>和当前节点<code>curNode</code>初始化一个<code>locked</code>状态为<code>false</code>的<code>CLHNode</code>节点，此时前继节点<code>preNode</code>存储的是<code>null</code>。</li>
+</ol>
+<h3 id="CLH锁的加锁过程"><a href="#CLH锁的加锁过程" class="headerlink" title="CLH锁的加锁过程"></a>CLH锁的加锁过程</h3><p>我们再来看看CLH锁的加锁过程，下面再贴一遍加锁<code>lock</code>方法的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CLHLock.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取锁</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 取出当前线程ThreadLocal存储的当前节点，初始化值总是一个新建的CLHNode，locked状态为false。</span></span><br><span class="line">    CLHNode currNode = curNode.get();</span><br><span class="line">    <span class="comment">// 此时把lock状态置为true，表示一个有效状态，</span></span><br><span class="line">    <span class="comment">// 即获取到了锁或正在等待锁的状态</span></span><br><span class="line">    currNode.locked = <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">// 当一个线程到来时，总是将尾结点取出来赋值给当前线程的前继节点；</span></span><br><span class="line">    <span class="comment">// 然后再把当前线程的当前节点赋值给尾节点</span></span><br><span class="line">    <span class="comment">// 【注意】在多线程并发情况下，这里通过AtomicReference类能防止并发问题</span></span><br><span class="line">    <span class="comment">// 【注意】哪个线程先执行到这里就会先执行predNode.set(preNode);语句，因此构建了一条逻辑线程等待链</span></span><br><span class="line">    <span class="comment">// 这条链避免了线程饥饿现象发生</span></span><br><span class="line">    CLHNode preNode = tailNode.getAndSet(currNode);</span><br><span class="line">    <span class="comment">// 将刚获取的尾结点（前一线程的当前节点）赋给当前线程的前继节点ThreadLocal</span></span><br><span class="line">    <span class="comment">// 【思考】这句代码也可以去掉吗，如果去掉有影响吗？</span></span><br><span class="line">    predNode.set(preNode);</span><br><span class="line">    <span class="comment">// 【1】若前继节点的locked状态为false，则表示获取到了锁，不用自旋等待；</span></span><br><span class="line">    <span class="comment">// 【2】若前继节点的locked状态为true，则表示前一线程获取到了锁或者正在等待，自旋等待</span></span><br><span class="line">    <span class="keyword">while</span> (preNode.locked) &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 没能获取到锁，进行自旋等待。。。&quot;</span>);</span><br><span class="line">        Thread.yield();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 能执行到这里，说明当前线程获取到了锁</span></span><br><span class="line">    System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 获取到了锁！！！&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然代码的注释已经很详细，我们还是缕一缕线程加锁的过程：</p>
+<ol>
+<li>首先获得当前线程的当前节点<code>curNode</code>，这里每次获取的<code>CLHNode</code>节点的<code>locked</code>状态都为<code>false</code>；</li>
+<li>然后将当前<code>CLHNode</code>节点的<code>locked</code>状态赋值为<code>true</code>，表示当前线程的一种有效状态，即获取到了锁或正在等待锁的状态；</li>
+<li>因为尾指针<code>tailNode</code>的总是指向了前一个线程的<code>CLHNode</code>节点，因此这里利用尾指针<code>tailNode</code>取出前一个线程的<code>CLHNode</code>节点，然后赋值给当前线程的前继节点<code>predNode</code>，并且将尾指针重新指向最后一个节点即当前线程的当前<code>CLHNode</code>节点，以便下一个线程到来时使用；</li>
+<li>根据前继节点（前一个线程）的<code>locked</code>状态判断，若<code>locked</code>为<code>false</code>，则说明前一个线程释放了锁，当前线程即可获得锁，不用自旋等待；若前继节点的<code>locked</code>状态为<code>true</code>，则表示前一线程获取到了锁或者正在等待，自旋等待。</li>
+</ol>
+<p>为了更通俗易懂，我们用一个图来说明。</p>
+<p><em>假如有这么一个场景：</em>有四个并发线程同时启动执行lock操作，假如四个线程的实际执行顺序为：threadA&lt;–threadB&lt;–threadC&lt;–threadD</p>
+<p><em>第一步</em>，线程A过来，执行了lock操作，获得了锁，此时<code>locked</code>状态为<code>true</code>，如下图：</p>
+<p><img src="/images/40-1.png" alt="4.2-1"></p>
+<p><em>第二步</em>，线程B过来，执行了lock操作，由于线程A还未释放锁，此时自旋等待，<code>locked</code>状态也为<code>true</code>，如下图：</p>
+<p><img src="/images/40-2.png" alt="4.2-2"></p>
+<p>第三步，线程C过来，执行了lock操作，由于线程B处于自旋等待，此时线程C也自旋等待（因此CLH锁是公平锁），<code>locked</code>状态也为<code>true</code>，如下图：</p>
+<p><img src="/images/40-3.png" alt="4.2-3"></p>
+<p>第四步，线程D过来，执行了lock操作，由于线程C处于自旋等待，此时线程D也自旋等待，<code>locked</code>状态也为<code>true</code>，如下图：</p>
+<p><img src="/images/40-4.png" alt="4.2-4"></p>
+<p>这就是多个线程并发加锁的一个过程图解，当前线程只要判断前一线程的<code>locked</code>状态如果是<code>true</code>，那么则说明前一线程要么拿到了锁，要么也处于自旋等待状态，所以自己也要自旋等待。而尾指针<code>tailNode</code>总是指向最后一个线程的<code>CLHNode</code>节点。</p>
+<h3 id="CLH锁的释放锁过程"><a href="#CLH锁的释放锁过程" class="headerlink" title="CLH锁的释放锁过程"></a>CLH锁的释放锁过程</h3><p>前面用图解结合代码说明了CLH锁的加锁过程，那么，CLH锁的释放锁的过程又是怎样的呢？同样，我们先贴下释放锁的代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CLHLock.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 释放锁</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取当前线程的当前节点</span></span><br><span class="line">    CLHNode node = curNode.get();</span><br><span class="line">    <span class="comment">// 进行解锁操作</span></span><br><span class="line">    <span class="comment">// 这里将locked至为false，此时执行了lock方法正在自旋等待的后继节点将会获取到锁</span></span><br><span class="line">    <span class="comment">// 【注意】而不是所有正在自旋等待的线程去并发竞争锁</span></span><br><span class="line">    node.locked = <span class="keyword">false</span>;</span><br><span class="line">    System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 释放了锁！！！&quot;</span>);</span><br><span class="line">    <span class="comment">// 小伙伴们可以思考下，下面两句代码的作用是什么？？</span></span><br><span class="line">    CLHNode newCurNode = <span class="keyword">new</span> CLHNode();</span><br><span class="line">    curNode.set(newCurNode);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 【优化】能提高GC效率和节省内存空间，请思考：这是为什么？</span></span><br><span class="line">    <span class="comment">// curNode.set(predNode.get());</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到释放CLH锁的过程代码比加锁简单多了，下面同样缕一缕：</p>
+<ol>
+<li>首先从当前线程的线程本地变量中获取出当前<code>CLHNode</code>节点，同时这个<code>CLHNode</code>节点被后面一个线程的<code>preNode</code>变量指向着；</li>
+<li>然后将<code>locked</code>状态置为<code>false</code>即释放了锁；<blockquote>
+<p><em>注意</em>：<code>locked</code>因为被<code>volitile</code>关键字修饰，此时后面自旋等待的线程的局部变量<code>preNode.locked</code>也为<code>false</code>，因此后面自旋等待的线程结束<code>while</code>循环即结束自旋等待，此时也获取到了锁。这一步骤也在异步进行着。</p>
+</blockquote>
+</li>
+<li>然后给当前线程的表示当前节点的线程本地变量重新赋值为一个新的<code>CLHNode</code>。<blockquote>
+<p><em>思考</em>：这一步看上去是多余的，其实并不是。请思考下为什么这么做？我们后续会继续深入讲解。</p>
+</blockquote>
+</li>
+</ol>
+<p>我们还是用一个图来说说明CLH锁释放锁的场景，接着前面四个线程加锁的场景，假如这四个线程加锁后，线程A开始释放锁，此时线程B获取到锁，结束自旋等待，然后线程C和线程D仍然自旋等待，如下图：</p>
+<p><img src="/images/40-5.png" alt="4.3-1"></p>
+<p>以此类推，线程B释放锁的过程也跟上图类似，这里不再赘述。</p>
+<h3 id="同个线程加锁释放锁再次正常获取锁"><a href="#同个线程加锁释放锁再次正常获取锁" class="headerlink" title="同个线程加锁释放锁再次正常获取锁"></a>同个线程加锁释放锁再次正常获取锁</h3><p>在前面<em>4.3小节</em>讲到释放锁<code>unLock</code>方法中有下面两句代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CLHNode newCurNode = <span class="keyword">new</span> CLHNode();</span><br><span class="line">curNode.set(newCurNode);</span><br></pre></td></tr></table></figure>
+<p>这两句代码的作用是什么？这里先直接说结果：若没有这两句代码，若同个线程加锁释放锁后，然后再次执行加锁操作，这个线程就会陷入自旋等待的状态。这是为啥，可能有些下伙伴也没明白，劲越也是搞了蛮久才搞明白，嘿嘿。</p>
+<p>下面我们同样通过一步一图的形式来分析这两句代码的作用。假如有下面这样一个场景：线程A获取到了锁，然后释放锁，然后再次获取锁。</p>
+<p><em>第一步：</em> 线程A执行了lock操作，获取到了锁，如下图：</p>
+<p><img src="/images/40-6.png" alt="4.4-1"></p>
+<p>上图的加锁操作中，线程A的当前<code>CLHNode</code>节点的<code>locked</code>状态被置为<code>true</code>；然后<code>tailNode</code>指针指向了当前线程的当前节点；最后因为前继节点的<code>locked</code>状态为<code>false</code>，不用自旋等待，因此获得了锁。</p>
+<p><em>第二步：</em> 线程A执行了unLock操作，释放了锁，如下图：</p>
+<p><img src="/images/40-7.png" alt="4.4-2"></p>
+<p>上图的释放锁操作中，线程A的当前<code>CLHNode</code>节点的<code>locked</code>状态被置为<code>false</code>，表示释放了锁；然后新建了一个新的<code>CLHNode</code>节点<code>newCurNode</code>，线程A的当前节点线程本地变量值重新指向了<code>newCurNode</code>节点对象。</p>
+<p><em>第三步：</em> 线程A再次执行lock操作，重新获得锁，如下图：</p>
+<p><img src="/images/40-8.png" alt="4.4-3"></p>
+<p>上图的再次获取锁操作中，首先将线程A的当前<code>CLHNode</code>节点的<code>locked</code>状态置为<code>true</code>；然后首先通过<code>tailNode</code>尾指针获取到前继节点即第一，二步中的<code>curNode</code>对象，然后线程A的前继节点线程本地变量的值重新指向了重新指向了<code>curNode</code>对象；然后<code>tailNode</code>尾指针重新指向了新创建的<code>CLHNode</code>节点<code>newCurNode</code>对象。最后因为前继节点的<code>locked</code>状态为<code>false</code>，不用自旋等待，因此获得了锁。</p>
+<blockquote>
+<p><em>扩展：</em> 注意到以上图片的<code>preNode</code>对象此时没有任何引用，所以当下一次会被GC掉。前面是通过每次执行<code>unLock</code>操作都新建一个新的<code>CLHNode</code>节点对象<code>newCurNode</code>，然后让线程A的当前节点线程本地变量值重新指向<code>newCurNode</code>。因此这里完全不用重新创建新的<code>CLHNode</code>节点对象，可以通过<code>curNode.set(predNode.get());</code>这句代码进行优化，提高GC效率和节省内存空间。</p>
+</blockquote>
+<h3 id="考虑同个线程加锁释放锁再次获取锁异常的情况"><a href="#考虑同个线程加锁释放锁再次获取锁异常的情况" class="headerlink" title="考虑同个线程加锁释放锁再次获取锁异常的情况"></a>考虑同个线程加锁释放锁再次获取锁异常的情况</h3><p>现在我们把<code>unLock</code>方法的<code>CLHNode newCurNode = new CLHNode();</code>和<code>curNode.set(newCurNode);</code>这两句代码注释掉，变成了下面这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CLHLock.java</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unLock</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    CLHNode node = curNode.get();</span><br><span class="line">    node.locked = <span class="keyword">false</span>;</span><br><span class="line">    System.out.println(<span class="string">&quot;线程 &quot;</span> + Thread.currentThread().getName() + <span class="string">&quot; 释放了锁！！！&quot;</span>);</span><br><span class="line">    <span class="comment">/*CLHNode newCurNode = new CLHNode();</span></span><br><span class="line"><span class="comment">    curNode.set(newCurNode);*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么结果就是线程A通过加锁，释放锁后，再次获取锁时就会陷入自旋等待的状态，这又是为什么呢？我们下面来详细分析。</p>
+<p><em>第一步：</em> 线程A执行了lock操作，获取到了锁，如下图：</p>
+<p><img src="/images/40-9.png" alt="4.5-1"></p>
+<p>上图的加锁操作中，线程A的当前<code>CLHNode</code>节点的<code>locked</code>状态被置为<code>true</code>；然后<code>tailNode</code>指针指向了当前线程的当前节点；最后因为前继节点的<code>locked</code>状态为<code>false</code>，不用自旋等待，因此获得了锁。这一步没有什么异常。</p>
+<p><em>第二步：</em> 线程A执行了unLock操作，释放了锁，如下图：</p>
+<p><img src="/images/40-10.png" alt="4.5-2"></p>
+<p>现在已经把<code>unLock</code>方法的<code>CLHNode newCurNode = new CLHNode();</code>和<code>curNode.set(newCurNode);</code>这两句代码注释掉了，因此上图的变化就是线程A的当前<code>CLHNode</code>节点的<code>locked</code>状态置为<code>false</code>即可。</p>
+<p><em>第三步：</em> 线程A再次执行lock操作，此时会陷入一直自旋等待的状态，如下图：</p>
+<p><img src="/images/40-11.png" alt="4.5-3"></p>
+<p>通过上图对线程A再次获取锁的<code>lock</code>方法的每一句代码进行分析，得知虽然第二步中将线程A的当前<code>CLHNode</code>的<code>locked</code>状态置为<code>false</code>了，但是在第三步线程A再次获取锁的过程中，将当前<code>CLHNode</code>的<code>locked</code>状态又置为<code>true</code>了，且尾指针<code>tailNode</code>指向的依然还是线程A的当前当前<code>CLHNode</code>节点。又因为每次都是将尾指针<code>tailNode</code>指向的<code>CLHNode</code>节点取出来给当前线程的前继<code>CLHNode</code>节点，之后执行<code>while(predNode.locked) &#123;&#125;</code>语句时，此时因为<code>predNode.locked = true</code>，因此线程A就永远自旋等待了。</p>
+<h2 id="测试CLH锁"><a href="#测试CLH锁" class="headerlink" title="测试CLH锁"></a>测试CLH锁</h2><p>下面我们通过一个Demo来测试前面代码实现的CLH锁是否能正常工作，直接上测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CLHLockTest.java</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 测试 CLHLocke</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 定义一个静态成员变量 cnt，然后开 10 个线程跑起来，看能是否会有线程安全问题</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CLHLockTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> COUNT = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> CLHLock lock = <span class="keyword">new</span> CLHLock();</span><br><span class="line">        CountDownLatch latch = <span class="keyword">new</span> CountDownLatch(COUNT);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; COUNT; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    lock.lock();</span><br><span class="line">                    cnt++;</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    lock.unLock();</span><br><span class="line">                    latch.countDown();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;).start();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        latch.await();</span><br><span class="line">        System.out.println(<span class="string">&quot;cnt-----------&gt;&gt;&gt; &quot;</span> + cnt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面附运行结果截图：</p>
+<p><img src="/images/40-12.png" alt="result"></p>
+<blockquote>
+<p><em>PS：</em> 这里为了截图全面，因此只开了10个线程。经过劲越测试，开100个线程，1000个线程也不会存在线程安全问题。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>好了，前面我们通过多图详细说明了CLH锁的原理与实现，那么我们再对前面的知识进行一次小结：</p>
+<ol>
+<li>首先我们学习了自旋锁和互斥锁的概念与区别；</li>
+<li>然后我们学习了什么是CLH锁以及为什么要学习CLH锁；</li>
+<li>最后我们通过图示+代码实现的方式来学习CLH锁的原理，从而为学习后面的AQS打好坚实的基础。</li>
+</ol>
+<hr>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2021/08/10/CLHLock/" title="AQS 基础--多图详解 CLH 锁的原理与实现">http://yangsanity.me/2021/08/10/CLHLock/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AQS/" rel="tag"># AQS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/07/27/FutureTask/" rel="prev" title="FutureTask 源码解析">
+      <i class="fa fa-chevron-left"></i> FutureTask 源码解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/08/12/InterruptPark/" rel="next" title="探究 interrupt() 和 park() 的影响">
+      探究 interrupt() 和 park() 的影响 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%87%AA%E6%97%8B%E9%94%81%E5%92%8C%E4%BA%92%E6%96%A5%E9%94%81%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是自旋锁和互斥锁？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFCLH%E9%94%81%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">什么是CLH锁？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AD%A6%E4%B9%A0CLH%E9%94%81%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">为什么要学习CLH锁？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CLH%E9%94%81%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.</span> <span class="nav-text">CLH锁详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#CLH%E9%94%81%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E9%80%BB%E8%BE%91"><span class="nav-number">4.1.</span> <span class="nav-text">CLH锁的初始化逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CLH%E9%94%81%E7%9A%84%E5%8A%A0%E9%94%81%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">CLH锁的加锁过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CLH%E9%94%81%E7%9A%84%E9%87%8A%E6%94%BE%E9%94%81%E8%BF%87%E7%A8%8B"><span class="nav-number">4.3.</span> <span class="nav-text">CLH锁的释放锁过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%8A%A0%E9%94%81%E9%87%8A%E6%94%BE%E9%94%81%E5%86%8D%E6%AC%A1%E6%AD%A3%E5%B8%B8%E8%8E%B7%E5%8F%96%E9%94%81"><span class="nav-number">4.4.</span> <span class="nav-text">同个线程加锁释放锁再次正常获取锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%80%83%E8%99%91%E5%90%8C%E4%B8%AA%E7%BA%BF%E7%A8%8B%E5%8A%A0%E9%94%81%E9%87%8A%E6%94%BE%E9%94%81%E5%86%8D%E6%AC%A1%E8%8E%B7%E5%8F%96%E9%94%81%E5%BC%82%E5%B8%B8%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">4.5.</span> <span class="nav-text">考虑同个线程加锁释放锁再次获取锁异常的情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95CLH%E9%94%81"><span class="nav-number">5.</span> <span class="nav-text">测试CLH锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jjiey"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">jjiey</p>
+  <div class="site-description" itemprop="description">yangsanity's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jjiey" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jjiey" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yangsanityj@gmail.com" title="E-Mail → mailto:yangsanityj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jjiey</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"PityXmjzJtMbTLBbMscBI3aW-gzGzoHsz","app_key":"eSF2TQcOFbaoY3ntEUN5JTew","server_url":"https://pityxmjz.lc-cn-n1-shared.com","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jjiey.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2021/08/10/CLHLock/";
+    this.page.identifier = "2021/08/10/CLHLock/";
+    this.page.title = "AQS 基础--多图详解 CLH 锁的原理与实现";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

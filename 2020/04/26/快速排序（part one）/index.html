@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-128x128.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="快速排序（quick sort）又称分区交换排序（partition-exchange sort），简称快排。它的鼎鼎大名，在排序界无人不知，无人不晓，重要性更是无需多言。毕竟敢叫这么直白的名字，那“实力”肯定也是没话讲的。 快排还有一个响亮的 title，它被称为20世纪对世界影响最大的算法之一。当然，它必须也是面试中算法的一个高频考察点。（必须要再次提到面试，原因你懂的） 我猜你可能知道单路快">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速排序 part one">
+<meta property="og:url" content="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/index.html">
+<meta property="og:site_name" content="Yangsanity&#39;s Blog">
+<meta property="og:description" content="快速排序（quick sort）又称分区交换排序（partition-exchange sort），简称快排。它的鼎鼎大名，在排序界无人不知，无人不晓，重要性更是无需多言。毕竟敢叫这么直白的名字，那“实力”肯定也是没话讲的。 快排还有一个响亮的 title，它被称为20世纪对世界影响最大的算法之一。当然，它必须也是面试中算法的一个高频考察点。（必须要再次提到面试，原因你懂的） 我猜你可能知道单路快">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yangsanity.me/images/6-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-2.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-3.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-4.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-5.png">
+<meta property="og:image" content="http://yangsanity.me/images/6-6.gif">
+<meta property="article:published_time" content="2020-04-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-07T02:09:59.743Z">
+<meta property="article:author" content="jjiey">
+<meta property="article:tag" content="sorting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yangsanity.me/images/6-1.png">
+
+<link rel="canonical" href="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>快速排序 part one | Yangsanity's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Yangsanity's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yangsanity's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life was like a box of chocolates</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">44</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/jjiey" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          快速排序 part one
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-26T00:00:00+08:00">2020-04-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="快速排序 part one" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/26/快速排序（part one）/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>快速排序（quick sort）又称分区交换排序（partition-exchange sort），简称快排。它的鼎鼎大名，在排序界无人不知，无人不晓，重要性更是无需多言。毕竟敢叫这么直白的名字，那“实力”肯定也是没话讲的。</p>
+<p>快排还有一个响亮的 title，它被称为20世纪对世界影响最大的算法之一。当然，它必须也是面试中算法的一个高频考察点。（必须要再次提到面试，原因你懂的）</p>
+<p>我猜你可能知道单路快排，那么你知道还有双路快排吗？甚至三路快排吗？知道如何优化快排吗？废话不多说，赶快上车。</p>
+<h2 id="快速排序思想"><a href="#快速排序思想" class="headerlink" title="快速排序思想"></a>快速排序思想</h2><p>和归并排序一样，快排也是使用了分治法（Divide and Conquer）的思想，把一个待排序数组以基准值为界，分为两个子数组，左边都比基准值小，右边都比基准值大，然后再递归地对两个子数组进行排序。</p>
+<p>快排大概可以分为三个步骤：</p>
+<ol>
+<li><p>从当前待排序的数组中选择一个元素作为基准值（pivot）；</p>
+</li>
+<li><p>把基准值移动到当数组排好序时它应该处于的正确位置上，并且使得数组中所有比基准值小的元素放在基准值左边，所有比基准值大的元素放在基准值右边（与基准值相等的数可以到任何一边）。这个操作一般称为 partition；</p>
+</li>
+<li><p>对基准数左边数组和右边数组再分别继续使用相同的思路进行排序，逐渐递归下去，直到完成整个排序过程。</p>
+</li>
+</ol>
+<h2 id="单路快速排序思路"><a href="#单路快速排序思路" class="headerlink" title="单路快速排序思路"></a>单路快速排序思路</h2><p>接下来用个简单的demo来演示一下整个过程吧。这里先规定直接简单选取数组第一个元素作为基准值，待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+</table>
+
+<p>首先我们必须定义几个变量来辅助我们理解整个过程。如下图，定义 pivot 为基准值；i 为当前正在遍历的元素；j 为小于基准值的区域边界。</p>
+<p><img src="/images/6-1.png"></p>
+<p>在整个遍历过程中，要一直保证 [left + 1, j] 区间的元素都是小于基准值的，[j + 1, i - 1] 区间的元素都是大于等于基准值的（这里把等于基准值的元素放到了 [j + 1, i - 1] 区间中，当然也可以放到 [left + 1, j] 区间中）。所以在遍历的过程中，只有当 i 当前指向的值小于 pivot 时，我们才需要把当前 i 位置的值和 j + 1 位置的值进行交换；当遍历完成时，再把 pivot 和 j 位置的值进行交换即可。</p>
+<p>第一轮 partition 的详细过程为：</p>
+<p>（1）8 &gt; 5，保持不变；2 &lt; 5，i 和 j + 1 位置的值进行交换，即 2 和 8 进行交换<br><img src="/images/6-2.png"><br>（2）4 &lt; 5，i 和 j + 1 位置的值进行交换，即 4 和 8 进行交换<br><img src="/images/6-3.png"><br>（3）7 &gt; 5，保持不变；9 &gt; 5，保持不变；1 &lt; 5，i 和 j + 1 位置的值进行交换，即 1 和 8 进行交换<br><img src="/images/6-4.png"><br>（4）6 &gt; 5，保持不变；3 &lt; 5，i 和 j + 1 位置的值进行交换，即 3 和 7 进行交换<br><img src="/images/6-5.png"><br>（5）此时，遍历完成，把 pivot 和 j 位置的值进行交换，即 5 和 3 进行交换。此时，数组中所有比 5 小的元素都在它的左边，所有比 5 大的元素都在它的右边</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">9</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">8</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">6</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">7</td>
+</tr>
+</table>
+（6）接下来，对 5 左右两边的数组再分别继续使用相同的方法进行排序，直到完成整个排序过程。
+
+<p>注：上面是从左到右使用单路快排的思路，为了开拓思维，当然也可以使用从右到左单路快排的思路。</p>
+<h2 id="单路快速排序代码"><a href="#单路快速排序代码" class="headerlink" title="单路快速排序代码"></a>单路快速排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort单路快排</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">  quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用单路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (left &gt;= right) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">  <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">  quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">  <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">  quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，从左往右单路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// pivot，i，j的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> pivot = data[left], j = left, temp;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span> ; i &lt;= right; i ++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">          j++;</span><br><span class="line">          <span class="comment">// swap i and j + 1</span></span><br><span class="line">          temp = data[j];</span><br><span class="line">          data[j] = data[i];</span><br><span class="line">          data[i] = temp;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// swap left and j</span></span><br><span class="line">  data[left] = data[j];</span><br><span class="line">  data[j] = pivot;</span><br><span class="line">  <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单路快速排序优化"><a href="#单路快速排序优化" class="headerlink" title="单路快速排序优化"></a>单路快速排序优化</h2><p>首先第一个优化相信大家看了上一篇归并排序优化的话肯定能想到，那就是当递归到数据量比较小时，转而使用插入排序提高性能。</p>
+<p>除此之外，其实这里还有一个非常重要的问题：如果当待排序数组是近乎有序或者完全有序的情况下，会发生什么事情？</p>
+<p>大家可以在自己的 ide 上测试一下，会发现，当随着数据量增大，快排会越来越慢。这是为什么呢？</p>
+<p>我们对比着归并排序来分析一下。归并排序和快速排序都是使用的分治法的思想，都是要把待排序数组一分为二，不同的是，归并排序能保证每次都是把数组平均一分为二，而快排是以基准值一分为二，所以一般情况下，快排分出来的子数组都是一大一小的。</p>
+<p>所以对于两者递归生成的递归树，归并排序的平衡度要更好，并且可以保证递归树的高度为logn，而快排生成的递归树高度非常有可能要比logn高。最差情况就是当整个待排序数组本来就近乎有序或者完全有序时，此时快排的时间复杂度会退化到最坏的时间复杂度 O(n^2)。</p>
+<p>一句话概括造成这种情况的原因，就是基准值选的不够好。不能简单粗暴的直接选数组中第一个值作为基准值，我们希望的最好情况是能够选择数组排好序时中间的元素作为基准值。可是这个值又不好准确的定位，其实，我们只需要在数组中随机选择一个元素即可。</p>
+<p>在这种情况下，快排的时间复杂度退化为 O(n^2) 的可能性是非常非常低的，几乎为 0。</p>
+<p>具体在代码优化实现上，我们只需要在上边 partition 代码开始时加一行代码，把 left 和随机位置的值进行交换即可，后边的代码都不用动。</p>
+<h2 id="单路快速排序优化代码"><a href="#单路快速排序优化代码" class="headerlink" title="单路快速排序优化代码"></a>单路快速排序优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort单路快排优化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">  quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用单路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 优化1：对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">    <span class="keyword">if</span>(right - left &lt;= <span class="number">15</span>)&#123;</span><br><span class="line">        insertSort(data, left, right);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">    <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">    quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">    quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，从左往右单路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 优化2：随机在 data[left...right] 范围中, 选择一个位置作为基准值</span></span><br><span class="line">    <span class="keyword">int</span> randomIndex = (<span class="keyword">int</span>) (Math.random() * (right - left + <span class="number">1</span>)) + left;</span><br><span class="line">    <span class="keyword">int</span> temp = data[left];</span><br><span class="line">    data[left] = data[randomIndex];</span><br><span class="line">    data[randomIndex] = temp;</span><br><span class="line">    <span class="comment">// 下面逻辑完全不变</span></span><br><span class="line">    <span class="comment">// pivot，i，j的定义在上边已经介绍</span></span><br><span class="line">    <span class="keyword">int</span> pivot = data[left], j = left;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span> ; i &lt;= right; i ++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">            j++;</span><br><span class="line">            <span class="comment">// swap i and j + 1</span></span><br><span class="line">            temp = data[j];</span><br><span class="line">            data[j] = data[i];</span><br><span class="line">            data[i] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// swap left and j</span></span><br><span class="line">    data[left] = data[j];</span><br><span class="line">    data[j] = pivot;</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 为了方便大家观看，这个插入排序的代码是直接从上一篇中拿过来的</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单路快速排序总结"><a href="#单路快速排序总结" class="headerlink" title="单路快速排序总结"></a>单路快速排序总结</h2><p>到此为止，我们的快排已经能够完美解决随机数组和几乎有序数组的排序问题。</p>
+<p>可以看到，为了避免快排的时间复杂度退化为最坏的时间复杂度 O(n^2)，我们实际上是用随机函数来编写了一个随机化算法（randomized algorithm）。也就是说，我们不能保证我们的算法是一定非常快的，但是可以保证我们的算法在非常非常高的概率下都能非常快。</p>
+<p><img src="/images/6-6.gif"></p>
+<h2 id="为什么还有双路、三路快排？"><a href="#为什么还有双路、三路快排？" class="headerlink" title="为什么还有双路、三路快排？"></a>为什么还有双路、三路快排？</h2><p>我们的代码完美了吗？当然还不够，因为还是忽略了一种情况：如果当待排序数组有非常多的重复值时，会发生什么事情？</p>
+<p>大家仍然可以在自己的 ide 上测试一下，会发现，当随着数据量增大，快排依然会越来越慢，说明此时快排又退化到了最坏时间复杂度 O(n^2)。这又是为什么呢？</p>
+<p>当然小标题已经暴露了解决方案，大家可以自己先想想，分析一下。</p>
+<p>因为已经写的够长啦，大家可以先消化一下，欲知后事如何且听下回分解…</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/" title="快速排序 part one">http://yangsanity.me/2020/04/26/快速排序（part one）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sorting/" rel="tag"># sorting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" rel="prev" title="归并排序">
+      <i class="fa fa-chevron-left"></i> 归并排序
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/03/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20two%EF%BC%89/" rel="next" title="快速排序 part two">
+      快速排序 part two <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">快速排序思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%B7%AF%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">单路快速排序思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%B7%AF%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">单路快速排序代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%B7%AF%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">单路快速排序优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%B7%AF%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">单路快速排序优化代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E8%B7%AF%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">单路快速排序总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E6%9C%89%E5%8F%8C%E8%B7%AF%E3%80%81%E4%B8%89%E8%B7%AF%E5%BF%AB%E6%8E%92%EF%BC%9F"><span class="nav-number">7.</span> <span class="nav-text">为什么还有双路、三路快排？</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jjiey"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">jjiey</p>
+  <div class="site-description" itemprop="description">yangsanity's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jjiey" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jjiey" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yangsanityj@gmail.com" title="E-Mail → mailto:yangsanityj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jjiey</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"PityXmjzJtMbTLBbMscBI3aW-gzGzoHsz","app_key":"eSF2TQcOFbaoY3ntEUN5JTew","server_url":"https://pityxmjz.lc-cn-n1-shared.com","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jjiey.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/";
+    this.page.identifier = "2020/04/26/快速排序（part one）/";
+    this.page.title = "快速排序 part one";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

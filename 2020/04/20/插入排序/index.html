@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-128x128.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="不吹不黑，不捧不踩，插入排序（insertion sort）是真的很重要。你不会到现在还以为O(n^2)级别的排序算法都一无是处吧？如果是的话，希望通过本文能够让你对这个观念有个新的认识。 插入排序思想插入排序的思想其实也很简单，我先从一个简单的例子说起。还记得本文的封面图是什么吗？嗯，扑克牌。大家肯定都玩过扑克牌，我们从牌桌上一张一张拿起扑克牌，然后在手里将扑克牌按照大小顺序插入到合适的位置，其">
+<meta property="og:type" content="article">
+<meta property="og:title" content="插入排序">
+<meta property="og:url" content="http://yangsanity.me/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/index.html">
+<meta property="og:site_name" content="Yangsanity&#39;s Blog">
+<meta property="og:description" content="不吹不黑，不捧不踩，插入排序（insertion sort）是真的很重要。你不会到现在还以为O(n^2)级别的排序算法都一无是处吧？如果是的话，希望通过本文能够让你对这个观念有个新的认识。 插入排序思想插入排序的思想其实也很简单，我先从一个简单的例子说起。还记得本文的封面图是什么吗？嗯，扑克牌。大家肯定都玩过扑克牌，我们从牌桌上一张一张拿起扑克牌，然后在手里将扑克牌按照大小顺序插入到合适的位置，其">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yangsanity.me/images/3-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/3-2.gif">
+<meta property="og:image" content="http://yangsanity.me/images/3-3.gif">
+<meta property="article:published_time" content="2020-04-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-07T02:09:59.743Z">
+<meta property="article:author" content="jjiey">
+<meta property="article:tag" content="sorting">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yangsanity.me/images/3-1.png">
+
+<link rel="canonical" href="http://yangsanity.me/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>插入排序 | Yangsanity's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Yangsanity's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yangsanity's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life was like a box of chocolates</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">44</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/jjiey" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          插入排序
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-20T00:00:00+08:00">2020-04-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" class="post-meta-item leancloud_visitors" data-flag-title="插入排序" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/20/插入排序/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>不吹不黑，不捧不踩，插入排序（insertion sort）是真的很重要。你不会到现在还以为O(n^2)级别的排序算法都一无是处吧？如果是的话，希望通过本文能够让你对这个观念有个新的认识。</p>
+<h2 id="插入排序思想"><a href="#插入排序思想" class="headerlink" title="插入排序思想"></a>插入排序思想</h2><p>插入排序的思想其实也很简单，我先从一个简单的例子说起。还记得本文的封面图是什么吗？嗯，扑克牌。大家肯定都玩过扑克牌，我们从牌桌上一张一张拿起扑克牌，然后在手里将扑克牌按照大小顺序插入到合适的位置，其实这整个过程大体上就是插入排序的思想。</p>
+<p><img src="/images/3-1.png"></p>
+<p>再正式点的描述一下插入排序的思想，就是<strong>通过构建有序序列，对于未排序的数据，在已排序序列中从后向前扫描，找到相应位置并插入</strong>。</p>
+<p><img src="/images/3-2.gif" alt="使用插入排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
+<p>接下来就用个简单的demo来演示一下整个过程吧。待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+</tr>
+</table>
+
+<p>比较和交换的详细过程为：<br>（1）从数组第二个位置向前寻找插入的位置（为什么不从第一个位置开始？因为第一个数字自己本身可以认为就是有序的），5 &gt; 2，保持不变<br>（2）从数组第三个位置向前寻找插入的位置，4 &lt; 5，交换位置；4 &gt; 2，保持不变</p>
+<table>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+</tr>
+</table>
+
+<p>（3）从数组第四个位置向前寻找插入的位置，8 &gt; 5，保持不变<br>（4）从数组第五个位置开始向前寻找插入的位置，7 &lt; 8，交换位置；7 &gt; 5，保持不变</p>
+<table>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">7</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+</tr>
+</table>
+（5）从数组第六个位置向前寻找插入的位置，3 < 8，交换位置；3 < 7，交换位置；3 < 5，交换位置；3 < 4，交换位置；3 > 2，保持不变
+<table>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+</tr>
+</table>
+（6）从数组第七个位置向前寻找插入的位置，1 < 8，交换位置；1 < 7，交换位置；1 < 5，交换位置；1 < 4，交换位置；1 < 3，交换位置；1 < 2，交换位置
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">6</td>
+</tr>
+</table>
+（7）从数组第八个位置向前寻找插入的位置，6 < 8，交换位置；6 < 7，交换位置；6 > 5，保持不变
+<table>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">6</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">8</td>
+</tr>
+</table>
+至此，整个插入排序过程结束。
+
+<h2 id="插入排序代码"><a href="#插入排序代码" class="headerlink" title="插入排序代码"></a>插入排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * insertionSort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">int</span>[] insertionSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="comment">// swap 时用到的临时变量</span></span><br><span class="line">  <span class="keyword">int</span> temp;</span><br><span class="line">  <span class="comment">// 从第 1 个元素开始遍历，因为第 0 个元素自己本身就是有序的</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; data.length; i++) &#123;</span><br><span class="line">    <span class="comment">// 从第 j 个位置开始往前遍历，寻找插入位置</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; data[j] &lt; data[j - <span class="number">1</span>]; j--) &#123;</span><br><span class="line">      <span class="comment">// swap</span></span><br><span class="line">      temp = data[j];</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">      data[j - <span class="number">1</span>] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="插入排序优化"><a href="#插入排序优化" class="headerlink" title="插入排序优化"></a>插入排序优化</h2><p>比较上面版本的插入排序代码和上一篇介绍的选择排序代码，我们会发现它们两个都是外循环嵌套内循环，而且插入排序在内循环中是会提前结束的，所以按理说插入排序应该更快一些。</p>
+<p>其实不然，在某些情况下，上面版本的插入排序是比选择排序慢的。这是为什么呢？大家不要忽略了，虽然插入排序在内循环中会提前结束，但是插入排序还有交换元素的代价，这个操作可比比较元素大小还要耗时。</p>
+<p>所以，我们优化插入排序的思路也出来了，我们的目的就是要让插入排序也在内循环中只交换一次。</p>
+<p>具体在代码优化实现上，我们需要在内循环中，先把要寻找正确位置的元素记录下来，然后总是将较大的元素向右移动，直到找到正确的位置然后插入该元素即可。具体思路如下图所示：</p>
+<p><img src="/images/3-3.gif" alt="（picture from Wikipedia）"></p>
+<h2 id="插入排序优化代码"><a href="#插入排序优化代码" class="headerlink" title="插入排序优化代码"></a>插入排序优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * insertionSort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] insertionSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="comment">// e 为我们要为其寻找插入位置的元素；j 为元素 e 最终应该插入的位置</span></span><br><span class="line">  <span class="keyword">int</span> e, j;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; data.length; i++) &#123;</span><br><span class="line">    e = data[i];</span><br><span class="line">    <span class="comment">// 在寻找 e 插入位置的过程中，较大的元素向右移动</span></span><br><span class="line">    <span class="keyword">for</span> (j = i; j &gt; <span class="number">0</span> &amp;&amp; data[j - <span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将 e 插入正确的位置</span></span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="插入排序再优化"><a href="#插入排序再优化" class="headerlink" title="插入排序再优化"></a>插入排序再优化</h2><p>实际上，插入排序还可以再优化。熟悉二分查找的同学肯定就想到了，因为数组前面都是有序区，所以可以在有序区中采用二分查找来减少比较的次数，从而加快速度。</p>
+<p>不过，这种算法其实可以认为是插入排序的一个变种，也被称为<strong>二分查找插入排序</strong>。</p>
+<h2 id="插入排序再优化代码"><a href="#插入排序再优化代码" class="headerlink" title="插入排序再优化代码"></a>插入排序再优化代码</h2><p>这里直接给出代码，不熟悉二分查找的同学可以预习一下，或者在后面的文章中我会再说说二分查找算法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * insertionSort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 排序后的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] insertionSort(<span class="keyword">int</span>[] data) &#123;</span><br><span class="line">  <span class="keyword">int</span> e, left, right, mid;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; data.length; i++) &#123;</span><br><span class="line">    e = data[i];</span><br><span class="line">    left = <span class="number">0</span>;</span><br><span class="line">    right = i - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (left &lt;= right) &#123;</span><br><span class="line">      <span class="comment">// 大家可以思考一下这里计算 mid 为什么不用 (left + right) / 2 ？</span></span><br><span class="line">      <span class="comment">// 其实是为了防止溢出，这里也是以前 jdk 底层实现二分查找的一个 bug，读者可以体会一下</span></span><br><span class="line">      mid = left + ((right - left) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">      <span class="keyword">if</span> (data[mid] &gt; e) &#123;</span><br><span class="line">        right = mid - <span class="number">1</span>;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 元素相同时，插入在后面的位置</span></span><br><span class="line">        left = mid + <span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将插入位置后面的元素都后移一位</span></span><br><span class="line">    System.arraycopy(data, left, data, left + <span class="number">1</span>, i - left);</span><br><span class="line">    <span class="comment">// 插入元素</span></span><br><span class="line">    data[left] = e;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="复杂度和稳定性分析"><a href="#复杂度和稳定性分析" class="headerlink" title="复杂度和稳定性分析"></a>复杂度和稳定性分析</h2><ol>
+<li>时间复杂度</li>
+</ol>
+<ul>
+<li><p>最优时间复杂度：O(n)</p>
+<ul>
+<li>当用优化后的插入排序代码进行排序时，如果待排序数组本来就是有序的，那么在内循环中，每次比较时都会发现当前元素的位置就是它在数组中的正确位置，直接结束内循环进入下一次循环。假定待排序数组长度为 n，那么最优时间复杂度即为 O(n)。</li>
+</ul>
+</li>
+<li><p>最坏时间复杂度：O(n^2)</p>
+</li>
+<li><p>平均时间复杂度：O(n^2)</p>
+</li>
+</ul>
+<ol start="2">
+<li>空间复杂度：O(1)</li>
+</ol>
+<ul>
+<li>整个过程都是原地排序，并没有用到其它辅助的空间。</li>
+</ul>
+<ol start="3">
+<li>插入排序是一种稳定排序。</li>
+</ol>
+<h2 id="深入理解插入排序"><a href="#深入理解插入排序" class="headerlink" title="深入理解插入排序"></a>深入理解插入排序</h2><h3 id="插入排序-vs-选择排序"><a href="#插入排序-vs-选择排序" class="headerlink" title="插入排序 vs 选择排序"></a>插入排序 vs 选择排序</h3><p>插入排序和选择排序都属于O(n^2)级别的排序算法，两者的最大区别是：对于内循环，插入排序可以提前结束，而选择排序必须让内外层循环都完全执行完成。所以选择排序在任何情况下都是非常慢的。如果对选择排序的思想有点模糊的话，可以点击文章的底部链接再复习一下。</p>
+<h3 id="插入排序的重要性质"><a href="#插入排序的重要性质" class="headerlink" title="插入排序的重要性质"></a>插入排序的重要性质</h3><p>除了可以提前终止内循环外，插入排序还有一个非常重要的性质：在数组近乎有序的情况下，它的性能会非常高，甚至比后面要介绍的O(n * logn)级别的排序算法还要快。</p>
+<p>正是因为这个性质，插入排序不仅可以在更加复杂的排序算法中作为一个子过程来优化（在后面说到<em>归并排序</em>和<em>快速排序</em>优化时会用到），而且还具有非常重要的实际意义。</p>
+<p>很多时候，在实际应用中，我们处理的真实数据就是近乎有序的。比如日志，按理来说日志都是有序的，但是在生成日志时有可能因为某些错误或程序运行时间过长等原因，导致有几条无序的日志，这时如果使用插入排序来处理，性能会更好。</p>
+<h3 id="插入排序的引申"><a href="#插入排序的引申" class="headerlink" title="插入排序的引申"></a>插入排序的引申</h3><p>通过插入排序算法还可以引申出另一个重要的排序算法，希尔排序（shell sort），在后面的文章中也会说到。</p>
+<p>最后一问，你还认为O(n^2)级别的排序算法都一无是处吗？</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/" title="插入排序">http://yangsanity.me/2020/04/20/插入排序/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sorting/" rel="tag"># sorting</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/19/%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F/" rel="prev" title="选择排序">
+      <i class="fa fa-chevron-left"></i> 选择排序
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/21/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F/" rel="next" title="希尔排序">
+      希尔排序 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">插入排序思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E4%BB%A3%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">插入排序代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">插入排序优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">插入排序优化代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E5%86%8D%E4%BC%98%E5%8C%96"><span class="nav-number">5.</span> <span class="nav-text">插入排序再优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E5%86%8D%E4%BC%98%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-number">6.</span> <span class="nav-text">插入排序再优化代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E5%BA%A6%E5%92%8C%E7%A8%B3%E5%AE%9A%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">7.</span> <span class="nav-text">复杂度和稳定性分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F"><span class="nav-number">8.</span> <span class="nav-text">深入理解插入排序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F-vs-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F"><span class="nav-number">8.1.</span> <span class="nav-text">插入排序 vs 选择排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7%E8%B4%A8"><span class="nav-number">8.2.</span> <span class="nav-text">插入排序的重要性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F%E7%9A%84%E5%BC%95%E7%94%B3"><span class="nav-number">8.3.</span> <span class="nav-text">插入排序的引申</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jjiey"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">jjiey</p>
+  <div class="site-description" itemprop="description">yangsanity's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jjiey" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jjiey" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yangsanityj@gmail.com" title="E-Mail → mailto:yangsanityj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jjiey</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"PityXmjzJtMbTLBbMscBI3aW-gzGzoHsz","app_key":"eSF2TQcOFbaoY3ntEUN5JTew","server_url":"https://pityxmjz.lc-cn-n1-shared.com","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jjiey.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2020/04/20/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F/";
+    this.page.identifier = "2020/04/20/插入排序/";
+    this.page.title = "插入排序";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon-128x128.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/favicon-128x128.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yangsanity.me","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"disqus","storage":true,"lazyload":false,"nav":{"disqus":{"text":"Load Disqus","order":-1}},"activeClass":"disqus"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="IEEE 754（IEEE二进制浮点数算术标准）是 20 世纪 80 年代以来使用最广泛的浮点数运算标准，被许多 CPU 与浮点运算器所采用。 在上世纪六、七十年代，各家计算机公司的各个型号计算机，有着千差万别的浮点数表示，这给数据交换、计算机协同工作造成了极大不便。 在 1980 年，英特尔公司就推出了单片的 8087 浮点数协处理器，其浮点数表示法及定义的运算具有足够的合理性、先进性，被 IE">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是 IEEE 754">
+<meta property="og:url" content="http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/index.html">
+<meta property="og:site_name" content="Yangsanity&#39;s Blog">
+<meta property="og:description" content="IEEE 754（IEEE二进制浮点数算术标准）是 20 世纪 80 年代以来使用最广泛的浮点数运算标准，被许多 CPU 与浮点运算器所采用。 在上世纪六、七十年代，各家计算机公司的各个型号计算机，有着千差万别的浮点数表示，这给数据交换、计算机协同工作造成了极大不便。 在 1980 年，英特尔公司就推出了单片的 8087 浮点数协处理器，其浮点数表示法及定义的运算具有足够的合理性、先进性，被 IE">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yangsanity.me/images/20-1.png">
+<meta property="og:image" content="http://yangsanity.me/images/20-2.png">
+<meta property="og:image" content="http://yangsanity.me/images/20-3.png">
+<meta property="article:published_time" content="2020-08-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-07T02:09:59.747Z">
+<meta property="article:author" content="jjiey">
+<meta property="article:tag" content="basics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yangsanity.me/images/20-1.png">
+
+<link rel="canonical" href="http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>什么是 IEEE 754 | Yangsanity's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Yangsanity's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yangsanity's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Life was like a box of chocolates</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">10</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">44</span></a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-fw fa-calendar"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/jjiey" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          什么是 IEEE 754
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-08-20T00:00:00+08:00">2020-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" class="post-meta-item leancloud_visitors" data-flag-title="什么是 IEEE 754" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/20/什么是 IEEE 754/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>IEEE 754（IEEE二进制浮点数算术标准）</strong>是 20 世纪 80 年代以来使用最广泛的浮点数运算标准，被许多 CPU 与浮点运算器所采用。</p>
+<p>在上世纪六、七十年代，各家计算机公司的各个型号计算机，有着千差万别的浮点数表示，这给数据交换、计算机协同工作造成了极大不便。</p>
+<p>在 1980 年，英特尔公司就推出了单片的 8087 浮点数协处理器，其浮点数表示法及定义的运算具有足够的合理性、先进性，被 IEEE 采用作为浮点数的标准，于 1985 年发布。因此第一个标准就是 IEEE 754-1985。</p>
+<h2 id="科学计数法"><a href="#科学计数法" class="headerlink" title="科学计数法"></a>科学计数法</h2><p>先来说说科学计数法。科学计数法大家肯定都不陌生，它是一种数字的表示法，最早由阿基米德提出。在科学记数法中，一个数被写成一个实数 a 与一个 10 的 n 次幂的积的形式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value &#x3D; a * 10ⁿ</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>n 必须是一个整数</li>
+<li>1 ≤ |a| &lt; 10（如果 |a| 是一个小于 1 的小数，或大于等于 10 的数，都可以通过改变 n 来表示）</li>
+<li>a 是一个实数，称为有效数或尾数(mantissa)</li>
+</ul>
+<p>科学计数法的优点是：当需要表示非常大或非常小的数时，如果用一般的方法，要将一个数的所有位数都写出来，很难直接明确知道它的大小，还会浪费很多空间。如果使用科学记数法来表示，一个数的数量级、精确度和数值都会非常直观。</p>
+<p>比如，0.00000000000000000000000167262158 的科学计数法表示为 1.67262158 * 10⁻²⁴；1898130000000000000000000000 的科学计数法表示为 1.89813 * 10²⁷。</p>
+<p>为什么要先说科学计数法呢？因为 IEEE 754 标准的表示方法几乎就是二进制的科学计数法。</p>
+<h2 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h2><p>IEEE 754 规定了四种表示浮点数值的方式：单精确度（32位）、双精确度（64位）、延伸单精确度（43比特以上，很少使用）与延伸双精确度（79比特以上，通常以80位实现）。</p>
+<p>本文主要的研究对象是单精确度浮点数（32位）。其他精度，比如双精确度浮点数（64位），其和单精确度其实是大同小异的。</p>
+<p>二进制浮点数的表示如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value &#x3D; sign * exponent * fraction</span><br></pre></td></tr></table></figure>
+<p>其中</p>
+<ul>
+<li>sign(sign bit)：符号位</li>
+<li>exponent(exponent bias)：指数偏移值</li>
+<li>fraction：分数值</li>
+</ul>
+<p>二进制浮点数的组成如下图：</p>
+<p><img src="/images/20-1.png" alt="IEEE 754浮点数的三个域（picture from Wikipedia）"></p>
+<p>对照上图，单精确度浮点数（32位）表示如下：</p>
+<p><img src="/images/20-2.png" alt="（picture from Wikipedia）"></p>
+<p>双精确度浮点数（64位）表示如下：</p>
+<p><img src="/images/20-3.png" alt="（picture from Wikipedia）"></p>
+<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><p>下面解释一些概念。</p>
+<p>（1）<em>符号位(sign bit)</em></p>
+<p>符号位为 0 表示正数，符号位为 1 表示负数。</p>
+<p>（2）<em>指数的实际值</em></p>
+<p>一个数二进制科学计数法表示下的指数的值。</p>
+<p>例如 2¹⁷，那么指数的实际值就是 17。</p>
+<p>（3）<em>指数偏移值(exponent bias)</em></p>
+<p>指的是根据 IEEE 754 标准对浮点数二进制表示中指数部分编码的值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exponent bias &#x3D; 指数的实际值 + 某个固定值</span><br></pre></td></tr></table></figure>
+<p>IEEE 754 标准规定：该固定值为 2ᵉ⁻¹ - 1，e 为存储指数的比特的长度。</p>
+<p>例如，单精度浮点数的指数域是 8 个比特，那么固定偏移值为 2⁸⁻¹ - 1 = 128 - 1 = 127。如果指数实际值为17₁₀，那么在单精度浮点数中的指数域编码值为 17₁₀ + 127₁₀ = 144₁₀。</p>
+<p>为什么要用这种形式来表示浮点数的指数呢？</p>
+<p>因为这样可以用长度为 e 个比特的无符号整数来表示所有的指数取值，这使得两个浮点数的指数大小的比较也更为容易，实际上可以直接按照字典次序比较两个浮点表示的大小。</p>
+<p>这种移码表示的指数部分，中文称作<em>阶码</em>。</p>
+<h2 id="normal-number"><a href="#normal-number" class="headerlink" title="normal number"></a>normal number</h2><p><em>normal number：规约形式的浮点数。</em></p>
+<p>“规约”指的是用唯一确定的浮点形式去表示一个值。</p>
+<p>如果浮点数中指数部分的编码值范围为 (0, 2ᵉ - 2]（即指数位不全为 0，也不全为 1），且在科学表示法的表示方式下，fraction 部分的最高有效位是 1（fraction 部分的范围是 [1, 2)），那么这个浮点数被称为规约形式的浮点数。</p>
+<p>因此，规约形式的单精度浮点数的指数部分编码值范围为 (0, 254]，这也可以反推出规约形式的单精度浮点数对应的指数部分实际取值是 [-126, 127]。</p>
+<p>为什么没有 -127 和 128 呢？因为 -127 和 128 被用作特殊值处理，见下面“非规约形式的浮点数”和“特殊值”。</p>
+<p>由于这种表示下的尾数有一位隐含的二进制有效数字，为了与二进制科学计数法的尾数相区别，IEEE 754 称之为<em>有效数（significant）</em>。</p>
+<h2 id="subnormal-number"><a href="#subnormal-number" class="headerlink" title="subnormal number"></a>subnormal number</h2><p><em>subnormal number：非规约形式的浮点数。</em></p>
+<h3 id="为什么需要非规约形式的浮点数？"><a href="#为什么需要非规约形式的浮点数？" class="headerlink" title="为什么需要非规约形式的浮点数？"></a>为什么需要非规约形式的浮点数？</h3><p>由规约形式的浮点数部分的内容，我们可以推算出，规约形式的单精度浮点数的取值范围为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">±尾数 * 2 ^ 指数</span><br><span class="line">&#x3D; ±[1, 2) * 2 ^ [-126, 127]</span><br><span class="line">&#x3D; (-2 * 2¹²⁷, -1 * 2⁻¹²⁶] ∪ [1 * 2⁻¹²⁶, 2 * 2¹²⁷)</span><br></pre></td></tr></table></figure>
+<p>转换为十进制后的大致范围是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[-3.4 * 10³⁸, -1.18 * 10⁻³⁸] ∪ [1.18 * 10⁻³⁸, 3.4 * 10³⁸]</span><br></pre></td></tr></table></figure>
+<p>这里就有个问题，使用规约形式的浮点数我们无法表示非常接近 0 的极小的数（即 (-1 * 2⁻¹²⁶, 1 * 2⁻¹²⁶) 之间的数）！非规约形式的浮点数的出现就将解决这个问题。</p>
+<h3 id="什么是非规约形式的浮点数？"><a href="#什么是非规约形式的浮点数？" class="headerlink" title="什么是非规约形式的浮点数？"></a>什么是非规约形式的浮点数？</h3><p>如果浮点数的指数部分的编码值是 0（即指数位全为 0），且 fraction 部分非零（fraction 部分的最高有效位是 0，fraction 部分的范围是 (0, 1)），那么这个浮点数被称为非规约形式的浮点数。</p>
+<p>IEEE 754 标准规定：非规约形式的浮点数的指数偏移值比规约形式的浮点数的指数偏移值小 1。</p>
+<p>例如，最小的规约形式的单精度浮点数的指数部分编码值为 1，指数的实际值为 -126；而非规约的单精度浮点数的指数域编码值为 0，对应的指数实际值也是 -126 而不是 -127，这是规定。至于为什么这么规定，下面会说到。</p>
+<h3 id="非规约形式的浮点数怎么表示非常接近-0-的数？"><a href="#非规约形式的浮点数怎么表示非常接近-0-的数？" class="headerlink" title="非规约形式的浮点数怎么表示非常接近 0 的数？"></a>非规约形式的浮点数怎么表示非常接近 0 的数？</h3><p>准确来说，这个问题应该是非规约形式的浮点数怎么表示 (-1 * 2⁻¹²⁶, 1 * 2⁻¹²⁶) 之间的数？</p>
+<p>同样，我们可以推算出非规约形式的单精度浮点数的取值范围为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">±尾数 * 2 ^ 指数</span><br><span class="line">&#x3D; ±(0, 1) * 2⁻¹²⁶</span><br><span class="line">&#x3D; (-1 * 2⁻¹²⁶, 0) ∪ (0, 1 * 2⁻¹²⁶]</span><br></pre></td></tr></table></figure>
+<p>仔细看下，非规约形式的单精度浮点数的区间范围和规约形式的单精度浮点数的区间范围正好构成了 (-2 * 2¹²⁷, 0) ∪ (0, 1 * 2 * 2¹²⁷)。</p>
+<p>（是不是中间少个 0 很难受，不要急，0 是作为特殊值存在的，见下面的“特殊值”）</p>
+<h3 id="什么是渐进式下溢出-gradual-underflow-？"><a href="#什么是渐进式下溢出-gradual-underflow-？" class="headerlink" title="什么是渐进式下溢出(gradual underflow)？"></a>什么是渐进式下溢出(gradual underflow)？</h3><p>根据前面的内容我们可以知道：</p>
+<p>非规约形式的单精度浮点数的最大值为 0 00000000 1111111111111111111111，其实就是 0.1111111111111111111111 * 2⁻¹²⁶</p>
+<p>规约形式的单精度浮点数的最小值（大于 0 的区间中）为 0 00000001 0000000000000000000000，其实就是 1.0000000000000000000000 * 2⁻¹²⁶</p>
+<p>可以看到，两者之间几乎实现了平滑的过度，非规约形式的单精度浮点数的最大值非常紧密的连接上了规约形式的单精度浮点数的最小值（大于 0 的区间中，小于 0 的区间也同理）。</p>
+<p>这种特性在 IEEE 754 中就称为*渐进式下溢出(gradual underflow)*。</p>
+<p>理解了这个特性，也就解释了前面的两个疑问：</p>
+<ol>
+<li>为什么规定非规约形式浮点数的尾数前隐藏的整数部分是 0，而规约形式浮点数尾数前隐藏的整数部分是 1 ？</li>
+<li>为什么规定非规约形式浮点数的指数实际值的计算公式是 1 - bias，而规约形式浮点数的指数实际值计算公式是 指数部分的值 - bias ？</li>
+</ol>
+<p>就是因为有这些规定才能实现渐进式下溢出这种特性。</p>
+<p>还有一个概念与之对应，就是*突然式下溢出(abrupt underflow)*。顾名思义，不解释了。</p>
+<h2 id="non-number"><a href="#non-number" class="headerlink" title="non-number"></a>non-number</h2><p><em>non-number：特殊值。</em></p>
+<p>有三个特殊值：</p>
+<ul>
+<li>如果指数是 0 并且 fraction 的小数部分是 0，这个数是 ±0（和符号位相关）</li>
+<li>如果指数是 2ᵉ - 1 并且 fraction 的小数部分是 0，这个数是 ±∞（和符号位相关）<ul>
+<li>什么是 ±∞ 呢？比如对于规约形式的单精度浮点数来说，存储的值超过了它的范围，比如存储的值是 4 * 10³⁸</li>
+</ul>
+</li>
+<li>如果指数是 2ᵉ - 1 并且 fraction 的小数部分非 0，这个数表示为非数（NaN）<ul>
+<li>什么是 ±∞ 呢？比如要存储的值是 √-1</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上规则，可总结如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形式</th>
+<th align="center">指数</th>
+<th align="center">小数部分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">零</td>
+<td align="center">全为 0</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">非规约形式</td>
+<td align="center">全为 0</td>
+<td align="center">大于 0 小于 1</td>
+</tr>
+<tr>
+<td align="center">规约形式</td>
+<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
+<td align="center">大于等于 1 小于 2</td>
+</tr>
+<tr>
+<td align="center">无穷</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">NaN</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">非 0</td>
+</tr>
+</tbody></table>
+<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>网上有几篇文章我觉得写得挺不错，我也参考了部分内容，这里共享出来链接以供大家阅读：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv4546492">https://www.bilibili.com/read/cv4546492</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9d6b8017232d">https://www.jianshu.com/u/9d6b8017232d</a></p>
+<p>鉴于这篇已经写了这么多字，就先打住，下篇会用具体示例再来演示一下。</p>
+<hr>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>jjiey
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" title="什么是 IEEE 754">http://yangsanity.me/2020/08/20/什么是 IEEE 754/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/basics/" rel="tag"># basics</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/07/25/%E6%90%9E%E6%87%82%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8D%81%E8%BF%9B%E5%88%B6%E4%BA%92%E8%BD%AC%E6%96%B9%E6%B3%95/" rel="prev" title="搞懂二进制十进制互转方法">
+      <i class="fa fa-chevron-left"></i> 搞懂二进制十进制互转方法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/26/IEEE%20754%20example/" rel="next" title="IEEE 754 example">
+      IEEE 754 example <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A7%91%E5%AD%A6%E8%AE%A1%E6%95%B0%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">科学计数法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.</span> <span class="nav-text">表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E6%A6%82%E5%BF%B5"><span class="nav-number">3.</span> <span class="nav-text">一些概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#normal-number"><span class="nav-number">4.</span> <span class="nav-text">normal number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#subnormal-number"><span class="nav-number">5.</span> <span class="nav-text">subnormal number</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E9%9D%9E%E8%A7%84%E7%BA%A6%E5%BD%A2%E5%BC%8F%E7%9A%84%E6%B5%AE%E7%82%B9%E6%95%B0%EF%BC%9F"><span class="nav-number">5.1.</span> <span class="nav-text">为什么需要非规约形式的浮点数？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E9%9D%9E%E8%A7%84%E7%BA%A6%E5%BD%A2%E5%BC%8F%E7%9A%84%E6%B5%AE%E7%82%B9%E6%95%B0%EF%BC%9F"><span class="nav-number">5.2.</span> <span class="nav-text">什么是非规约形式的浮点数？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E8%A7%84%E7%BA%A6%E5%BD%A2%E5%BC%8F%E7%9A%84%E6%B5%AE%E7%82%B9%E6%95%B0%E6%80%8E%E4%B9%88%E8%A1%A8%E7%A4%BA%E9%9D%9E%E5%B8%B8%E6%8E%A5%E8%BF%91-0-%E7%9A%84%E6%95%B0%EF%BC%9F"><span class="nav-number">5.3.</span> <span class="nav-text">非规约形式的浮点数怎么表示非常接近 0 的数？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%B8%90%E8%BF%9B%E5%BC%8F%E4%B8%8B%E6%BA%A2%E5%87%BA-gradual-underflow-%EF%BC%9F"><span class="nav-number">5.4.</span> <span class="nav-text">什么是渐进式下溢出(gradual underflow)？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#non-number"><span class="nav-number">6.</span> <span class="nav-text">non-number</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%91%E5%AD%97%E6%95%B0"><span class="nav-number">8.</span> <span class="nav-text">凑字数</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="jjiey"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">jjiey</p>
+  <div class="site-description" itemprop="description">yangsanity's blog</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jjiey" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jjiey" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yangsanityj@gmail.com" title="E-Mail → mailto:yangsanityj@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">jjiey</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"PityXmjzJtMbTLBbMscBI3aW-gzGzoHsz","app_key":"eSF2TQcOFbaoY3ntEUN5JTew","server_url":"https://pityxmjz.lc-cn-n1-shared.com","security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://jjiey.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  var disqus_config = function() {
+    this.page.url = "http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/";
+    this.page.identifier = "2020/08/20/什么是 IEEE 754/";
+    this.page.title = "什么是 IEEE 754";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://jjiey.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
