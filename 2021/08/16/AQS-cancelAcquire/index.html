@@ -39,7 +39,7 @@
 <meta property="og:image" content="http://yangsanity.me/images/42-10.png">
 <meta property="og:image" content="http://yangsanity.me/images/42-11.png">
 <meta property="article:published_time" content="2021-08-16T05:16:45.000Z">
-<meta property="article:modified_time" content="2022-05-07T02:09:59.752Z">
+<meta property="article:modified_time" content="2022-06-06T02:55:52.613Z">
 <meta property="article:author" content="jjiey">
 <meta property="article:tag" content="jdk source code">
 <meta property="article:tag" content="AQS">
@@ -270,7 +270,7 @@
 <p><img src="/images/42-1.png" alt="cancelAcquire"></p>
 <p>在 AQS 源码中该方法共被 6 个地方调用（3 个独占锁，3 个共享锁）：<br><code>acquireQueued</code> / <code>doAcquireInterruptibly</code> / <code>doAcquireNanos</code><br><code>doAcquireShared</code> / <code>doAcquireSharedInterruptibly</code> / <code>doAcquireSharedNanos</code></p>
 <p>该方法目的为：获取过程抛出异常后，取消正在进行的获取尝试。</p>
-<p>该方法是唯一会将 sync queue 中 Node 的 waitStatus 置为 CANCELLED 的方法。</p>
+<p>不考虑 Condition 的前提下，该方法是唯一会将 sync queue 中 Node 的 waitStatus 置为 CANCELLED 的方法。</p>
 <h2 id="穷举所有-case"><a href="#穷举所有-case" class="headerlink" title="穷举所有 case"></a>穷举所有 case</h2><p>从该方法最后部分 <code>if (node == tail &amp;&amp; ...</code> 和 <code>if (pred != head &amp;&amp; ...</code> 两句可以看出，该方法进行操作的三个不同的大前提条件为：</p>
 <ol>
 <li>node 是 tail</li>
