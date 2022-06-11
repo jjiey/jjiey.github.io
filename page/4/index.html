@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">44</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,128 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/04/01/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/01/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">jps 基本命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-01 09:00:26" itemprop="dateCreated datePublished" datetime="2021-04-01T09:00:26+08:00">2021-04-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/04/01/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jps 基本命令" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/04/01/jps-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/04/01/jps-基本命令/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p>
+<p><strong>jps (JVM Process Status Tool)</strong>: 虚拟机进程状况工具</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>比较单一，列出正在运行的虚拟机进程，并显示虚拟机执行主类（Main Class，main() 函数所在的类）名称以及这些进程的本地虚拟机唯一 ID（LVMID）。</p>
+<h3 id="LVMID-和-PID"><a href="#LVMID-和-PID" class="headerlink" title="LVMID 和 PID"></a>LVMID 和 PID</h3><p>LVMID (Local Virtual Machine Identifier): 本地虚拟机进程的唯一 ID</p>
+<p>PID (Process Identifier): 操作系统的进程 ID</p>
+<p>对于本地虚拟机进程来说，LVMID 与 PID 是一致的。</p>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jps [ options ] [ hostid ]</span><br></pre></td></tr></table></figure>
+<h3 id="options"><a href="#options" class="headerlink" title="options"></a>options</h3><table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-q</td>
+<td align="center">只输出 LVMID，省略主类的名称</td>
+</tr>
+<tr>
+<td align="center">-m</td>
+<td align="center">输出虚拟机进程启动时传递给主类 main() 函数的参数</td>
+</tr>
+<tr>
+<td align="center">-l</td>
+<td align="center">输出主类的全名，如果进程执行的是 JAR 包，则输出 JAR 路径</td>
+</tr>
+<tr>
+<td align="center">-v</td>
+<td align="center">输出虚拟机进程启动时的 JVM 参数</td>
+</tr>
+</tbody></table>
+<h3 id="hostid"><a href="#hostid" class="headerlink" title="hostid"></a>hostid</h3><p>jps 还可以通过 RMI 协议查询开启了 RMI 服务的远程虚拟机进程状态，参数 hostid 为 RMI 注册表中注册的主机名。</p>
+<h2 id="执行样例"><a href="#执行样例" class="headerlink" title="执行样例"></a>执行样例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jps -l</span><br></pre></td></tr></table></figure>
+<p><img src="/images/29-1.png"></p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -755,145 +877,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">二分查找源码解析</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-09-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-21T00:00:00+08:00">2020-09-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/source-code/" itemprop="url" rel="index"><span itemprop="name">source code</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="二分查找源码解析" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/21/二分查找源码解析/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前一篇文章中已经解过一道 leetcode 二分查找的题目了，这篇文章再来分析一下 java 类库中提供的二分查找源码。</p>
-<p>对应的类为 java.util.Arrays，方法名为 binarySearch。</p>
-<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p><img src="/images/24-1.png"></p>
-<p>可以看到：</p>
-<ul>
-<li>贴心的提供了所有类型数组的二分查找方法</li>
-<li>每种类型都提供了两种二分查找方法：<ul>
-<li>两个参数（最后一个三个参数）：从整个数组中查找</li>
-<li>四个参数（倒数第二个五个参数）：从数组指定的范围中查找，中间的两个参数指定范围，该范围为<strong><em>前闭后开</em></strong></li>
-</ul>
-</li>
-</ul>
-<p>每种类型数组的两种二分查找方法底层调用的都是同一个叫做 binarySearch0 的私有方法，因此 binarySearch0 也对应提供了不同类型的方法。binarySearch0 支持从数组指定的范围中查找，同样，中间的两个参数用来指定范围，该范围为前闭后开。</p>
-<p><img src="/images/24-2.png"></p>
-<h2 id="int"><a href="#int" class="headerlink" title="int[]"></a>int[]</h2><p>这部分主要以 int 类型数组的二分查找源码为例，来看看是怎么写的。</p>
-<ol>
-<li>先来看两个参数的 binarySearch 方法。可以看到底层调用 binarySearch0 方法，中间两个参数是 0 和 a.length，即从数组 a 的 [0, a.length) 范围中查找目标值 key。</li>
-</ol>
-<p><img src="/images/24-3.png"></p>
-<ol start="2">
-<li>再来看四个参数的 binarySearch 方法。可以看到底层同样调用 binarySearch0 方法，中间两个参数是 fromIndex 和 toIndex，即从数组 a 的 [fromIndex, toIndex) 范围中查找目标值 key。</li>
-</ol>
-<p>但是在调用 binarySearch0 方法之前，会调用 rangeCheck 方法来检查 fromIndex 和 toIndex 的合法性，不合法则抛出异常。</p>
-<p>关于这两个参数的合法性，下面截图中方法注释的 @throws 部分写的非常明白（良心博主，翻译都安排的明明白白），不再赘述。</p>
-<p><img src="/images/24-4.png"></p>
-<p>检查 fromIndex 和 toIndex 合法性的代码也非常简单。</p>
-<p><img src="/images/24-5.png"></p>
-<ol start="3">
-<li>最后来看 binarySearch0 方法，会发现，代码几乎和之前 leetcode 二分查找那篇文章中我们写的一样，唯一的区别是：如果没找到目标值 key 时的返回值。</li>
-</ol>
-<p>关于这点，上面截图中方法注释的 @return 部分也写的非常明白，不再赘述。</p>
-<p>关于没找到目标值 key 时为什么返回的是 -(插入点) - 1 的证明方法，在这里也共享出一个链接以供大家阅读：</p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/paralysed/article/details/106583034">https://blog.csdn.net/paralysed/article/details/106583034</a></p>
-<p><img src="/images/24-6.png"></p>
-<h2 id="3"><a href="#3" class="headerlink" title="3"></a>3</h2><p>其它类型数组的二分查找源码和 int 类型的大同小异，这部分来具体看看。</p>
-<ol>
-<li><p>byte[]、char[]、long[]、short[] 和 int[] 一样，大小比较用的都是大于小于的方式</p>
-</li>
-<li><p>Object[] 大小比较用的是 Comparable.compareTo 方法</p>
-</li>
-</ol>
-<p><img src="/images/24-7.png"></p>
-<ol start="3">
-<li>T[] 的大小比较，最后一个参数可以传自定义比较器，如果没传，则默认走的是 Object[] 的二分查找方法</li>
-</ol>
-<p><img src="/images/24-8.png"></p>
-<ol start="4">
-<li>float[] 和 double[] 的大小比较方法和前面类型的都有一点点不一样。不过还好，我们已经了解了 <a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">IEEE 754 标准</a>，并且在上一篇一起分析过 <a href="/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">Float.java 和 Double.java 的源码</a>，所以，直接上代码（该部分代码对应其 compare 方法源码）</li>
-</ol>
-<p><img src="/images/24-9.png"></p>
-<p><img src="/images/24-10.png"></p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -965,7 +948,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

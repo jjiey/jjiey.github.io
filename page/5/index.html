@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">44</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,145 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">二分查找源码解析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-21T00:00:00+08:00">2020-09-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/source-code/" itemprop="url" rel="index"><span itemprop="name">source code</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" class="post-meta-item leancloud_visitors" data-flag-title="二分查找源码解析" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/09/21/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/21/二分查找源码解析/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>之前一篇文章中已经解过一道 leetcode 二分查找的题目了，这篇文章再来分析一下 java 类库中提供的二分查找源码。</p>
+<p>对应的类为 java.util.Arrays，方法名为 binarySearch。</p>
+<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p><img src="/images/24-1.png"></p>
+<p>可以看到：</p>
+<ul>
+<li>贴心的提供了所有类型数组的二分查找方法</li>
+<li>每种类型都提供了两种二分查找方法：<ul>
+<li>两个参数（最后一个三个参数）：从整个数组中查找</li>
+<li>四个参数（倒数第二个五个参数）：从数组指定的范围中查找，中间的两个参数指定范围，该范围为<strong><em>前闭后开</em></strong></li>
+</ul>
+</li>
+</ul>
+<p>每种类型数组的两种二分查找方法底层调用的都是同一个叫做 binarySearch0 的私有方法，因此 binarySearch0 也对应提供了不同类型的方法。binarySearch0 支持从数组指定的范围中查找，同样，中间的两个参数用来指定范围，该范围为前闭后开。</p>
+<p><img src="/images/24-2.png"></p>
+<h2 id="int"><a href="#int" class="headerlink" title="int[]"></a>int[]</h2><p>这部分主要以 int 类型数组的二分查找源码为例，来看看是怎么写的。</p>
+<ol>
+<li>先来看两个参数的 binarySearch 方法。可以看到底层调用 binarySearch0 方法，中间两个参数是 0 和 a.length，即从数组 a 的 [0, a.length) 范围中查找目标值 key。</li>
+</ol>
+<p><img src="/images/24-3.png"></p>
+<ol start="2">
+<li>再来看四个参数的 binarySearch 方法。可以看到底层同样调用 binarySearch0 方法，中间两个参数是 fromIndex 和 toIndex，即从数组 a 的 [fromIndex, toIndex) 范围中查找目标值 key。</li>
+</ol>
+<p>但是在调用 binarySearch0 方法之前，会调用 rangeCheck 方法来检查 fromIndex 和 toIndex 的合法性，不合法则抛出异常。</p>
+<p>关于这两个参数的合法性，下面截图中方法注释的 @throws 部分写的非常明白（良心博主，翻译都安排的明明白白），不再赘述。</p>
+<p><img src="/images/24-4.png"></p>
+<p>检查 fromIndex 和 toIndex 合法性的代码也非常简单。</p>
+<p><img src="/images/24-5.png"></p>
+<ol start="3">
+<li>最后来看 binarySearch0 方法，会发现，代码几乎和之前 leetcode 二分查找那篇文章中我们写的一样，唯一的区别是：如果没找到目标值 key 时的返回值。</li>
+</ol>
+<p>关于这点，上面截图中方法注释的 @return 部分也写的非常明白，不再赘述。</p>
+<p>关于没找到目标值 key 时为什么返回的是 -(插入点) - 1 的证明方法，在这里也共享出一个链接以供大家阅读：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/paralysed/article/details/106583034">https://blog.csdn.net/paralysed/article/details/106583034</a></p>
+<p><img src="/images/24-6.png"></p>
+<h2 id="3"><a href="#3" class="headerlink" title="3"></a>3</h2><p>其它类型数组的二分查找源码和 int 类型的大同小异，这部分来具体看看。</p>
+<ol>
+<li><p>byte[]、char[]、long[]、short[] 和 int[] 一样，大小比较用的都是大于小于的方式</p>
+</li>
+<li><p>Object[] 大小比较用的是 Comparable.compareTo 方法</p>
+</li>
+</ol>
+<p><img src="/images/24-7.png"></p>
+<ol start="3">
+<li>T[] 的大小比较，最后一个参数可以传自定义比较器，如果没传，则默认走的是 Object[] 的二分查找方法</li>
+</ol>
+<p><img src="/images/24-8.png"></p>
+<ol start="4">
+<li>float[] 和 double[] 的大小比较方法和前面类型的都有一点点不一样。不过还好，我们已经了解了 <a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">IEEE 754 标准</a>，并且在上一篇一起分析过 <a href="/2020/09/16/Float%20Double%20%E9%83%A8%E5%88%86%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/">Float.java 和 Double.java 的源码</a>，所以，直接上代码（该部分代码对应其 compare 方法源码）</li>
+</ol>
+<p><img src="/images/24-9.png"></p>
+<p><img src="/images/24-10.png"></p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1019,159 +1158,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/07/25/%E6%90%9E%E6%87%82%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8D%81%E8%BF%9B%E5%88%B6%E4%BA%92%E8%BD%AC%E6%96%B9%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/07/25/%E6%90%9E%E6%87%82%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8D%81%E8%BF%9B%E5%88%B6%E4%BA%92%E8%BD%AC%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">搞懂二进制十进制互转方法</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-07-25 00:00:00" itemprop="dateCreated datePublished" datetime="2020-07-25T00:00:00+08:00">2020-07-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/07/25/%E6%90%9E%E6%87%82%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8D%81%E8%BF%9B%E5%88%B6%E4%BA%92%E8%BD%AC%E6%96%B9%E6%B3%95/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂二进制十进制互转方法" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/07/25/%E6%90%9E%E6%87%82%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%8D%81%E8%BF%9B%E5%88%B6%E4%BA%92%E8%BD%AC%E6%96%B9%E6%B3%95/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/07/25/搞懂二进制十进制互转方法/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>十进制整数 N 可以表示为 N₁₀，二进制整数 N 可以表示为 N₂。</p>
-<p><span style="color:#fff;">重要</span>：为了简洁说明，约定本文以下内容中都使用一个字节，也就是 8 个 bit 来表示二进制数。</p>
-<h2 id="正整数转二进制"><a href="#正整数转二进制" class="headerlink" title="正整数转二进制"></a>正整数转二进制</h2><p>除 2 取余直到商为 0 时为止，然后倒序排列余数，最后高位补 0。</p>
-<p>举例：将 42 转换为二进制<br>除二取余直到商为 0 时为止</p>
-<ul>
-<li>42 / 2 = 21 ⋯⋯ 0<ul>
-<li>21 / 2 = 10 ⋯⋯ 1</li>
-<li>10 / 2 = 5 ⋯⋯ 0</li>
-<li>5 / 2 = 2 ⋯⋯ 1</li>
-<li>2 / 2 = 1 ⋯⋯ 0</li>
-<li>1 / 2 = 0 ⋯⋯ 1</li>
-</ul>
-</li>
-<li>倒序排列余数为 101010</li>
-<li>高位补 0 为 00101010</li>
-</ul>
-<p>所以，(42)₁₀ = (00101010)₂</p>
-<h2 id="负整数转二进制"><a href="#负整数转二进制" class="headerlink" title="负整数转二进制"></a>负整数转二进制</h2><p>在前面的文章中我们知道，负数在计算机中以原码的补码形式表示。</p>
-<p>举例：将 -42 转换为二进制</p>
-<ul>
-<li>(42)₁₀ = (00101010)₂</li>
-<li>-42 的原码为 10101010</li>
-<li>反码为 11010101</li>
-<li>补码为 11010110</li>
-</ul>
-<p>所以，(-42)₁₀ = (11010110)₂</p>
-<h2 id="小数转二进制"><a href="#小数转二进制" class="headerlink" title="小数转二进制"></a>小数转二进制</h2><p>整数部分同正整数转二进制；小数部分乘以 2，取结果的整数部分，直到小数部分为 0 （此时二进制的最后一位为 0 或 1）或者位数已达到所要求的精度为止。然后把每次结果的整数部分按先后次序排列，即可得到二进制小数部分序列。</p>
-<p>举例：将 42.125 转换为二进制</p>
-<ul>
-<li>整数部分 (42)₁₀ = (00101010)₂</li>
-<li>小数部分乘以 2，取结果的整数部分，直到小数部分为 0 或者位数已达到所要求的精度为止<ul>
-<li>0.125 * 2 = 0.25，整数部分为 0</li>
-<li>0.25 * 2 = 0.5，整数部分为 0</li>
-<li>0.5 * 2 = 1，整数部分为 1</li>
-</ul>
-</li>
-<li>把每次结果的整数部分按先后次序排列为 001</li>
-</ul>
-<p>所以，(42.125)₁₀ = (00101010.001)₂</p>
-<h2 id="二进制转十进制"><a href="#二进制转十进制" class="headerlink" title="二进制转十进制"></a>二进制转十进制</h2><p>（1）首位是 0 代表正整数，从右到左用二进制的每个数去乘以 2 的相应次方并递增。</p>
-<p>举例：将 <code>00101010</code> 转换为十进制</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0 * 2⁰ + 1 * 2¹ + 0 * 2² + 1 * 2³ + 0 * 2⁴ + 1 * 2⁵ + 0 * 2⁶</span><br><span class="line">&#x3D; 1 * 2¹ + 1 * 2³ + 1 * 2⁵</span><br><span class="line">&#x3D; 2 + 8 + 32</span><br><span class="line">&#x3D; 42</span><br></pre></td></tr></table></figure>
-<p>加上符号为 42，所以，(00101010)₂ = (42)₁₀</p>
-<p>（2）首位是 1 代表负整数，先转成原码，再参考上面的方法。</p>
-<p>举例：将 <code>11010110</code> 转换为十进制</p>
-<ul>
-<li>反码为 <code>11010101</code></li>
-<li>原码为 <code>10101010</code></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0 * 2⁰ + 1 * 2¹ + 0 * 2² + 1 * 2³ + 0 * 2⁴ + 1 * 2⁵ + 0 * 2⁶</span><br><span class="line">&#x3D; 1 * 2¹ + 1 * 2³ + 1 * 2⁵</span><br><span class="line">&#x3D; 2 + 8 + 32</span><br><span class="line">&#x3D; 42</span><br></pre></td></tr></table></figure>
-<p>加上符号为 -42，所以，(11010110)₂ = (-42)₁₀</p>
-<p>（3）小数是将小数点后从左往右乘以二的相应负次方并递减。</p>
-<p>举例：将 <code>00101010.001</code> 转换为十进制</p>
-<ul>
-<li>整数部分 (00101010)₂ = (42)₁₀</li>
-<li>小数部分为 0 * 2⁻¹ + 0 * 2⁻² + 1 * 2⁻³ = 1 * 2⁻³ = 0.125</li>
-</ul>
-<p>所以，(00101010.001)₂ = (42.125)₁₀</p>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>当然，浮点数在计算机中不可能这么表示，它也有自己的一套标准。</p>
-<p>浮点数的部分可以先暂且这么理解，关于IEEE二进制浮点数算术标准（IEEE 754）后面的文章会再说</p>
-<p>二进制和十进制的互转方法，你搞懂了吗？</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1243,7 +1229,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
