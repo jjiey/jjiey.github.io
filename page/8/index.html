@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">47</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,282 +178,6 @@
 
           <div class="content index posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" class="post-title-link" itemprop="url">树状数组</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-28 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-28T00:00:00+08:00">2020-05-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/data-structure/" itemprop="url" rel="index"><span itemprop="name">data structure</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" class="post-meta-item leancloud_visitors" data-flag-title="树状数组" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/28/树状数组/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>树状数组，又称二元索引树（Binary Indexed Tree），又以其发明者命名为 Fenwick 树。最早由 Peter M. Fenwick 于 1994 年提出。</p>
-<p>上篇文章最后已经把树状数组能干什么说的非常清楚了。再简单回顾下，树状数组是一种可以动态维护数组前缀和的数据结构，它的主要功能是：</p>
-<ol>
-<li>单点更新 update(i, v)：把序列 i 位置的数加上一个值 v；</li>
-<li>区间查询 query(i)：查询序列 [1⋯i] 区间的区间和，即 i 位置的前缀和</li>
-</ol>
-<p>其中单点更新和区间查询的时间复杂度都是 O(logn)，n 为需要维护前缀和的数组的长度。</p>
-<p>重点是，单点更新和区间查询的时间复杂度都是 O(logn) 它是怎么做到的？</p>
-<h2 id="树状数组的神秘面纱"><a href="#树状数组的神秘面纱" class="headerlink" title="树状数组的神秘面纱"></a>树状数组的神秘面纱</h2><p>先来看看它到底长什么样子。（我感觉长的跟跳表还有点像）</p>
-<p><img src="/images/11-1.png" alt="树状数组"></p>
-<p>其中，数组 A 是原数组，数组 C 就是树状数组（现在终于知道它为什么叫树状数组了吧，长的就像树）。</p>
-<p>从图中可以看到数组 A 和数组 C 之间的关系：</p>
-<p>C1 = A1<br>C2 = A1 + A2<br>C3 = A3<br>C4 = A1 + A2 + A3 + A4<br>C5 = A5<br>C6 = A5 + A6<br>C7 = A7<br>C8 = A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8<br>… …</p>
-<p>这里有个有趣的性质：设数组 C 的节点编号为 n，则 C[n] 管辖的区间为数组 A 从 n 往左连续 2 ^ k（k 为 n 二进制末尾 0 的个数）个元素。因为这个区间最后一个元素必然为 A[n]，所以 C[n] = Sum[ A[n – 2 ^ k + 1], A[n] ]。</p>
-<p>好像有点绕，用 C[10] 来举个例子。10 的二进制表示为 1010，则 2 ^ k（k 为 10 二进制末尾 0 的个数，所以 k = 1）为 2 ^ 1 = 2，则 C[10] 管辖的区间为数组 A 从 10 往左连续 2 个元素，即 C[10] = Sum[ A[10 – 2 ^ 1 + 1], A[10] ] = A[9] + A[10]。</p>
-<p>看到这里，大家应该就有感觉了，为什么树状数组能做到单点更新和区间查询的时间复杂度都是 O(logn) ？正是因为它把线性结构转化成了树状结构，从而进行跳跃式的扫描！</p>
-<p>到这里，就得先说一个重要的函数 lowbit，它就是用来计算上面说的 2 ^ k 的快捷方法。</p>
-<h2 id="lowbit"><a href="#lowbit" class="headerlink" title="lowbit"></a>lowbit</h2><p>lowbit(k) 的结果是：只保留 k 的二进制中最低位的 1。举个例子，lowbit(10)，10 的二进制是 1010，则 lowbit(10) = 0010（只保留 1010 中最低位的 1）。</p>
-<p>而 lowbit 有两种实现方式，都要用到位运算。</p>
-<h3 id="实现方式一"><a href="#实现方式一" class="headerlink" title="实现方式一"></a>实现方式一</h3><p>我们知道，在计算机中，负数的二进制以原码的补码形式来表示，负数的补码为对该数的原码除符号位外各位取反，然后在最后一位加 1。</p>
-<p>比如 -10 用二进制来表示：-10 的原码为 1000 0000 0000 0000 0000 0000 0000 1010；反码为 1111 1111 1111 1111 1111 1111 1111 0101；补码为 1111 1111 1111 1111 1111 1111 1111 0110。</p>
-<p>此时，10 &amp; -10 是什么情况呢？</p>
-<p>0000 0000 0000 0000 0000 0000 0000 1010 &amp; 1111 1111 1111 1111 1111 1111 1111 0110 = 0000 0000 0000 0000 0000 0000 0000 0010。惊喜的发现，其实结果就是 lowbit(10)。</p>
-<p>（附 &amp; 运算规则：0 &amp; 0 = 0；0 &amp; 1 = 0；1 &amp; 0 = 0；1 &amp; 1 = 1）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> k &amp; (-k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="实现方式二"><a href="#实现方式二" class="headerlink" title="实现方式二"></a>实现方式二</h3><p>我们知道，将一个二进制数减一，得到的结果是：从最低位的 1 开始后面的部分都与之前相反。</p>
-<p>比如 10 的二进制表示为 1010，那么 9 的二进制表示为 1001。</p>
-<p>此时，10 ^ 9 是什么情况呢？很简单，1010 ^ 1001 = 0011。</p>
-<p>此时，10 &amp; (10 ^ 9) 又是什么情况呢？也很简单，1010 &amp; 0011 = 0010。我们又惊喜的发现，其实结果就是 lowbit(10)。</p>
-<p>（附 ^ 运算规则：0 ^ 0 = 0；0 ^ 1 = 1；1 ^ 0 = 1；1 ^ 1 = 0）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> k &amp; (k ^ (k - <span class="number">1</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="树状数组实现思路"><a href="#树状数组实现思路" class="headerlink" title="树状数组实现思路"></a>树状数组实现思路</h2><p>有了 lowbit 函数，我们就可以把上图中的 A 数组和 C 数组联系起来了！</p>
-<h3 id="单点更新"><a href="#单点更新" class="headerlink" title="单点更新"></a>单点更新</h3><p>在修改时也要对该节点的所有父节点进行修改。比如在上图中要修改 C[1]，那么 C[2]，C[4]，C[8]，C[16] 也要做修改。</p>
-<p>那不看图的话怎么知道该节点的所有父节点呢？不难，1 + lowbit(1) = 2，2 + lowbit(2) = 4，4 + lowbit(4) = 8，8 + lowbit(8) = 16，（16 + lowbit(16) = 32 超出了数组大小自然不用考虑）。</p>
-<h3 id="区间查询"><a href="#区间查询" class="headerlink" title="区间查询"></a>区间查询</h3><p>比如求上图中 [1, 14] 的区间和，从图中可以看到：<br>Sum[1, 14] = C[14] + C[12] + C[8] = Sum[ A[13], A[14] ] + Sum[ A[9], A[12] ] + Sum[ A[1], A[8] ] = Sum[ A[1], A[14] ]。</p>
-<p>那不看图的话怎么算出 12 和 8 呢？也不难，14 - lowbit(14) = 12，12 - lowbit(12) = 8，（8 - lowbit(8) = 0 自然不用考虑）。</p>
-<p><img src="/images/11-2.png" alt="树状数组求和图示（图片来源网络，侵删）"></p>
-<h2 id="树状数组代码"><a href="#树状数组代码" class="headerlink" title="树状数组代码"></a>树状数组代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 树状数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FenwickTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上图中的 C 数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] tree;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FenwickTree</span><span class="params">(<span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tree = <span class="keyword">new</span> <span class="keyword">int</span>[len + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">this</span>.len = len;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单点更新：把数组 i 位置的值加上 v</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 类比上图，从下到上进行更新</span></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= <span class="keyword">this</span>.len) &#123;</span><br><span class="line">            <span class="keyword">this</span>.tree[i] += v;</span><br><span class="line">            i += lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 区间查询：查询序列 [1 ⋯ i] 区间的区间和，即 i 位置的前缀和</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 类比上图，从右到左查询</span></span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            sum += <span class="keyword">this</span>.tree[i];</span><br><span class="line">            i -= lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x &amp; (-x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="求数组中的逆序对"><a href="#求数组中的逆序对" class="headerlink" title="求数组中的逆序对"></a>求数组中的逆序对</h2><p>具体思路上篇文章最后已经介绍了，不再赘述，直接来看代码吧。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用离散化树状数组求求数组中的逆序对</span></span><br><span class="line"><span class="comment"> * 离散化原因：使得数字更紧凑，节约树状数组的空间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length;</span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 去重并排序</span></span><br><span class="line">    Set&lt;Integer&gt; treeSet = <span class="keyword">new</span> TreeSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        treeSet.add(num);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 把排名存在 HashMap 里方便查询</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; rankMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span> rankIndex = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (Integer num : treeSet) &#123;</span><br><span class="line">        rankMap.put(num, rankIndex++);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 在树状数组内部完成前缀和的计算</span></span><br><span class="line">    <span class="comment">// 规则是：从后向前，先给对应的排名 + 1，再查询前缀和</span></span><br><span class="line">    FenwickTree fenwickTree = <span class="keyword">new</span> FenwickTree(rankMap.size());</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = len - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> rank = rankMap.get(nums[i]);</span><br><span class="line">        fenwickTree.update(rank, <span class="number">1</span>);</span><br><span class="line">        count += fenwickTree.query(rank - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>提交，完美通过！</p>
-<p><img src="/images/11-3.png"></p>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>借用一句话来总结树状数组：树状数组巧妙地利用了二分，它并不神秘，关键是巧妙！</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/" class="post-title-link" itemprop="url">leetcode之面试题51-数组中的逆序对</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-16T00:00:00+08:00">2020-05-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之面试题51-数组中的逆序对" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/16/leetcode之面试题51-数组中的逆序对/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>今天给大家带来一道 leetcode 的算法题。为什么这篇文章要写一道算法题？其实主要是想说<strong>之前写的排序算法可不只是为了面试用的</strong>。</p>
-<p>这句话也算是一个小提示，那么你能不能与之前写的排序知识联系起来想到解法呢？</p>
-<p><img src="/images/10-1.png"></p>
-<h2 id="暴力"><a href="#暴力" class="headerlink" title="暴力"></a>暴力</h2><p>没啥好说的，一上来，两层 for 循环暴力枚举所有数对，逐一判断即可搞定。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 暴力法</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 逆序对总数</span></span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; nums.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] &gt; nums[j]) &#123;</span><br><span class="line">                ret++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果当然可想而知，毕竟时间复杂度为 O(n^2)。此外空间复杂度为 O(1)。</p>
-<p><img src="/images/10-2.png"></p>
-<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>利用归并排序的思路解这道题，你想到了吗？</p>
-<p>前面写归并排序的时候写过归并排序的思路，希望你还有印象（没印象的话可以点击文章底部链接去看看哦）。</p>
-<p>其实解这道题我们只需要在 merge 操作上做些思考。还记得 merge 操作吧，它是要把两个有序数组合并成一个有序数组。而我们思考的方向，既可以在左边的有序数组上，也可以在右边的有序数组上，所以这个思路可以有两种写法。下面逐一说明。</p>
-<h3 id="在左边的有序数组上思考"><a href="#在左边的有序数组上思考" class="headerlink" title="在左边的有序数组上思考"></a>在左边的有序数组上思考</h3><p>假定待 merge 数组如下，记逆序对总数为 ret：<br><img src="/images/10-3.png"><br>（1）8 &lt; 9，不构成逆序对，此时 ret = 0<br><img src="/images/10-4.png"><br>（2）12 &gt; 9，构成逆序对，且左数组中 12 后边的数都和 9 构成逆序对，此时 ret = 3<br><img src="/images/10-5.png"><br>（3）12 &lt; 26，不构成逆序对，此时 ret = 3<br><img src="/images/10-6.png"><br>（4）16 &lt; 26，不构成逆序对，此时 ret = 3<br><img src="/images/10-7.png"><br>（5）22 &lt; 26，不构成逆序对，此时 ret = 3<br><img src="/images/10-8.png"><br>（6）左数组遍历完，右数组剩下的元素入辅助数组。因为此时右数组剩下的值比原左数组的所有值都大，不会构成逆序对，所以这一轮 merge 的最终 ret = 3</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 采用归并排序自底向上写法，具体可见归并排序文章</span></span><br><span class="line"><span class="comment"> * 当然也可以用自顶向下递归的方式来写，都是一样的，这部分其实也不是解题的重点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ret 为逆序对总数</span></span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>, n = nums.length;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = j + i - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; nums[j + i]) &#123;</span><br><span class="line">                ret += reversePairsHelper(nums, j, mid, Math.min(mid + i, n - <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * “merge”考虑左数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">reversePairsHelper</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[right - left + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>, k = <span class="number">0</span>, ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">            temp[k++] = nums[i++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 重点</span></span><br><span class="line">            ret += mid - i + <span class="number">1</span>;</span><br><span class="line">            temp[k++] = nums[j++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid) &#123;</span><br><span class="line">        temp[k++] = nums[i++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">        temp[k++] = nums[j++];</span><br><span class="line">    &#125;</span><br><span class="line">    System.arraycopy(temp, <span class="number">0</span>, nums, left, temp.length);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="在右边的有序数组上思考"><a href="#在右边的有序数组上思考" class="headerlink" title="在右边的有序数组上思考"></a>在右边的有序数组上思考</h3><p>要比在左数组思考多考虑一点点，不过也比较简单。</p>
-<p>假定待 merge 数组如下，记逆序对总数为 ret：<br><img src="/images/10-9.png"><br>（1）12 &gt; 9，ret 不变，此时 ret = 0<br><img src="/images/10-10.png"><br>（2）12 &lt; 26，12 和右数组 26 之前的所有数构成逆序对，此时 ret = 1<br><img src="/images/10-11.png"><br>（3）28 &gt; 26，ret 不变，此时 ret = 1<br><img src="/images/10-12.png"><br>（4）28 &lt; 55，28 和右数组 55 之前的所有数构成逆序对，此时 ret = 3<br><img src="/images/10-13.png"><br>（5）50 &lt; 55，50 和右数组 55 之前的所有数构成逆序对，此时 ret = 5<br><img src="/images/10-14.png"><br>（6）60 &gt; 55，ret 不变，此时 ret = 5<br><img src="/images/10-15.png"><br>（7）60 &lt; 64，60 和右数组 64 之前的所有数构成逆序对，此时 ret = 8<br><img src="/images/10-16.png"><br>（8）左数组遍历完，右数组剩下的元素入辅助数组。因为此时右数组剩下的值比原左数组的所有值都大，不会构成逆序对，所以这一轮 merge 的最终 ret = 8</p>
-<p>注意，为什么说要比在左数组思考多考虑一点，就在这里。如果最后的情况是右数组遍历完，左数组剩下的元素入辅助数组。那么此时左数组剩下的值比原右数组的所有值都大，那么此时左数组剩下的值都和原右数组的所有值都能构成逆序对，这部分一定要计算在内！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 代码同上</span></span><br><span class="line"><span class="comment"> * 采用归并排序自底向上写法，具体可见归并排序文章</span></span><br><span class="line"><span class="comment"> * 当然也可以用自顶向下递归的方式来写，都是一样的，这部分其实也不是解题的重点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ret 为逆序对总数</span></span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>, n = nums.length;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = j + i - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; nums[j + i]) &#123;</span><br><span class="line">                ret += reversePairsHelper(nums, j, mid, Math.min(mid + i, n - <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * “merge”考虑右数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">reversePairsHelper</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[right - left + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>, k = <span class="number">0</span>, ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">            <span class="comment">// 重点</span></span><br><span class="line">            ret += j - mid - <span class="number">1</span>;</span><br><span class="line">            temp[k++] = nums[i++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            temp[k++] = nums[j++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid) &#123;</span><br><span class="line">        <span class="comment">// 重点</span></span><br><span class="line">        ret += right - mid;</span><br><span class="line">        temp[k++] = nums[i++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">        temp[k++] = nums[j++];</span><br><span class="line">    &#125;</span><br><span class="line">    System.arraycopy(temp, <span class="number">0</span>, nums, left, temp.length);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>提交成功通过。时间复杂度同归并排序 O(n * logn)，空间复杂度也同归并排序 O(n)。</p>
-<h2 id="离散化树状数组"><a href="#离散化树状数组" class="headerlink" title="离散化树状数组"></a>离散化树状数组</h2><p>这个是从官方的解法中看到的，比较骚气，不过要用到一种新的数据结构 - 树状数组。</p>
-<p>接下来说一下树状数组解这道题的思路吧，具体的树状数组和代码想放到下一篇再来写。</p>
-<p>树状数组是一种可以动态维护数组前缀和的数据结构，它的主要功能是：</p>
-<ol>
-<li>单点更新 update(i, v)：把序列 i 位置的数加上一个值 v，在这道题中 v = 1</li>
-<li>区间查询 query(i)：查询序列 [1⋯i] 区间的区间和，即 i 位置的前缀和</li>
-</ol>
-<p>其中单点更新和区间查询的时间复杂度都是 O(logn)，n 为需要维护前缀和的数组的长度。还要注意，树状数组中 0 索引位置是不参与计算的。（具体原因了解树状数组后就能理解）</p>
-<p>假定数组 a 为 [5, 5, 2, 3, 6]，记逆序对总数为 ret。我们申请一个新数组，遍历 a，在新数组中记录 a 中每个值出现的次数，最终新数组结果如下：</p>
-<table>
-<tr>
-<td style="text-align: center;">index</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">6</td>
-</tr>
-<tr>
-<td style="text-align: center;">value</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">1</td>
-</tr>
-</table>
-
-<p>可以看到，a[i] 的前缀和可以表示：a 数组中有多少个数比 a[i] 小。那么，如果 a[i] 之前的数在原数组中是出现在 a[i] 后面的，那么 i - 1 的前缀和就代表这些数和 a[i] 构成的逆序对数量。</p>
-<p>明白了这一点，那就好做了。我们可以从后往前遍历 a，当遍历到 a[i] 时，把对应的新数组中 i 位置的值自增 1，然后再计算 i - 1 的前缀和，记到 ret 中。当 a 遍历完成后，ret 即为逆序对总数。</p>
-<p>为什么可以这么做呢？因为我们在遍历 a 的过程中，把 a 分成了两部分，一部分遍历过（在新数组中），另一部分待遍历（不在新数组中）。那么对于 a[i] 来说，我们求到的 i - 1 位置的前缀和，就是遍历过的元素中比 a[i] 小的元素的总和，而这些元素在 a 中本来就是排在 a[i] 后面的，但它们的值是比 a[i] 小的，所以这就形成了一个逆序对。</p>
-<h3 id="离散化树状数组-1"><a href="#离散化树状数组-1" class="headerlink" title="离散化树状数组"></a>离散化树状数组</h3><p>确实像上面说的那么做是可以的，但是别忘了题目的限制：<code>0 &lt;= 数组长度 &lt;= 50000</code>，额，其实这个限制还好，内存中放得下。如果限制更大一点，内存中放不下怎么办呢？</p>
-<p>其实，就算限制更大一点，大到内存中都放不下，但是给定的数组中肯定也是很多位置是 0，它的有效元素的位置是稀疏的。我们可以想办法让有效位置紧凑一点，减少无效位置的出现，减少空间浪费，这时我们就可以用到这个方法 - 离散化。</p>
-<p>也就是说，我们只需要关心有效元素在数组中按大小的排名，来决定它们在数组中的位置即可。</p>
-<p>恰好，java 里有一种数据结构可以做到去重并排序这一点，什么呢？就是 TreeSet。</p>
-<p>离散化树状数组解这道题的思路大致就说完了。其实有个非常重要的点没有说，那就是：单点更新和区间查询的时间复杂度都是 O(logn) 这个是怎么做到的？如果明白了这一点，那么他为什么叫“树状数组”也就明白了。好了，写不少字了，卖个关子吧。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
       
   
   
@@ -946,10 +670,318 @@
   
   
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/" class="post-title-link" itemprop="url">快速排序 part one</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-26T00:00:00+08:00">2020-04-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/" class="post-meta-item leancloud_visitors" data-flag-title="快速排序 part one" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/26/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%EF%BC%88part%20one%EF%BC%89/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/26/快速排序（part one）/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>快速排序（quick sort）又称分区交换排序（partition-exchange sort），简称快排。它的鼎鼎大名，在排序界无人不知，无人不晓，重要性更是无需多言。毕竟敢叫这么直白的名字，那“实力”肯定也是没话讲的。</p>
+<p>快排还有一个响亮的 title，它被称为20世纪对世界影响最大的算法之一。当然，它必须也是面试中算法的一个高频考察点。（必须要再次提到面试，原因你懂的）</p>
+<p>我猜你可能知道单路快排，那么你知道还有双路快排吗？甚至三路快排吗？知道如何优化快排吗？废话不多说，赶快上车。</p>
+<h2 id="快速排序思想"><a href="#快速排序思想" class="headerlink" title="快速排序思想"></a>快速排序思想</h2><p>和归并排序一样，快排也是使用了分治法（Divide and Conquer）的思想，把一个待排序数组以基准值为界，分为两个子数组，左边都比基准值小，右边都比基准值大，然后再递归地对两个子数组进行排序。</p>
+<p>快排大概可以分为三个步骤：</p>
+<ol>
+<li><p>从当前待排序的数组中选择一个元素作为基准值（pivot）；</p>
+</li>
+<li><p>把基准值移动到当数组排好序时它应该处于的正确位置上，并且使得数组中所有比基准值小的元素放在基准值左边，所有比基准值大的元素放在基准值右边（与基准值相等的数可以到任何一边）。这个操作一般称为 partition；</p>
+</li>
+<li><p>对基准数左边数组和右边数组再分别继续使用相同的思路进行排序，逐渐递归下去，直到完成整个排序过程。</p>
+</li>
+</ol>
+<h2 id="单路快速排序思路"><a href="#单路快速排序思路" class="headerlink" title="单路快速排序思路"></a>单路快速排序思路</h2><p>接下来用个简单的demo来演示一下整个过程吧。这里先规定直接简单选取数组第一个元素作为基准值，待排序数组如下：</p>
+<table>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">3</td>
+</tr>
+</table>
+
+<p>首先我们必须定义几个变量来辅助我们理解整个过程。如下图，定义 pivot 为基准值；i 为当前正在遍历的元素；j 为小于基准值的区域边界。</p>
+<p><img src="/images/6-1.png"></p>
+<p>在整个遍历过程中，要一直保证 [left + 1, j] 区间的元素都是小于基准值的，[j + 1, i - 1] 区间的元素都是大于等于基准值的（这里把等于基准值的元素放到了 [j + 1, i - 1] 区间中，当然也可以放到 [left + 1, j] 区间中）。所以在遍历的过程中，只有当 i 当前指向的值小于 pivot 时，我们才需要把当前 i 位置的值和 j + 1 位置的值进行交换；当遍历完成时，再把 pivot 和 j 位置的值进行交换即可。</p>
+<p>第一轮 partition 的详细过程为：</p>
+<p>（1）8 &gt; 5，保持不变；2 &lt; 5，i 和 j + 1 位置的值进行交换，即 2 和 8 进行交换<br><img src="/images/6-2.png"><br>（2）4 &lt; 5，i 和 j + 1 位置的值进行交换，即 4 和 8 进行交换<br><img src="/images/6-3.png"><br>（3）7 &gt; 5，保持不变；9 &gt; 5，保持不变；1 &lt; 5，i 和 j + 1 位置的值进行交换，即 1 和 8 进行交换<br><img src="/images/6-4.png"><br>（4）6 &gt; 5，保持不变；3 &lt; 5，i 和 j + 1 位置的值进行交换，即 3 和 7 进行交换<br><img src="/images/6-5.png"><br>（5）此时，遍历完成，把 pivot 和 j 位置的值进行交换，即 5 和 3 进行交换。此时，数组中所有比 5 小的元素都在它的左边，所有比 5 大的元素都在它的右边</p>
+<table>
+<tr>
+<td style="text-align: center;" bgcolor="#FFD7D5">3</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">2</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">4</td>
+<td style="text-align: center;" bgcolor="#FFD7D5">1</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">9</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">8</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">6</td>
+<td style="text-align: center;" bgcolor="#D6D6D6">7</td>
+</tr>
+</table>
+（6）接下来，对 5 左右两边的数组再分别继续使用相同的方法进行排序，直到完成整个排序过程。
+
+<p>注：上面是从左到右使用单路快排的思路，为了开拓思维，当然也可以使用从右到左单路快排的思路。</p>
+<h2 id="单路快速排序代码"><a href="#单路快速排序代码" class="headerlink" title="单路快速排序代码"></a>单路快速排序代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort单路快排</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">  quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用单路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (left &gt;= right) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">  <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">  quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">  <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">  quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，从左往右单路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// pivot，i，j的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> pivot = data[left], j = left, temp;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span> ; i &lt;= right; i ++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">          j++;</span><br><span class="line">          <span class="comment">// swap i and j + 1</span></span><br><span class="line">          temp = data[j];</span><br><span class="line">          data[j] = data[i];</span><br><span class="line">          data[i] = temp;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// swap left and j</span></span><br><span class="line">  data[left] = data[j];</span><br><span class="line">  data[j] = pivot;</span><br><span class="line">  <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单路快速排序优化"><a href="#单路快速排序优化" class="headerlink" title="单路快速排序优化"></a>单路快速排序优化</h2><p>首先第一个优化相信大家看了上一篇归并排序优化的话肯定能想到，那就是当递归到数据量比较小时，转而使用插入排序提高性能。</p>
+<p>除此之外，其实这里还有一个非常重要的问题：如果当待排序数组是近乎有序或者完全有序的情况下，会发生什么事情？</p>
+<p>大家可以在自己的 ide 上测试一下，会发现，当随着数据量增大，快排会越来越慢。这是为什么呢？</p>
+<p>我们对比着归并排序来分析一下。归并排序和快速排序都是使用的分治法的思想，都是要把待排序数组一分为二，不同的是，归并排序能保证每次都是把数组平均一分为二，而快排是以基准值一分为二，所以一般情况下，快排分出来的子数组都是一大一小的。</p>
+<p>所以对于两者递归生成的递归树，归并排序的平衡度要更好，并且可以保证递归树的高度为logn，而快排生成的递归树高度非常有可能要比logn高。最差情况就是当整个待排序数组本来就近乎有序或者完全有序时，此时快排的时间复杂度会退化到最坏的时间复杂度 O(n^2)。</p>
+<p>一句话概括造成这种情况的原因，就是基准值选的不够好。不能简单粗暴的直接选数组中第一个值作为基准值，我们希望的最好情况是能够选择数组排好序时中间的元素作为基准值。可是这个值又不好准确的定位，其实，我们只需要在数组中随机选择一个元素即可。</p>
+<p>在这种情况下，快排的时间复杂度退化为 O(n^2) 的可能性是非常非常低的，几乎为 0。</p>
+<p>具体在代码优化实现上，我们只需要在上边 partition 代码开始时加一行代码，把 left 和随机位置的值进行交换即可，后边的代码都不用动。</p>
+<h2 id="单路快速排序优化代码"><a href="#单路快速排序优化代码" class="headerlink" title="单路快速排序优化代码"></a>单路快速排序优化代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * quickSort单路快排优化</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] data)</span> </span>&#123;</span><br><span class="line">  quickSortHelper(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 递归使用单路快排排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSortHelper</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 优化1：对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">    <span class="keyword">if</span>(right - left &lt;= <span class="number">15</span>)&#123;</span><br><span class="line">        insertSort(data, left, right);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> pivot = partition(data, left, right);</span><br><span class="line">    <span class="comment">// 递归排序基准数左部分</span></span><br><span class="line">    quickSortHelper(data, left, pivot - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 递归排序基准数右部分</span></span><br><span class="line">    quickSortHelper(data, pivot + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对数组 [left, right] 部分进行 partition 操作，从左往右单路</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序的数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结束位置</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 返回基准值位置，保证 data[left...pivot - 1] &lt; data[pivot]; data[pivot + 1...right] &gt; data[pivot]</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 优化2：随机在 data[left...right] 范围中, 选择一个位置作为基准值</span></span><br><span class="line">    <span class="keyword">int</span> randomIndex = (<span class="keyword">int</span>) (Math.random() * (right - left + <span class="number">1</span>)) + left;</span><br><span class="line">    <span class="keyword">int</span> temp = data[left];</span><br><span class="line">    data[left] = data[randomIndex];</span><br><span class="line">    data[randomIndex] = temp;</span><br><span class="line">    <span class="comment">// 下面逻辑完全不变</span></span><br><span class="line">    <span class="comment">// pivot，i，j的定义在上边已经介绍</span></span><br><span class="line">    <span class="keyword">int</span> pivot = data[left], j = left;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = left + <span class="number">1</span> ; i &lt;= right; i ++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (data[i] &lt; pivot) &#123;</span><br><span class="line">            j++;</span><br><span class="line">            <span class="comment">// swap i and j + 1</span></span><br><span class="line">            temp = data[j];</span><br><span class="line">            data[j] = data[i];</span><br><span class="line">            data[i] = temp;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// swap left and j</span></span><br><span class="line">    data[left] = data[j];</span><br><span class="line">    data[j] = pivot;</span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 为了方便大家观看，这个插入排序的代码是直接从上一篇中拿过来的</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="单路快速排序总结"><a href="#单路快速排序总结" class="headerlink" title="单路快速排序总结"></a>单路快速排序总结</h2><p>到此为止，我们的快排已经能够完美解决随机数组和几乎有序数组的排序问题。</p>
+<p>可以看到，为了避免快排的时间复杂度退化为最坏的时间复杂度 O(n^2)，我们实际上是用随机函数来编写了一个随机化算法（randomized algorithm）。也就是说，我们不能保证我们的算法是一定非常快的，但是可以保证我们的算法在非常非常高的概率下都能非常快。</p>
+<p><img src="/images/6-6.gif"></p>
+<h2 id="为什么还有双路、三路快排？"><a href="#为什么还有双路、三路快排？" class="headerlink" title="为什么还有双路、三路快排？"></a>为什么还有双路、三路快排？</h2><p>我们的代码完美了吗？当然还不够，因为还是忽略了一种情况：如果当待排序数组有非常多的重复值时，会发生什么事情？</p>
+<p>大家仍然可以在自己的 ide 上测试一下，会发现，当随着数据量增大，快排依然会越来越慢，说明此时快排又退化到了最坏时间复杂度 O(n^2)。这又是为什么呢？</p>
+<p>当然小标题已经暴露了解决方案，大家可以自己先想想，分析一下。</p>
+<p>因为已经写的够长啦，大家可以先消化一下，欲知后事如何且听下回分解…</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">归并排序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-23 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-23T00:00:00+08:00">2020-04-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" class="post-meta-item leancloud_visitors" data-flag-title="归并排序" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/23/归并排序/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>归并排序（merge sort）是1945年由科学家约翰·冯·诺伊曼（John von Neumann）首次提出的，它是分治法的一个非常典型的应用。</p>
+<p>当然，它也是面试中算法的一个高频考察点。（一说到面试，你是不是都有动力看下去了呢）</p>
+<h2 id="归并排序思想"><a href="#归并排序思想" class="headerlink" title="归并排序思想"></a>归并排序思想</h2><p>首先简单介绍一下分治法（Divide and Conquer）。在计算机科学中，分治法是基于多项分支递归的一种很重要的算法范式。在每一层递归上一般有三个步骤：分解，解决，合并。分治的字面意思是“分而治之”，就是把一个复杂的问题分成多个相同或相似的子问题，最终子问题可以简单的直接求解，然后合并子问题的解即可得到原问题的解。这个思想也是很多高效算法的基础。</p>
+<p><img src="/images/5-1.gif" alt="使用归并排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
+<p>接下来就演示一下归并排序的整个过程吧。这次就不用文字来描述了，直接用两张图，因为图更直观些，相信看完你就能明白。</p>
+<p><img src="/images/5-2.gif" alt="使用归并排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
+<p><img src="/images/5-3.png" alt="使用归并排序为一列数字进行排序的过程"></p>
+<p>从demo中，我们可以看到，归并排序算法整体上可以分为两个部分：</p>
+<ol>
+<li><p>分组：递归地把当前数组分割成两部分，直到不可再分割为止，此时，每个数组中只有一个元素；</p>
+</li>
+<li><p>归并（merge）：将两个已经有序的数组合并成一个有序的数组，最终，就会得到一个排好序的数组。</p>
+</li>
+</ol>
+<p>可以看到 merge 操作的代码写的怎么样基本上就决定了归并算法的好坏，那么应该怎么写呢？大家可以先思考一下。</p>
+<p>这个问题是一个典型的“看起来比较简单，真正操作起来会发现其实并没有那么简单”的问题。merge 的过程通常不能直接在原数组上通过交换位置来完成，而是需要开辟一个同样大小的临时空间来辅助完成这个过程。</p>
+<p>当使用这个临时空间后，归并的过程就变得比较容易。但这也算是归并排序的一个缺点，即多使用了O(n)的存储空间。不过在现代的计算机中，时间效率要比空间效率重要的多。因为无论是内存也好，或者硬盘也好，都变得越来越廉价，可以存储的数据规模也越来越大，因此，如果数据存储空间不是算法过程中的瓶颈，我们设计的算法通常优先考虑时间复杂度。</p>
+<h2 id="归并排序代码"><a href="#归并排序代码" class="headerlink" title="归并排序代码"></a>归并排序代码</h2><p>在 merge 的代码实现上，主要思路是用三个索引来在数组内进行追踪。如下图：</p>
+<p><img src="/images/5-4.png" alt="merge的代码实现思路"></p>
+<p>其实定义上图中的这些变量非常重要，举个例子，假如上图中定义的 mid 指向的是 2，那么写出来的代码就是完全不一样的。</p>
+<p>在真正写代码之前，还要再啰嗦一句。其实归并排序的代码可以有两种写法：“Top-down”和“Bottom-up”，或者也可以称为“自顶向下”和“自底向上”，或者也可以称为“递归法”和“非递归法”（迭代法）。不要慌，下面都会给出代码示例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort：Top-down；自顶向下；递归法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  sort(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * sort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (left &gt;= right) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = left + ((right - left) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">  sort(data, left, mid);</span><br><span class="line">  sort(data, mid + <span class="number">1</span>, right);</span><br><span class="line">  <span class="comment">// 对 data[left...mid] 和 data[mid + 1...right] 两部分进行归并，merge 方法代码见下</span></span><br><span class="line">  merge(data, left, mid, right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort：Bottom-up；自底向上；非递归；迭代法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = data.length;</span><br><span class="line">  <span class="comment">// 第一层循环对 merge 的元素个数进行遍历，结果为（1，2，4，8，16，...）</span></span><br><span class="line">  <span class="comment">// 第二层循环中 j 为每一轮要进行归并的两个有序数组中左边数组的起始位置</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">      <span class="comment">// 对 data[j...j + i - 1] 和 data[j + i...j + 2 * i - 1] 两部分进行归并，merge 方法代码见下</span></span><br><span class="line">      merge(data, j, j + i - <span class="number">1</span>, Math.min(j + <span class="number">2</span> * i - <span class="number">1</span>, n - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为归并排序的两种写法的 merge 部分是一样的，所以这里单独给出 merge 方法的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将 data[l...mid] 和 data[mid + 1...r] 两部分进行归并</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> mid 中间index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 用来辅助排序，保存合并后的序列</span></span><br><span class="line">  <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[right - left + <span class="number">1</span>];</span><br><span class="line">  <span class="comment">// i，j，k的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>, k = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 比较左右两个数组的元素</span></span><br><span class="line">  <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;</span><br><span class="line">    temp[k++] = data[i] &lt;= data[j] ? data[i++] : data[j++];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 处理右边数组元素全部存进去，左边数组元素还没有存完的情况</span></span><br><span class="line">  <span class="keyword">while</span> (i &lt;= mid) &#123;</span><br><span class="line">    temp[k++] = data[i++];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 同上，处理左边数组元素全部存进去，右边数组元素还没有存完的情况</span></span><br><span class="line">  <span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">    temp[k++] = data[j++];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 复制回原数组</span></span><br><span class="line">  System.arraycopy(temp, <span class="number">0</span>, data, left, temp.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了开拓大家的思路，下面再给出一种 merge 方法的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将 data[l...mid] 和 data[mid + 1...r] 两部分进行归并</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> mid 中间index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span>[] temp = Arrays.copyOfRange(data, left, right + <span class="number">1</span>);</span><br><span class="line">  <span class="comment">// i，j，k的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = left ; k &lt;= right; k ++) &#123;</span><br><span class="line">    <span class="comment">// 处理左边数组元素全部存进去，右边数组元素还没有存完的情况</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt; mid) &#123;</span><br><span class="line">      data[k] = temp[j - left];</span><br><span class="line">      j ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 处理右边数组元素全部存进去，左边数组元素还没有存完的情况</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; right) &#123;</span><br><span class="line">      data[k] = temp[i - left];</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 当前左边数组元素 &lt; 当前右边数组元素</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (temp[i - left] &lt; temp[j - left]) &#123;</span><br><span class="line">      data[k] = temp[i - left];</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 当前左边数组元素 &gt;= 当前右边数组元素</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      data[k] = temp[j - left];</span><br><span class="line">      j ++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="归并排序优化"><a href="#归并排序优化" class="headerlink" title="归并排序优化"></a>归并排序优化</h2><p>这里要讲两个小的优化点：</p>
+<ol>
+<li><p>前面我们在分完组后直接进行 merge 操作，其实我们忽略了一种情况，那就是在分完组后 merge 之前，有可能两个数组已经就是有序的了，这时候就没必要再进行 merge 操作了。</p>
+<p>具体在代码优化实现上，可以在 merge 之前加一个判断，判断如果 data[mid] &gt; data[mid+1]，才进行 merge 操作。如果要处理的数据场景有可能会出现近乎有序的情况，我们可以加上这个优化。</p>
+</li>
+<li><p>第二个优化点要用到我们前面聊插入排序时的知识，在插入排序的最后，我们说到插入排序可以在更加复杂的排序算法中作为一个子过程来优化，便可以用在这里。</p>
+<p>具体在代码优化实现上，可以在递归到数据量比较小时，转而使用插入排序提高性能。因为当数据量比较小的时候，插入排序会比归并排序快一些（此时整个数组近乎有序的概率也会比较大）。</p>
+<p>不过，讲道理，虽然这两个优化点对归并排序的时间复杂度并没有影响，但是确实会让程序运行快一些。</p>
+</li>
+</ol>
+<h2 id="归并排序优化代码"><a href="#归并排序优化代码" class="headerlink" title="归并排序优化代码"></a>归并排序优化代码</h2><p>首先，需要对插入排序的代码进行一定的改写，要支持指定范围的插入排序，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，归并排序的两种写法都可以用到上面提到的两个优化点（merge 代码同上）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort优化：Top-down；自顶向下；递归法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  sort(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * sort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 优化2: 对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">  <span class="keyword">if</span> (r - l &lt;= <span class="number">15</span>) &#123;</span><br><span class="line">    insertSort(data, l, r);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = l + ((r - l) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">  sort(data, l, mid);</span><br><span class="line">  sort(data, mid + <span class="number">1</span>, r);</span><br><span class="line">  <span class="comment">// 优化1</span></span><br><span class="line">  <span class="keyword">if</span> (data[mid] &gt; data[mid+<span class="number">1</span>]) &#123;</span><br><span class="line">    <span class="comment">// merge 代码同上</span></span><br><span class="line">    merge(data, l, mid, r);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort优化：Bottom-up；自底向上；非递归；迭代法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = data.length;</span><br><span class="line">  <span class="comment">// 优化2: 对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i += <span class="number">16</span>) &#123;</span><br><span class="line">    insertSort(data, i, Math.min(i + <span class="number">15</span>, n - <span class="number">1</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">16</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">      <span class="comment">// 优化1</span></span><br><span class="line">      <span class="keyword">if</span> (data[j + i - <span class="number">1</span>] &gt; data[j + i]) &#123;</span><br><span class="line">        <span class="comment">// merge 代码同上</span></span><br><span class="line">        merge(data, j, j + i - <span class="number">1</span>, Math.min(j + <span class="number">2</span> * i - <span class="number">1</span>, n - <span class="number">1</span>));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="复杂度和稳定性分析"><a href="#复杂度和稳定性分析" class="headerlink" title="复杂度和稳定性分析"></a>复杂度和稳定性分析</h2><p>大家可能都了解过，归并排序的时间复杂度为 O(n * logn)，那么它是怎么计算的呢？大致如下：</p>
+<p>首先计算分组后的层数。会发现：如果数组有 n 个元素，那么层数就为 logn。如果 n 不是 2 的次方也没有关系，因为此时 logn 的结果是个浮点数，上取整即可。</p>
+<p>接下来要分析 merge 的时间复杂度。会发现：虽然我们把它分成了不同的部分，但是每一层要处理的元素个数都是一样的。那么如果整个过程能够用 O(n) 的时间复杂度来解决，那么我们代码的时间复杂度就为 O(n * logn) 级别。而我们实现的 merge 操作时间复杂度就是 O(n)。</p>
+<ol>
+<li>时间复杂度</li>
+</ol>
+<ul>
+<li><p>最优时间复杂度：O(n * logn)</p>
+</li>
+<li><p>最坏时间复杂度：O(n * logn)</p>
+</li>
+<li><p>平均时间复杂度：O(n * logn)</p>
+</li>
+</ul>
+<ol start="2">
+<li>空间复杂度：O(n)</li>
+</ol>
+<ul>
+<li>前面已经分析过了，需要开辟临时空间来辅助完成 merge 过程。</li>
+</ul>
+<ol start="3">
+<li>归并排序是一种稳定排序。</li>
+</ol>
+<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>所谓慢工出细活，这篇文章写了两天，如果你看到这里了，能告诉我这篇文章对得起“通篇都是干货”这句话吗。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/7/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/9/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1017,7 +1049,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-count">45</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
