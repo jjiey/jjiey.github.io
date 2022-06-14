@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">47</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,257 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" class="post-title-link" itemprop="url">leetcode之704-二分查找</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-26T00:00:00+08:00">2020-06-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之704-二分查找" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/26/leetcode之704-二分查找/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>之前在插入排序的文章中介绍了一个用二分查找来优化的思路，但是没有细说二分查找，今天也算是补上这个坑。刚好也是 leetcode 上的一道题。</p>
+<p><img src="/images/16-1.png"></p>
+<p>二分查找算法（binary search algorithm），也称折半搜索算法（half-interval search algorithm）、对数搜索算法（logarithmic search algorithm）等。</p>
+<h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><p>二分查找法是一种在有序数组中查找某一特定元素的搜索算法，它的思想比较简单：</p>
+<ol>
+<li>从有序数组的中间元素开始搜索，如果中间元素正好是要查找的元素，则搜索过程结束；</li>
+<li>如果要查找的元素大于或小于中间元素，则在数组大于或小于中间元素的那一半中进行查找，而且跟开始一样也从中间元素开始；</li>
+<li>如果在某一步中数组为空，则代表要查找的元素不在数组中。</li>
+</ol>
+<p><img src="/images/16-2.png" alt="二分查找算法（picture from Wikipedia）"></p>
+<h2 id="中间元素"><a href="#中间元素" class="headerlink" title="中间元素"></a>中间元素</h2><p>二分查找每次都从有序数组的中间元素开始，那必然要先找到中间元素的索引值 mid。假设有序数组 nums 的第一个元素索引值记为 l，最后一个元素索引值记为 r，怎么求 mid 的值呢？</p>
+<p>很简单，小学数学就学过：mid = (l + r) / 2。但是，在程序里可不一定是这样，前面在<a href="/2020/06/11/leetcode%E4%B9%8B7-%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">leetcode之7-整数反转</a>的文章里我们知道，整数是有范围的。虽然 l 和 r 都是正常的整数，但是 l + r 就有可能会超过整数的范围，也就是说会有溢出的风险。</p>
+<p>那如何安全的求两个整数的平均值呢？</p>
+<p>（1）你可能会想了， (l + r) / 2 改成 l / 2 + r / 2 不就行了吗？在数学里确实是这样，但是我们讨论的是在程序里的情况。举个例子，l = 1，r = 3，那么 mid = 1 / 2 + 3 / 2 = 0 + 1 = 1，但其实正确结果应该是 2。</p>
+<p>（2）换个角度来思考一下，既然我们知道了 l 和 r，那么我们给 l 加上 r - l 偏移量的一半不就行了，毕竟减法是不会溢出的。即 mid = l + (r - l) / 2。</p>
+<p>（3）看看大师们是如何解决这个问题的。java 类库中也提供了二分搜索的方法，我们来看看源码中是怎样写的：mid = (l + r) &gt;&gt;&gt; 1。</p>
+<p>这么写就不怕 l + r 溢出了吗？不要震惊，仔细看后面是 &gt;&gt;&gt; 1（无符号右移），而不是 &gt;&gt; 1（带符号右移），所以并没有问题。</p>
+<p>其实也非常容易理解，如果我不把结果二进制的最高位当作符号来看，那溢不溢出又有什么关系呢？果然，大师的脑回路就是不一样。</p>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>二分查找的思想比较简单，但是代码写起来却不太容易，因为有很多边界问题需要注意，所以我们一定要明确变量的含义，要记住一点：改变取值不代表改变含义。</p>
+<p>举个例子，r 应该怎么取值？是取 nums.length 还是取 nums.length - 1 ？其实都可以，只是我们在写代码的过程中一定要注意不能改变 r 取值的含义。</p>
+<h2 id="非递归代码"><a href="#非递归代码" class="headerlink" title="非递归代码"></a>非递归代码</h2><p>定义要在 [l…r] 的范围里寻找 target，也就规定了 r = nums.length - 1。</p>
+<p>值得一提的是，java 类库中提供的二分搜索用的就是这个定义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r] 的范围里寻找 target（边界问题：r）</span></span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.length - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 当 l == r 时,区间 [l...r] 依然是有效的（边界问题：l &lt; r or l &lt;= r ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">    <span class="keyword">while</span> (l &lt;= r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [mid+1...r] 中（边界问题：l = mid or l = mid + 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &lt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [l...mid-1] 中（边界问题：r = mid or r = mid - 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            r = mid - <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义要在 [l…r) 的范围里寻找 target，也就规定了 r = nums.length。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r) 的范围里寻找 target（边界问题：r）</span></span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.length;</span><br><span class="line">    <span class="comment">// 当 l == r 时, 区间 [l...r) 是个无效区间（边界问题：l &lt; r or l &lt;= r ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [mid+1...r) 中（边界问题：l = mid or l = mid + 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &lt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [l...mid) 中（边界问题：r = mid or r = mid - 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            r = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="递归代码"><a href="#递归代码" class="headerlink" title="递归代码"></a>递归代码</h2><p>从二分查找思想的描述中，明显有一种递归的感觉，确实，二分查找也可以用递归的方式来写。这里同样给出两种不同定义的写法。</p>
+<p>定义要在 [l…r] 的范围里寻找 target，也就规定了 r = nums.length - 1。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r] 的范围里寻找 target</span></span><br><span class="line">    <span class="keyword">return</span> binarySearchHelp(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>, target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">binarySearchHelp</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 边界问题, 同上</span></span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, l, mid - <span class="number">1</span>, target);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, mid + <span class="number">1</span>, r, target);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义要在 [l…r) 的范围里寻找 target，也就规定了 r = nums.length。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r) 的范围里寻找 target</span></span><br><span class="line">    <span class="keyword">return</span> binarySearchHelp(nums, <span class="number">0</span>, nums.length, target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">binarySearchHelp</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 边界问题, 同上</span></span><br><span class="line">    <span class="keyword">if</span> (l &gt;= r) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, l, mid, target);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, mid + <span class="number">1</span>, r, target);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><ol>
+<li>时间复杂度：</li>
+</ol>
+<ul>
+<li>二分查找每次比较都使搜索范围缩小一半（每次都除以 2），所以时间复杂度为 O(logn)。</li>
+</ul>
+<ol start="2">
+<li>空间复杂度：</li>
+</ol>
+<ul>
+<li><p>对于非递归代码来说，没有使用额外的空间，所以空间复杂度为 O(1)；</p>
+</li>
+<li><p>对于递归代码来说，因为递归的次数和深度都是 logn，所以空间复杂度也为 O(logn)。</p>
+</li>
+</ul>
+<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p><img src="/images/16-3.png"></p>
+<p>二分查找法真是完美的说明了：思考一个算法的思想是简单的，但是写出一个没有 bug 的程序却是复杂的。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" class="post-title-link" itemprop="url">leetcode之9-回文数</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-06-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-21T00:00:00+08:00">2020-06-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之9-回文数" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/21/leetcode之9-回文数/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><img src="/images/15-1.png"></p>
+<p>有两点很明确：</p>
+<ol>
+<li>负数不可能是回文数；</li>
+<li>除了 0 以外，所有个位是 0 的数字不可能是回文数。</li>
+</ol>
+<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。</p>
+<p>但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> copyx = x;</span><br><span class="line">    <span class="comment">// 翻转之后的数字可能超过整型的范围，用 long 来处理</span></span><br><span class="line">    <span class="keyword">long</span> y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (copyx != <span class="number">0</span>) &#123;</span><br><span class="line">        y = y * <span class="number">10</span> + copyx % <span class="number">10</span>;</span><br><span class="line">        copyx /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x == y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
+<h2 id="2"><a href="#2" class="headerlink" title="2"></a>2</h2><p>将数字转换为字符串，通过对比字符串前后对称位置的字符是否相等来检查原始数字是否为回文。</p>
+<p>有个可以优化的小点是我们只需遍历一半的字符串就够了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    String str = String.valueOf(x);</span><br><span class="line">    <span class="keyword">int</span> n = str.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n / <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 对比字符串前后对称位置的字符是否相等</span></span><br><span class="line">        <span class="keyword">if</span> (str.charAt(i) != str.charAt(n - <span class="number">1</span> - i)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 O(n / 2)，忽略常数后为 O(n)；空间复杂度为 O(n)，因为我们将数字转换为了字符串。</p>
+<h2 id="官方题解"><a href="#官方题解" class="headerlink" title="官方题解"></a>官方题解</h2><p>一个非常巧妙的办法，反转一半的数字，这必然不会导致溢出。</p>
+<p>其中我们要解决两个问题：</p>
+<ol>
+<li>如何知道反转数字的位数已经达到原始数字位数的一半？</li>
+<li>反转后的数字 revertedNumber 如何和原始数字 x 进行比较？</li>
+</ol>
+<p><img src="/images/15-2.png"></p>
+<p>可以看到：</p>
+<ol>
+<li>当原始数字 x 小于或等于反转后的数字 revertedNumber 时，就意味着已经处理了一半位数的数字了；</li>
+<li>如果是回文数，最终 revertedNumber 和 x 的关系必然如上图所示。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> revertedNumber = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 反转一半</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; revertedNumber) &#123;</span><br><span class="line">        revertedNumber = revertedNumber * <span class="number">10</span> + x % <span class="number">10</span>;</span><br><span class="line">        x /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断是否回文</span></span><br><span class="line">    <span class="keyword">return</span> x == revertedNumber || x == revertedNumber / <span class="number">10</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -533,286 +784,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" class="post-title-link" itemprop="url">树状数组</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-28 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-28T00:00:00+08:00">2020-05-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/data-structure/" itemprop="url" rel="index"><span itemprop="name">data structure</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/" class="post-meta-item leancloud_visitors" data-flag-title="树状数组" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/05/28/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/28/树状数组/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>树状数组，又称二元索引树（Binary Indexed Tree），又以其发明者命名为 Fenwick 树。最早由 Peter M. Fenwick 于 1994 年提出。</p>
-<p>上篇文章最后已经把树状数组能干什么说的非常清楚了。再简单回顾下，树状数组是一种可以动态维护数组前缀和的数据结构，它的主要功能是：</p>
-<ol>
-<li>单点更新 update(i, v)：把序列 i 位置的数加上一个值 v；</li>
-<li>区间查询 query(i)：查询序列 [1⋯i] 区间的区间和，即 i 位置的前缀和</li>
-</ol>
-<p>其中单点更新和区间查询的时间复杂度都是 O(logn)，n 为需要维护前缀和的数组的长度。</p>
-<p>重点是，单点更新和区间查询的时间复杂度都是 O(logn) 它是怎么做到的？</p>
-<h2 id="树状数组的神秘面纱"><a href="#树状数组的神秘面纱" class="headerlink" title="树状数组的神秘面纱"></a>树状数组的神秘面纱</h2><p>先来看看它到底长什么样子。（我感觉长的跟跳表还有点像）</p>
-<p><img src="/images/11-1.png" alt="树状数组"></p>
-<p>其中，数组 A 是原数组，数组 C 就是树状数组（现在终于知道它为什么叫树状数组了吧，长的就像树）。</p>
-<p>从图中可以看到数组 A 和数组 C 之间的关系：</p>
-<p>C1 = A1<br>C2 = A1 + A2<br>C3 = A3<br>C4 = A1 + A2 + A3 + A4<br>C5 = A5<br>C6 = A5 + A6<br>C7 = A7<br>C8 = A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8<br>… …</p>
-<p>这里有个有趣的性质：设数组 C 的节点编号为 n，则 C[n] 管辖的区间为数组 A 从 n 往左连续 2 ^ k（k 为 n 二进制末尾 0 的个数）个元素。因为这个区间最后一个元素必然为 A[n]，所以 C[n] = Sum[ A[n – 2 ^ k + 1], A[n] ]。</p>
-<p>好像有点绕，用 C[10] 来举个例子。10 的二进制表示为 1010，则 2 ^ k（k 为 10 二进制末尾 0 的个数，所以 k = 1）为 2 ^ 1 = 2，则 C[10] 管辖的区间为数组 A 从 10 往左连续 2 个元素，即 C[10] = Sum[ A[10 – 2 ^ 1 + 1], A[10] ] = A[9] + A[10]。</p>
-<p>看到这里，大家应该就有感觉了，为什么树状数组能做到单点更新和区间查询的时间复杂度都是 O(logn) ？正是因为它把线性结构转化成了树状结构，从而进行跳跃式的扫描！</p>
-<p>到这里，就得先说一个重要的函数 lowbit，它就是用来计算上面说的 2 ^ k 的快捷方法。</p>
-<h2 id="lowbit"><a href="#lowbit" class="headerlink" title="lowbit"></a>lowbit</h2><p>lowbit(k) 的结果是：只保留 k 的二进制中最低位的 1。举个例子，lowbit(10)，10 的二进制是 1010，则 lowbit(10) = 0010（只保留 1010 中最低位的 1）。</p>
-<p>而 lowbit 有两种实现方式，都要用到位运算。</p>
-<h3 id="实现方式一"><a href="#实现方式一" class="headerlink" title="实现方式一"></a>实现方式一</h3><p>我们知道，在计算机中，负数的二进制以原码的补码形式来表示，负数的补码为对该数的原码除符号位外各位取反，然后在最后一位加 1。</p>
-<p>比如 -10 用二进制来表示：-10 的原码为 1000 0000 0000 0000 0000 0000 0000 1010；反码为 1111 1111 1111 1111 1111 1111 1111 0101；补码为 1111 1111 1111 1111 1111 1111 1111 0110。</p>
-<p>此时，10 &amp; -10 是什么情况呢？</p>
-<p>0000 0000 0000 0000 0000 0000 0000 1010 &amp; 1111 1111 1111 1111 1111 1111 1111 0110 = 0000 0000 0000 0000 0000 0000 0000 0010。惊喜的发现，其实结果就是 lowbit(10)。</p>
-<p>（附 &amp; 运算规则：0 &amp; 0 = 0；0 &amp; 1 = 0；1 &amp; 0 = 0；1 &amp; 1 = 1）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> k &amp; (-k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="实现方式二"><a href="#实现方式二" class="headerlink" title="实现方式二"></a>实现方式二</h3><p>我们知道，将一个二进制数减一，得到的结果是：从最低位的 1 开始后面的部分都与之前相反。</p>
-<p>比如 10 的二进制表示为 1010，那么 9 的二进制表示为 1001。</p>
-<p>此时，10 ^ 9 是什么情况呢？很简单，1010 ^ 1001 = 0011。</p>
-<p>此时，10 &amp; (10 ^ 9) 又是什么情况呢？也很简单，1010 &amp; 0011 = 0010。我们又惊喜的发现，其实结果就是 lowbit(10)。</p>
-<p>（附 ^ 运算规则：0 ^ 0 = 0；0 ^ 1 = 1；1 ^ 0 = 1；1 ^ 1 = 0）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> k &amp; (k ^ (k - <span class="number">1</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="树状数组实现思路"><a href="#树状数组实现思路" class="headerlink" title="树状数组实现思路"></a>树状数组实现思路</h2><p>有了 lowbit 函数，我们就可以把上图中的 A 数组和 C 数组联系起来了！</p>
-<h3 id="单点更新"><a href="#单点更新" class="headerlink" title="单点更新"></a>单点更新</h3><p>在修改时也要对该节点的所有父节点进行修改。比如在上图中要修改 C[1]，那么 C[2]，C[4]，C[8]，C[16] 也要做修改。</p>
-<p>那不看图的话怎么知道该节点的所有父节点呢？不难，1 + lowbit(1) = 2，2 + lowbit(2) = 4，4 + lowbit(4) = 8，8 + lowbit(8) = 16，（16 + lowbit(16) = 32 超出了数组大小自然不用考虑）。</p>
-<h3 id="区间查询"><a href="#区间查询" class="headerlink" title="区间查询"></a>区间查询</h3><p>比如求上图中 [1, 14] 的区间和，从图中可以看到：<br>Sum[1, 14] = C[14] + C[12] + C[8] = Sum[ A[13], A[14] ] + Sum[ A[9], A[12] ] + Sum[ A[1], A[8] ] = Sum[ A[1], A[14] ]。</p>
-<p>那不看图的话怎么算出 12 和 8 呢？也不难，14 - lowbit(14) = 12，12 - lowbit(12) = 8，（8 - lowbit(8) = 0 自然不用考虑）。</p>
-<p><img src="/images/11-2.png" alt="树状数组求和图示（图片来源网络，侵删）"></p>
-<h2 id="树状数组代码"><a href="#树状数组代码" class="headerlink" title="树状数组代码"></a>树状数组代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 树状数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FenwickTree</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上图中的 C 数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] tree;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> len;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FenwickTree</span><span class="params">(<span class="keyword">int</span> len)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.tree = <span class="keyword">new</span> <span class="keyword">int</span>[len + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">this</span>.len = len;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 单点更新：把数组 i 位置的值加上 v</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> v)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 类比上图，从下到上进行更新</span></span><br><span class="line">        <span class="keyword">while</span> (i &lt;= <span class="keyword">this</span>.len) &#123;</span><br><span class="line">            <span class="keyword">this</span>.tree[i] += v;</span><br><span class="line">            i += lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 区间查询：查询序列 [1 ⋯ i] 区间的区间和，即 i 位置的前缀和</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> i)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 类比上图，从右到左查询</span></span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (i &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            sum += <span class="keyword">this</span>.tree[i];</span><br><span class="line">            i -= lowbit(i);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">lowbit</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x &amp; (-x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="求数组中的逆序对"><a href="#求数组中的逆序对" class="headerlink" title="求数组中的逆序对"></a>求数组中的逆序对</h2><p>具体思路上篇文章最后已经介绍了，不再赘述，直接来看代码吧。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用离散化树状数组求求数组中的逆序对</span></span><br><span class="line"><span class="comment"> * 离散化原因：使得数字更紧凑，节约树状数组的空间</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> len = nums.length;</span><br><span class="line">    <span class="keyword">if</span> (len &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 去重并排序</span></span><br><span class="line">    Set&lt;Integer&gt; treeSet = <span class="keyword">new</span> TreeSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">        treeSet.add(num);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 把排名存在 HashMap 里方便查询</span></span><br><span class="line">    Map&lt;Integer, Integer&gt; rankMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">int</span> rankIndex = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (Integer num : treeSet) &#123;</span><br><span class="line">        rankMap.put(num, rankIndex++);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 在树状数组内部完成前缀和的计算</span></span><br><span class="line">    <span class="comment">// 规则是：从后向前，先给对应的排名 + 1，再查询前缀和</span></span><br><span class="line">    FenwickTree fenwickTree = <span class="keyword">new</span> FenwickTree(rankMap.size());</span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = len - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">int</span> rank = rankMap.get(nums[i]);</span><br><span class="line">        fenwickTree.update(rank, <span class="number">1</span>);</span><br><span class="line">        count += fenwickTree.query(rank - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>提交，完美通过！</p>
-<p><img src="/images/11-3.png"></p>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>借用一句话来总结树状数组：树状数组巧妙地利用了二分，它并不神秘，关键是巧妙！</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/" class="post-title-link" itemprop="url">leetcode之面试题51-数组中的逆序对</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-05-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-05-16T00:00:00+08:00">2020-05-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之面试题51-数组中的逆序对" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/05/16/leetcode%E4%B9%8B%E9%9D%A2%E8%AF%95%E9%A2%9851-%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E9%80%86%E5%BA%8F%E5%AF%B9/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/05/16/leetcode之面试题51-数组中的逆序对/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>今天给大家带来一道 leetcode 的算法题。为什么这篇文章要写一道算法题？其实主要是想说<strong>之前写的排序算法可不只是为了面试用的</strong>。</p>
-<p>这句话也算是一个小提示，那么你能不能与之前写的排序知识联系起来想到解法呢？</p>
-<p><img src="/images/10-1.png"></p>
-<h2 id="暴力"><a href="#暴力" class="headerlink" title="暴力"></a>暴力</h2><p>没啥好说的，一上来，两层 for 循环暴力枚举所有数对，逐一判断即可搞定。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 暴力法</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 逆序对总数</span></span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; nums.length; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (nums[i] &gt; nums[j]) &#123;</span><br><span class="line">                ret++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结果当然可想而知，毕竟时间复杂度为 O(n^2)。此外空间复杂度为 O(1)。</p>
-<p><img src="/images/10-2.png"></p>
-<h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><p>利用归并排序的思路解这道题，你想到了吗？</p>
-<p>前面写归并排序的时候写过归并排序的思路，希望你还有印象（没印象的话可以点击文章底部链接去看看哦）。</p>
-<p>其实解这道题我们只需要在 merge 操作上做些思考。还记得 merge 操作吧，它是要把两个有序数组合并成一个有序数组。而我们思考的方向，既可以在左边的有序数组上，也可以在右边的有序数组上，所以这个思路可以有两种写法。下面逐一说明。</p>
-<h3 id="在左边的有序数组上思考"><a href="#在左边的有序数组上思考" class="headerlink" title="在左边的有序数组上思考"></a>在左边的有序数组上思考</h3><p>假定待 merge 数组如下，记逆序对总数为 ret：<br><img src="/images/10-3.png"><br>（1）8 &lt; 9，不构成逆序对，此时 ret = 0<br><img src="/images/10-4.png"><br>（2）12 &gt; 9，构成逆序对，且左数组中 12 后边的数都和 9 构成逆序对，此时 ret = 3<br><img src="/images/10-5.png"><br>（3）12 &lt; 26，不构成逆序对，此时 ret = 3<br><img src="/images/10-6.png"><br>（4）16 &lt; 26，不构成逆序对，此时 ret = 3<br><img src="/images/10-7.png"><br>（5）22 &lt; 26，不构成逆序对，此时 ret = 3<br><img src="/images/10-8.png"><br>（6）左数组遍历完，右数组剩下的元素入辅助数组。因为此时右数组剩下的值比原左数组的所有值都大，不会构成逆序对，所以这一轮 merge 的最终 ret = 3</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 采用归并排序自底向上写法，具体可见归并排序文章</span></span><br><span class="line"><span class="comment"> * 当然也可以用自顶向下递归的方式来写，都是一样的，这部分其实也不是解题的重点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ret 为逆序对总数</span></span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>, n = nums.length;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = j + i - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; nums[j + i]) &#123;</span><br><span class="line">                ret += reversePairsHelper(nums, j, mid, Math.min(mid + i, n - <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * “merge”考虑左数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">reversePairsHelper</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[right - left + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>, k = <span class="number">0</span>, ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">            temp[k++] = nums[i++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 重点</span></span><br><span class="line">            ret += mid - i + <span class="number">1</span>;</span><br><span class="line">            temp[k++] = nums[j++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid) &#123;</span><br><span class="line">        temp[k++] = nums[i++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">        temp[k++] = nums[j++];</span><br><span class="line">    &#125;</span><br><span class="line">    System.arraycopy(temp, <span class="number">0</span>, nums, left, temp.length);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="在右边的有序数组上思考"><a href="#在右边的有序数组上思考" class="headerlink" title="在右边的有序数组上思考"></a>在右边的有序数组上思考</h3><p>要比在左数组思考多考虑一点点，不过也比较简单。</p>
-<p>假定待 merge 数组如下，记逆序对总数为 ret：<br><img src="/images/10-9.png"><br>（1）12 &gt; 9，ret 不变，此时 ret = 0<br><img src="/images/10-10.png"><br>（2）12 &lt; 26，12 和右数组 26 之前的所有数构成逆序对，此时 ret = 1<br><img src="/images/10-11.png"><br>（3）28 &gt; 26，ret 不变，此时 ret = 1<br><img src="/images/10-12.png"><br>（4）28 &lt; 55，28 和右数组 55 之前的所有数构成逆序对，此时 ret = 3<br><img src="/images/10-13.png"><br>（5）50 &lt; 55，50 和右数组 55 之前的所有数构成逆序对，此时 ret = 5<br><img src="/images/10-14.png"><br>（6）60 &gt; 55，ret 不变，此时 ret = 5<br><img src="/images/10-15.png"><br>（7）60 &lt; 64，60 和右数组 64 之前的所有数构成逆序对，此时 ret = 8<br><img src="/images/10-16.png"><br>（8）左数组遍历完，右数组剩下的元素入辅助数组。因为此时右数组剩下的值比原左数组的所有值都大，不会构成逆序对，所以这一轮 merge 的最终 ret = 8</p>
-<p>注意，为什么说要比在左数组思考多考虑一点，就在这里。如果最后的情况是右数组遍历完，左数组剩下的元素入辅助数组。那么此时左数组剩下的值比原右数组的所有值都大，那么此时左数组剩下的值都和原右数组的所有值都能构成逆序对，这部分一定要计算在内！</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 代码同上</span></span><br><span class="line"><span class="comment"> * 采用归并排序自底向上写法，具体可见归并排序文章</span></span><br><span class="line"><span class="comment"> * 当然也可以用自顶向下递归的方式来写，都是一样的，这部分其实也不是解题的重点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">reversePairs</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ret 为逆序对总数</span></span><br><span class="line">    <span class="keyword">int</span> ret = <span class="number">0</span>, n = nums.length;</span><br><span class="line">    <span class="keyword">if</span> (n &lt; <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = j + i - <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; nums[j + i]) &#123;</span><br><span class="line">                ret += reversePairsHelper(nums, j, mid, Math.min(mid + i, n - <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * “merge”考虑右数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">reversePairsHelper</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[right - left + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>, k = <span class="number">0</span>, ret = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;</span><br><span class="line">        <span class="keyword">if</span> (nums[i] &lt;= nums[j]) &#123;</span><br><span class="line">            <span class="comment">// 重点</span></span><br><span class="line">            ret += j - mid - <span class="number">1</span>;</span><br><span class="line">            temp[k++] = nums[i++];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            temp[k++] = nums[j++];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (i &lt;= mid) &#123;</span><br><span class="line">        <span class="comment">// 重点</span></span><br><span class="line">        ret += right - mid;</span><br><span class="line">        temp[k++] = nums[i++];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">        temp[k++] = nums[j++];</span><br><span class="line">    &#125;</span><br><span class="line">    System.arraycopy(temp, <span class="number">0</span>, nums, left, temp.length);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>提交成功通过。时间复杂度同归并排序 O(n * logn)，空间复杂度也同归并排序 O(n)。</p>
-<h2 id="离散化树状数组"><a href="#离散化树状数组" class="headerlink" title="离散化树状数组"></a>离散化树状数组</h2><p>这个是从官方的解法中看到的，比较骚气，不过要用到一种新的数据结构 - 树状数组。</p>
-<p>接下来说一下树状数组解这道题的思路吧，具体的树状数组和代码想放到下一篇再来写。</p>
-<p>树状数组是一种可以动态维护数组前缀和的数据结构，它的主要功能是：</p>
-<ol>
-<li>单点更新 update(i, v)：把序列 i 位置的数加上一个值 v，在这道题中 v = 1</li>
-<li>区间查询 query(i)：查询序列 [1⋯i] 区间的区间和，即 i 位置的前缀和</li>
-</ol>
-<p>其中单点更新和区间查询的时间复杂度都是 O(logn)，n 为需要维护前缀和的数组的长度。还要注意，树状数组中 0 索引位置是不参与计算的。（具体原因了解树状数组后就能理解）</p>
-<p>假定数组 a 为 [5, 5, 2, 3, 6]，记逆序对总数为 ret。我们申请一个新数组，遍历 a，在新数组中记录 a 中每个值出现的次数，最终新数组结果如下：</p>
-<table>
-<tr>
-<td style="text-align: center;">index</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">3</td>
-<td style="text-align: center;">4</td>
-<td style="text-align: center;">5</td>
-<td style="text-align: center;">6</td>
-</tr>
-<tr>
-<td style="text-align: center;">value</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">1</td>
-<td style="text-align: center;">0</td>
-<td style="text-align: center;">2</td>
-<td style="text-align: center;">1</td>
-</tr>
-</table>
-
-<p>可以看到，a[i] 的前缀和可以表示：a 数组中有多少个数比 a[i] 小。那么，如果 a[i] 之前的数在原数组中是出现在 a[i] 后面的，那么 i - 1 的前缀和就代表这些数和 a[i] 构成的逆序对数量。</p>
-<p>明白了这一点，那就好做了。我们可以从后往前遍历 a，当遍历到 a[i] 时，把对应的新数组中 i 位置的值自增 1，然后再计算 i - 1 的前缀和，记到 ret 中。当 a 遍历完成后，ret 即为逆序对总数。</p>
-<p>为什么可以这么做呢？因为我们在遍历 a 的过程中，把 a 分成了两部分，一部分遍历过（在新数组中），另一部分待遍历（不在新数组中）。那么对于 a[i] 来说，我们求到的 i - 1 位置的前缀和，就是遍历过的元素中比 a[i] 小的元素的总和，而这些元素在 a 中本来就是排在 a[i] 后面的，但它们的值是比 a[i] 小的，所以这就形成了一个逆序对。</p>
-<h3 id="离散化树状数组-1"><a href="#离散化树状数组-1" class="headerlink" title="离散化树状数组"></a>离散化树状数组</h3><p>确实像上面说的那么做是可以的，但是别忘了题目的限制：<code>0 &lt;= 数组长度 &lt;= 50000</code>，额，其实这个限制还好，内存中放得下。如果限制更大一点，内存中放不下怎么办呢？</p>
-<p>其实，就算限制更大一点，大到内存中都放不下，但是给定的数组中肯定也是很多位置是 0，它的有效元素的位置是稀疏的。我们可以想办法让有效位置紧凑一点，减少无效位置的出现，减少空间浪费，这时我们就可以用到这个方法 - 离散化。</p>
-<p>也就是说，我们只需要关心有效元素在数组中按大小的排名，来决定它们在数组中的位置即可。</p>
-<p>恰好，java 里有一种数据结构可以做到去重并排序这一点，什么呢？就是 TreeSet。</p>
-<p>离散化树状数组解这道题的思路大致就说完了。其实有个非常重要的点没有说，那就是：单点更新和区间查询的时间复杂度都是 O(logn) 这个是怎么做到的？如果明白了这一点，那么他为什么叫“树状数组”也就明白了。好了，写不少字了，卖个关子吧。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/6/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/8/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -880,7 +855,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
