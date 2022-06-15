@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">47</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,376 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">jinfo 基本命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-03 09:00:30" itemprop="dateCreated datePublished" datetime="2021-04-03T09:00:30+08:00">2021-04-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jinfo 基本命令" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/04/03/jinfo-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/04/03/jinfo-基本命令/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p>
+<p><strong>jinfo (Configuration Info for Java)</strong>: Java 配置信息工具</p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>实时查看和调整虚拟机各项参数：</p>
+<ul>
+<li><p>使用 <code>jps -v</code> 命令可以查看虚拟机启动时显式指定的参数列表，而使用 <code>jinfo -flag</code> 命令可以查询未被显式指定的参数的系统默认值。</p>
+<ul>
+<li>对于 JDK 6 及以上版本，还可以使用 <code>java- XX:+PrintFlagsFinal</code> 查看参数默认值(命令: <code>$ java -XX:+PrintFlagsFinal -version</code>)。</li>
+</ul>
+</li>
+<li><p>使用 <code>jinfo -sysprops</code> 命令可以打印虚拟机进程的 System.getProperties() 的内容。JDK 6 之后，该命令除了提供信息查询功能，还加入了在运行期修改部分参数值的能力(使用 <code>-flag[+/-]name 或 -flag name=value</code> 在运行期修改一部分运行期可写的虚拟机参数值)。</p>
+</li>
+</ul>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo [ option ] pid</span><br></pre></td></tr></table></figure>
+<h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>-flag &lt;name&gt;</code></td>
+<td align="center">打印虚拟机标记参数的值</td>
+</tr>
+<tr>
+<td align="center"><code>-flag [+/-]&lt;name&gt;</code></td>
+<td align="center">开启或关闭虚拟机标记参数</td>
+</tr>
+<tr>
+<td align="center"><code>-flag &lt;name&gt;=&lt;value&gt;</code></td>
+<td align="center">设置虚拟机标记参数</td>
+</tr>
+<tr>
+<td align="center">-flags</td>
+<td align="center">输出虚拟机参数</td>
+</tr>
+<tr>
+<td align="center">-sysprops</td>
+<td align="center">输出 Java 系统属性</td>
+</tr>
+<tr>
+<td align="center"><code>&lt;no option&gt;</code></td>
+<td align="center">输出以上所有</td>
+</tr>
+</tbody></table>
+<h2 id="执行样例"><a href="#执行样例" class="headerlink" title="执行样例"></a>执行样例</h2><h3 id="flag-lt-name-gt"><a href="#flag-lt-name-gt" class="headerlink" title="-flag &lt;name&gt;"></a><code>-flag &lt;name&gt;</code></h3><p>查询 CMSInitiatingOccupancyFraction 参数值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flag CMSInitiatingOccupancyFraction 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-1.png"></p>
+<h3 id="flag-lt-name-gt-1"><a href="#flag-lt-name-gt-1" class="headerlink" title="-flag [+/-]&lt;name&gt;"></a><code>-flag [+/-]&lt;name&gt;</code></h3><p>开启 / 关闭 PrintGC</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flag PrintGC 5511</span><br><span class="line">$ jinfo -flag +PrintGC 5511</span><br><span class="line">$ jinfo -flag PrintGC 5511</span><br><span class="line">$ jinfo -flag -PrintGC 5511</span><br><span class="line">$ jinfo -flag PrintGC 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-2.png"></p>
+<h3 id="flag-lt-name-gt-lt-value-gt"><a href="#flag-lt-name-gt-lt-value-gt" class="headerlink" title="-flag &lt;name&gt;=&lt;value&gt;"></a><code>-flag &lt;name&gt;=&lt;value&gt;</code></h3><p>设置 HeapDumpPath</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flag HeapDumpPath 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath&#x3D;&#x2F;root&#x2F;heapDump.hprof 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath&#x3D; 5511</span><br><span class="line">$ jinfo -flag HeapDumpPath 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-3.png"></p>
+<p>​但是不是每个参数都可以被动态修改的，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jinfo -flag CMSInitiatingOccupancyFraction&#x3D;1 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-4.png"></p>
+<h3 id="flags"><a href="#flags" class="headerlink" title="-flags"></a>-flags</h3><p>输出虚拟机参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -flags</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-5.png"></p>
+<h3 id="sysprops"><a href="#sysprops" class="headerlink" title="-sysprops"></a>-sysprops</h3><p>输出 Java 系统属性</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo -sysprops 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/31-6.png"></p>
+<h3 id="lt-no-option-gt"><a href="#lt-no-option-gt" class="headerlink" title="&lt;no option&gt;"></a><code>&lt;no option&gt;</code></h3><p>输出以上所有</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jinfo 5511</span><br></pre></td></tr></table></figure>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">jstat 基本命令</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-02 21:23:24" itemprop="dateCreated datePublished" datetime="2021-04-02T21:23:24+08:00">2021-04-02</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jstat 基本命令" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/04/02/jstat-基本命令/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p>
+<p><strong>jstat (JVM Statistics Monitoring Tool)</strong>: 虚拟机统计信息监视工具</p>
+<p><em>详细信息可参考：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/technotes/tools/share/jstat.html">jstat doc</a></em></p>
+<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>用于监视虚拟机各种运行状态信息的命令行工具。可以显示本地或远程虚拟机进程中的类加载、内存、垃圾收集、即时编译等运行时数据。</p>
+<h3 id="远程虚拟机进程"><a href="#远程虚拟机进程" class="headerlink" title="远程虚拟机进程"></a>远程虚拟机进程</h3><p>需要远程主机提供 RMI 支持，JDK 中提供了 jstatd 工具可以很方便地建立远程 RMI 服务器。</p>
+<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>jstat [ option vmid [interval[s|ms] [count]] ]</p>
+<h3 id="VMID-与-LVMID"><a href="#VMID-与-LVMID" class="headerlink" title="VMID 与 LVMID"></a>VMID 与 LVMID</h3><p>如果是本地虚拟机进程，VMID 与 LVMID 是一致的；如果是远程虚拟机进程，那 VMID 的格式应当是：</p>
+<p>[protocol:][//]lvmid[@hostname[:port]/servername]</p>
+<h3 id="interval-和-count"><a href="#interval-和-count" class="headerlink" title="interval 和 count"></a>interval 和 count</h3><p>interval: 查询间隔。如果没有显示指定，默认单位为 ms。</p>
+<p>count: 次数</p>
+<p>如果省略这 2 个参数，说明只查询一次。</p>
+<p>假设需要每 250 毫秒查询一次进程 2764 垃圾收集状况，一共查询 20 次，那命令应当是:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gc 2764 250 20</span><br></pre></td></tr></table></figure>
+<h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><p>代表用户希望查询的虚拟机信息，主要分为三类: <strong><em>类加载、垃圾收集、运行期编译状况</em></strong>。</p>
+<p>可以通过如下命令查看所有选项：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -options</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-1.png"></p>
+<table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-class</td>
+<td align="center">监视类加载、卸载数量、总空间以及类装载所耗费的时间</td>
+</tr>
+<tr>
+<td align="center">-gc</td>
+<td align="center">监视 Java 堆状况，包括 Eden 区、2 个 Survivor 区、老年代、永久代等的容量，已用空间、垃圾收集时间合计等信息</td>
+</tr>
+<tr>
+<td align="center">-gccapacity</td>
+<td align="center">监视内容与 -gc 基本相同，但输出主要关注 Java 堆各个区域使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-gcutil</td>
+<td align="center">监视内容与 -gc 基本相同，但输出主要关注已使用空间占总空间的百分比</td>
+</tr>
+<tr>
+<td align="center">-gccause</td>
+<td align="center">与 -gcutil 功能一样，但是会额外输出导致上一次垃圾收集产生的原因</td>
+</tr>
+<tr>
+<td align="center">-gcnew</td>
+<td align="center">监视新生代垃圾收集状况</td>
+</tr>
+<tr>
+<td align="center">-gcnewcapacity</td>
+<td align="center">监视内容与 -gcnew 基本相同，输出主要关注使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-gcold</td>
+<td align="center">监视老年代垃圾收集状况</td>
+</tr>
+<tr>
+<td align="center">-gcoldcapacity</td>
+<td align="center">监视内容与 -gcold 基本相同，输出主要关注使用到的最大、最小空间</td>
+</tr>
+<tr>
+<td align="center">-gcpermcapacity(x)</td>
+<td align="center">输出永久代使用到的最大、最小空间 (高版本已移除)</td>
+</tr>
+<tr>
+<td align="center">-compiler</td>
+<td align="center">输出即时编译器(JIT compiler，just-in-time compiler)编译过的方法、耗时等信息</td>
+</tr>
+<tr>
+<td align="center">-printcompilation</td>
+<td align="center">输出已经被即时编译的方法</td>
+</tr>
+<tr>
+<td align="center">-gcmetacapacity</td>
+<td align="center">输出 metaspace 的统计信息</td>
+</tr>
+</tbody></table>
+<h2 id="执行样例"><a href="#执行样例" class="headerlink" title="执行样例"></a>执行样例</h2><p><em>（旧版本可能会有 P (Permanent): 永久代）</em></p>
+<h3 id="class"><a href="#class" class="headerlink" title="-class"></a>-class</h3><p>监视类加载、卸载数量、总空间以及类装载所耗费的时间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -class 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-2.png"></p>
+<p>Loaded: 加载 class 数量<br>Bytes: 加载占用空间<br>Unloaded: 卸载 class 数量<br>Bytes: 卸载占用空间<br>Time: 执行类加载和卸载操作总耗时</p>
+<h3 id="gc"><a href="#gc" class="headerlink" title="-gc"></a>-gc</h3><p>监视 Java 堆状况，包括 Eden 区、2 个 Survivor 区、老年代、永久代等的容量，已用空间、垃圾收集时间合计等信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gc 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-3.png"></p>
+<p>S0C (Survivor0 Capacity)、S1C (Survivor1 Capacity): S0 / S1 总空间 (KB)<br>S0U (Survivor0 Utilization)、S1U (Survivor1 Utilization): S0 / S1 已使用空间 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>EU (Eden Utilization): Eden 已使用空间 (KB)<br>OC (Old Capacity): 老年代总空间 (KB)<br>OU (Old Utilization): 老年代已使用空间 (KB)<br>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>MU (Metaspace Utilization): 元数据区已使用空间 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>CCSU (Compressed Class Space Utilization): 压缩类空间已使用大小 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
+<h3 id="gccapacity"><a href="#gccapacity" class="headerlink" title="-gccapacity"></a>-gccapacity</h3><p>监视内容与 -gc 基本相同，但输出主要关注 Java 堆各个区域使用到的最大、最小空间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gccapacity 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-4.png"></p>
+<p>NGCMN (New Generation Capacity Min): 新生代最小容量 (KB)<br>NGCMX (New Generation Capacity Max): 新生代最大容量 (KB)<br>NGC (New Generation Capacity): 新生代总空间 (KB)<br>S0C (Survivor0 Capacity)、S1C (Survivor1 Capacity): S0 / S1 总空间 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>OGCMN (Old Generation Capacity Min): 老年代最小容量 (KB)<br>OGCMX (Old Generation Capacity Max): 老年代最大容量 (KB)<br>OGC (Old Generation Capacity)、OC (Old Capacity): 老年代总空间 (KB)<br>MCMN (Metaspace Capacity Min): 元数据区最小容量 (KB)<br>MCMX (Metaspace Capacity Max): 元数据区最大容量 (KB)<br>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>CCSMN (Compressed Class Space Min): 压缩类空间最小容量 (KB)<br>CCSMX (Compressed Class Space Max): 压缩类空间最大容量 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数</p>
+<h3 id="gcutil"><a href="#gcutil" class="headerlink" title="-gcutil"></a>-gcutil</h3><p>监视内容与 -gc 基本相同，但输出主要关注已使用空间占总空间的百分比。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcutil 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-5.png"></p>
+<p>S0 (Survivor0)、S1 (Survivor1): S0 / S1 使用比例<br>E (Eden): Eden 使用比例<br>O (Old): 老年代使用比例<br>M (Metaspace): 元数据区使用比例<br>CCS (Compressed Class Space): 压缩类空间使用比例<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
+<h3 id="gccause"><a href="#gccause" class="headerlink" title="-gccause"></a>-gccause</h3><p>与 -gcutil 功能一样，但是会额外输出导致上一次垃圾收集产生的原因。（输出结果比 -gcutil 多了 LGCC 和 GCC）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gccause 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-6.png"></p>
+<p>S0 (Survivor0)、S1 (Survivor1): S0 / S1 使用比例<br>E (Eden): Eden 使用比例<br>O (Old): 老年代使用比例<br>M (Metaspace): 元数据区使用比例<br>CCS (Compressed Class Space): 压缩类空间使用比例<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时<br>LGCC (Last GC Cause): 上次 GC 原因<br>GCC (GC Cause): 本次 GC 原因</p>
+<h3 id="gcnew"><a href="#gcnew" class="headerlink" title="-gcnew"></a>-gcnew</h3><p>监视新生代垃圾收集状况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcnew 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-7.png"></p>
+<p>S0C (Survivor0 Capacity)、S1C (Survivor1 Capacity): S0 / S1 总空间 (KB)<br>S0U (Survivor0 Utilization)、S1U (Survivor1 Utilization): S0 / S1 已使用空间 (KB)<br>TT (Tenuring Threshold): 对象在新生代的存活次数<br>MTT (Max Tenuring Threshold): 对象在新生代存活的最大次数<br>DSS (Desired Survivor Size): 期望的幸存区大小 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>EU (Eden Utilization): Eden 已使用空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时</p>
+<h3 id="gcnewcapacity"><a href="#gcnewcapacity" class="headerlink" title="-gcnewcapacity"></a>-gcnewcapacity</h3><p>监视内容与 -gcnew 基本相同，输出主要关注使用到的最大、最小空间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcnewcapacity 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-8.png"></p>
+<p>NGCMN (New Generation Capacity Min): 新生代最小容量 (KB)<br>NGCMX (New Generation Capacity Max): 新生代最大容量 (KB)<br>NGC (New Generation Capacity): 新生代总空间 (KB)<br>S0CMX (Survivor0 Capacity Max): S0 最大容量 (KB)<br>S0C (Survivor0 Capacity): S0 总空间 (KB)<br>S1CMX (Survivor1 Capacity Max): S1 最大容量 (KB)<br>S1C (Survivor1 Capacity): S1 总空间 (KB)<br>ECMX (Eden Capacity Max): Eden 最大容量 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数</p>
+<h3 id="gcold"><a href="#gcold" class="headerlink" title="-gcold"></a>-gcold</h3><p>监视老年代垃圾收集状况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcold 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-9.png"></p>
+<p>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>MU (Metaspace Utilization): 元数据区已使用空间 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>CCSU (Compressed Class Space Utilization): 压缩类空间已使用大小 (KB)<br>OC (Old Capacity): 老年代总空间 (KB)<br>OU (Old Utilization): 老年代已使用空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
+<h3 id="gcoldcapacity"><a href="#gcoldcapacity" class="headerlink" title="-gcoldcapacity"></a>-gcoldcapacity</h3><p>监视内容与 -gcold 基本相同，输出主要关注使用到的最大、最小空间。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcoldcapacity 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-10.png"></p>
+<p>OGCMN (Old Generation Capacity Min): 老年代最小容量 (KB)<br>OGCMX (Old Generation Capacity Max): 老年代最大容量 (KB)<br>OGC (Old Generation Capacity)、OC (Old Capacity): 老年代总空间 (KB)<br>OC (Old Capacity): 老年代总空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
+<h3 id="gcpermcapacity-x"><a href="#gcpermcapacity-x" class="headerlink" title="-gcpermcapacity (x)"></a>-gcpermcapacity (x)</h3><p>输出永久代使用到的最大、最小空间。(高版本已移除)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcpermcapacity 5511</span><br></pre></td></tr></table></figure>
+<p><em>会提示：Unknown option: -gcpermcapacity</em></p>
+<h3 id="compiler"><a href="#compiler" class="headerlink" title="-compiler"></a>-compiler</h3><p>输出即时编译器(JIT compiler，just-in-time compiler)编译过的方法、耗时等信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -compiler 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-11.png"></p>
+<p>Compiled: 编译任务数<br>Failed: 失败的编译任务数<br>Invalid: 无效的编译任务数<br>Time: 编译花费时间<br>FailedType: 上次编译失败的编译类型<br>FailedMethod: 上次编译失败的类名和方法</p>
+<h3 id="printcompilation"><a href="#printcompilation" class="headerlink" title="-printcompilation"></a>-printcompilation</h3><p>输出已经被即时编译的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -printcompilation 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-12.png"></p>
+<p>Compiled: 最近编译方法的数量<br>Size: 最近编译方法的字节码数量<br>Type: 最近编译方法的编译类型<br>Method: 标识最近编译方法的类名和方法名。这两个字段的格式与 HotSpot - XX:+PrintComplation 选项一致</p>
+<h3 id="gcmetacapacity"><a href="#gcmetacapacity" class="headerlink" title="-gcmetacapacity"></a>-gcmetacapacity</h3><p>输出 metaspace 的统计信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcmetacapacity 5511</span><br></pre></td></tr></table></figure>
+<p><img src="/images/30-13.png"></p>
+<p>MCMN (Metaspace Capacity Min): 元数据区最小容量 (KB)<br>MCMX (Metaspace Capacity Max): 元数据区最大容量 (KB)<br>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>CCSMN (Compressed Class Space Min): 压缩类空间最小容量 (KB)<br>CCSMX (Compressed Class Space Max): 压缩类空间最大容量 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -636,251 +1006,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" class="post-title-link" itemprop="url">leetcode之208-实现 Trie (前缀树)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-11-07 00:00:00" itemprop="dateCreated datePublished" datetime="2020-11-07T00:00:00+08:00">2020-11-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之208-实现 Trie (前缀树)" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/11/07/leetcode%E4%B9%8B208-%E5%AE%9E%E7%8E%B0%20Trie%20(%E5%89%8D%E7%BC%80%E6%A0%91)/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/07/leetcode之208-实现 Trie (前缀树)/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>今天立冬，祝大家立冬快乐哦！</p>
-<p><img src="/images/26-1.png"></p>
-<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>在上篇文章（<a href="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/">传送门</a>）中，我们已经详细介绍并用两种数据结构实现了 Trie。实际上把上篇文章中的任何一版代码提交给 leetcode 都完全可以解答本题，所以本文的意义并不在于如何解答这道题。</p>
-<p>写 java 的人，肯定都知道，面向对象的三大特征：封装、继承、多态。而本文就是我从官方题解中得到的一点点关于「封装」的体会，做个小小的分享。</p>
-<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>先回顾一下我们上篇文章中的代码，其实对于 Node 的封装做得并不好，可以说几乎就没有封装。问题如以下两点：</p>
-<ol>
-<li>出于封装性和安全性的考虑，对于 Node 的两个成员变量，我们不应该直接访问，而应该通过成员方法去访问。</li>
-</ol>
-<p>因为，首先，将成员变量设置为 public 权限，对于该成员变量的访问和修改的控制就不再由封装它的对象来控制，而是由调用它的类来控制，这样就破坏了 java 面向对象的封装性；其次，程序何时何地修改成员变量的值也很难控制和排查，从而影响安全性。</p>
-<ol start="2">
-<li>假如我们想达到这个目的：随意切换底层数据结构（比如从数组切换到 Map，或反之），但是不想影响到原本已经实现的代码功能。</li>
-</ol>
-<p>如果要用上篇文章中的代码实现这个目的，那么大多数方法都需要修改一些实现细节。比如判断当前节点是否包含指向下一个字符的指针，获取下一个节点，往当前节点之后插入一个节点等。</p>
-<p>修改的地方越多，出问题的概率就越大。最好能做到上层代码尽量不要动，这样的改动才是最放心的。</p>
-<p>所以，我们可以把这些操作细节抽象出来，在 Node 中做一些封装，提供给上层代码使用。</p>
-<h2 id="对-Node-进行封装"><a href="#对-Node-进行封装" class="headerlink" title="对 Node 进行封装"></a>对 Node 进行封装</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 抽象类，可作为具体数据结构实现的父类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setEndingChar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        isEndingChar = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">isEndingChar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> isEndingChar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">notContainsKey</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !<span class="keyword">this</span>.containsKey(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 当前节点是否包含指向下一个字符的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">char</span> c)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取下一个节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> Node <span class="title">get</span><span class="params">(<span class="keyword">char</span> c)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 往当前节点之后插入一个节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">char</span> c)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数组实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayTrieNode</span> <span class="keyword">extends</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ArrayTrieNode[] next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">ArrayTrieNode</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">        next = <span class="keyword">new</span> ArrayTrieNode[<span class="number">26</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayTrieNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next[c - <span class="string">&#x27;a&#x27;</span>] != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">get</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next[c - <span class="string">&#x27;a&#x27;</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        next[c - <span class="string">&#x27;a&#x27;</span>] = <span class="keyword">new</span> ArrayTrieNode();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HashMap 实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HashMapTrieNode</span> <span class="keyword">extends</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Character, HashMapTrieNode&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">HashMapTrieNode</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">        next = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HashMapTrieNode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsKey</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next.containsKey(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Node <span class="title">get</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> next.get(c);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        next.put(c, <span class="keyword">new</span> HashMapTrieNode());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="上层代码"><a href="#上层代码" class="headerlink" title="上层代码"></a>上层代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Implement Trie (Prefix Tree)</span></span><br><span class="line"><span class="comment"> * 实现 Trie（前缀树）</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The root node.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initialize the data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 修改处</span></span><br><span class="line">        root = <span class="keyword">new</span> ArrayTrieNode();</span><br><span class="line">        <span class="comment">// root = new HashMapTrieNode();</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts a word into the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> curLetter = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (node.notContainsKey(curLetter)) &#123;</span><br><span class="line">                node.put(curLetter);</span><br><span class="line">            &#125;</span><br><span class="line">            node = node.get(curLetter);</span><br><span class="line">        &#125;</span><br><span class="line">        node.setEndingChar();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * search a prefix or whole key in trie and returns the node where search ends</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> curLetter = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (node.notContainsKey(curLetter)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            node = node.get(curLetter);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if the word is in the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEndingChar();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(prefix);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>通过对 Node 节点的封装，当需要切换底层数据结构时，只需要在 Trie 构造方法中初始化不同的底层数据结构实现即可，其它代码我们一行都不需要修改！</p>
-<p>通过两篇文章的代码对比，可以看到，通过良好的封装，可以使代码的可读性大大提高，而且底层数据结构的变更完全不会给上层代码带来影响，这会带来不错的体验。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/10/28/%E6%90%9E%E6%87%82%20Trie/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/" class="post-title-link" itemprop="url">搞懂 Trie</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-10-28 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-28T00:00:00+08:00">2020-10-28</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/data-structure/" itemprop="url" rel="index"><span itemprop="name">data structure</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂 Trie" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/28/搞懂 Trie/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>在计算机科学中，Trie 又称字典树或前缀树，顾名思义，它是一个树形结构。Trie 树通常专门用来处理字符串，解决在一组字符串集合中快速查找某个字符串的问题。</p>
-<p>Trie 的典型应用就是自动补全、搜索提示等。例如命令行或 ide 的自动补全；例如在搜索引擎中输入一个关键字或网址，可以自动弹出可能的选择，而当没有完全匹配的搜索结果时，可以返回前缀最相似的可能结果。</p>
-<p>利用 Trie 树可以做到：查询每个字符串的时间复杂度和字符串总数量无关，只和查询字符串的长度有关。</p>
-<p>怎么做到的呢？</p>
-<p>在实现上，Trie 是一棵多叉树。存储时，将每个字符串以字符为单位拆开存储在每个节点上，利用字符串之间的公共前缀，将重复的前缀合并在一起。结构如下图：</p>
-<p><img src="/images/25-1.png" alt="Trie 结构"></p>
-<p>可以看到，在这棵树上，每个节点的所有子孙节点都有相同的前缀，而根节点是一个空节点，不包含任何信息。</p>
-<p>这样，查找任何字符串，从根节点出发，最多需要查询字符串的长度即可找到相应的字符串。</p>
-<h2 id="定义节点"><a href="#定义节点" class="headerlink" title="定义节点"></a>定义节点</h2><p>我们知道，英文字母表中一共有 26 个英文字母，所以相应地每个节点应该有 26 个指针指向下一个节点，所以在 Trie 中每个节点可以这样定义：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字符</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     * 初试时指定大小为 26</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Node[] next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>但是，考虑到不同语言，不同情境，比如要存储的字符串要包含大小写，或包含数字，或要存储的字符串是网址，或邮件地址，甚至更加复杂的内容时，26 个指针是不够的。当然某些情况下，26 个指针又太富裕，会造成不必要的浪费。</p>
-<p>这样看来，直接写死 26 并不太好，至少不够灵活，除非我们能非常确定我们的业务场景只需要有固定的 26 个指针。我们希望最好能够用动态的方式来解决这个问题，怎么做呢？我们可以用 Map&lt;char, Node&gt; 来作为 next 的实现。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字符</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Map&lt;Character, Node&gt; next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>再仔细想想，当我们要在 Trie 中搜索某个字符串时，其实已经知道接下来要搜索的字符是什么了。所以更准确来讲，我们应该把字符标到 Trie 的边上，如下图：</p>
-<p><img src="/images/25-2.png" alt="Trie 结构"></p>
-<p>因此，在 Node 节点的实现中其实并不用保存这个字符的值。（当然，也得承认，某些情况下在节点中多存储一些信息可以帮助我们更快的组织某些逻辑）</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Map&lt;Character, Node&gt; next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>另外还有一个问题，就是有可能某个字符串是另一个字符串的前缀，这样我们就还需要知道哪些节点代表着这个字符串的结束。所以在每个 Node 中还需要再存储一个值来表示当前节点是否是某个字符串的结尾。</p>
-<p>综上，最终的节点可以定义如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Map&lt;Character, Node&gt; next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>结构图如下（用红色节点来表示 isEndingChar 为 true）：</p>
-<p><img src="/images/25-3.png" alt="Trie 结构"></p>
-<h2 id="Trie-实现"><a href="#Trie-实现" class="headerlink" title="Trie 实现"></a>Trie 实现</h2><p>Trie 树主要有三个操作：</p>
-<ul>
-<li>将一个字符串插入到 Trie 树中</li>
-<li>查询一个字符串是否在 Trie 树中</li>
-<li>查询一个字符串在 Trie 树中是否作为某些字符串的前缀</li>
-</ul>
-<p>接下来就可以动手来实现 Trie 了，这里给出两版实现。</p>
-<h3 id="用数组来实现"><a href="#用数组来实现" class="headerlink" title="用数组来实现"></a>用数组来实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数组实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The root node.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initialize the data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts a word into the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">int</span> index = c - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span> (cur.next[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                cur.next[index] = <span class="keyword">new</span> Node();</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next[index];</span><br><span class="line">        &#125;</span><br><span class="line">        cur.isEndingChar = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * search a prefix or whole key in trie and returns the node where search ends</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">int</span> index = c - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span> (cur.next[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next[index];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if the word is in the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEndingChar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> Node[] next;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">            next = <span class="keyword">new</span> Node[<span class="number">26</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="用-Map-来实现"><a href="#用-Map-来实现" class="headerlink" title="用 Map 来实现"></a>用 Map 来实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HashMap 实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The root node.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initialize the data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts a word into the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (!cur.next.containsKey(c)) &#123;</span><br><span class="line">                cur.next.put(c, <span class="keyword">new</span> Node());</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next.get(c);</span><br><span class="line">        &#125;</span><br><span class="line">        cur.isEndingChar = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * search a prefix or whole key in trie and returns the node where search ends</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (!cur.next.containsKey(c)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next.get(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if the word is in the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEndingChar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> Map&lt;Character, Node&gt; next;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">            next = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>虽然 Trie 树如此高效，但仍然有局限性，相信大家也发现了，那就是空间问题。在某些情况下，比如重复前缀并不多时，Trie 树甚至有可能会浪费更多的内存。</p>
-<p>这个问题又该如何解决呢？</p>
-<p>大的思路来说，就是要在查询效率和内存之间做平衡。所以，既然要省内存，我们就牺牲一点查询的效率。</p>
-<p>这里介绍两种思路：</p>
-<ol>
-<li>第一种思路叫做<em>压缩字典树（Compressed Trie）</em>，即对只有一个子节点的节点，而且此节点不是一个字符串的结束节点，将此节点与子节点合并在一起。如下图所示：</li>
-</ol>
-<p><img src="/images/25-4.png" alt="Compressed Trie"></p>
-<p>可以看到，空间明显减少，但是代价就是操作更复杂，维护成本更高，插入也会更费时。</p>
-<ol start="2">
-<li>第二种思路叫做<em>三分搜索字典树（Ternary Search Trie）</em>，这种树每个节点只有三个孩子，对于任意一个节点，小于该节点字符的节点放到其左子树上，大于该节点字符的节点放到其右子树上，等于该节点字符的节点放到中间子树上。如下图所示一个三分搜索字典树的局部：</li>
-</ol>
-<p><img src="/images/25-5.png" alt="Ternary Search Trie"></p>
-<p>举个例子，我们要在上图中寻找 dog 这个字符串，第一个字符 d 等于 d，走中间的子树，第二个字符 o 大于 k，走右边的子树，第三个字符 g 小于 l，走左边的子树。</p>
-<p>显然，这样时间复杂度会比字符串的长度要多，因为需要先判断当前要找的字符和当前节点字符的大小关系，再决定下一步往哪个方向走。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -948,7 +1077,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

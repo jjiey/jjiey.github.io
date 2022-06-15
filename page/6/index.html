@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">47</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,428 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/08/26/IEEE%20754%20example/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/26/IEEE%20754%20example/" class="post-title-link" itemprop="url">IEEE 754 example</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-08-26T00:00:00+08:00">2020-08-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/26/IEEE%20754%20example/" class="post-meta-item leancloud_visitors" data-flag-title="IEEE 754 example" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/08/26/IEEE%20754%20example/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/26/IEEE 754 example/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>上篇文章（<a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">传送门</a>）大家可能看得晕晕乎乎的，这篇就来举一些例子来帮助大家更直观的理解 IEEE 754 标准。</p>
+<p>本文的举例对象仍然是单精确度浮点数（32位）。</p>
+<p>首先回顾一下上篇最后的总结：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形式</th>
+<th align="center">指数</th>
+<th align="center">小数部分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">零</td>
+<td align="center">全为 0</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">非规约形式</td>
+<td align="center">全为 0</td>
+<td align="center">大于 0 小于 1</td>
+</tr>
+<tr>
+<td align="center">规约形式</td>
+<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
+<td align="center">大于等于 1 小于 2</td>
+</tr>
+<tr>
+<td align="center">无穷</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">NaN</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">非 0</td>
+</tr>
+</tbody></table>
+<h2 id="non-number"><a href="#non-number" class="headerlink" title="non-number"></a>non-number</h2><p>先看那三个简单且很好理解的特殊值：</p>
+<ol>
+<li><p>+0：<code>0 00000000 00000000000000000000000</code></p>
+</li>
+<li><p>-0：<code>1 00000000 00000000000000000000000</code></p>
+</li>
+<li><p>+infinity：<code>0 11111111 00000000000000000000000</code></p>
+</li>
+<li><p>-infinity：<code>1 11111111 00000000000000000000000</code></p>
+</li>
+<li><p>NaN：<code>s 11111111 fraction</code></p>
+</li>
+</ol>
+<p><em>对于 NaN 来说，s 可 0 可 1，fraction 不全为 0 即可</em></p>
+<h2 id="normal-number"><a href="#normal-number" class="headerlink" title="normal number"></a>normal number</h2><p>规约形式的浮点数无疑是日常使用最多的。</p>
+<h3 id="例：将-36-35-转为单精度二进制"><a href="#例：将-36-35-转为单精度二进制" class="headerlink" title="例：将 -36.35 转为单精度二进制"></a>例：<em>将 -36.35 转为单精度二进制</em></h3><ol>
+<li>整数部分转二进制</li>
+</ol>
+<p>36₁₀ = (00100100)₂</p>
+<ol start="2">
+<li>小数部分转二进制</li>
+</ol>
+<p>之前的文章说过小数怎么转二进制，再复习一下吧：</p>
+<ul>
+<li>小数部分乘以 2，取结果的整数部分，直到小数部分为 0 或者位数已达到所要求的精度为止<ul>
+<li>0.35 x 2 = 0.7，整数部分为 0</li>
+<li>0.7 x 2 = 1.4，整数部分为 1</li>
+<li>0.4 x 2 = 0.8，整数部分为 0</li>
+<li>0.8 x 2 = 1.6，整数部分为 1</li>
+<li>0.6 x 2 = 1.2，整数部分为 1</li>
+<li>0.2 x 2 = 0.4，整数部分为 0</li>
+<li>0.4 x 2 = 0.8，从这里开始接下来无限循环 0 1 1 0 …</li>
+</ul>
+</li>
+</ul>
+<p>所以 0.35₁₀ = (01011001100110011000110…)₂</p>
+<ol start="3">
+<li>计算阶码</li>
+</ol>
+<p>整数二进制.小数二进制 = <code>00100100.01011001100110011000110</code></p>
+<p>移动小数点，使二进制变成 1.xxx * 2ⁿ 的形式：</p>
+<p>1.0010001011001100110011000110 * 2⁵</p>
+<p>指数的实际值是 5，单精度浮点数的固定偏移值为 127，所以指数域编码值为 5 + 127 = 132。</p>
+<p>(132)₁₀ = (10000100)₂，所以阶码为 <code>10000100</code></p>
+<ol start="4">
+<li>单精确度浮点数的尾数部分为 23 位，所以取 1.xxx 小数点后 23 位得到尾数部分为：</li>
+</ol>
+<p><code>00100010110011001100110</code></p>
+<ol start="5">
+<li>负数符号位为 1，所以 -36.35 的单精度二进制表示为：</li>
+</ol>
+<p><code>1 10000100 00100010110011001100110</code></p>
+<h3 id="例：将-00111001001010111110100000000000-转为小数"><a href="#例：将-00111001001010111110100000000000-转为小数" class="headerlink" title="例：将 00111001001010111110100000000000 转为小数"></a>例：<em>将 <code>00111001001010111110100000000000</code> 转为小数</em></h3><ol>
+<li>这是一个正数，是一个规约形式的浮点数，先分为三段</li>
+</ol>
+<p><code>0 01110010 01010111110100000000000</code></p>
+<ol start="2">
+<li>计算指数的实际值</li>
+</ol>
+<p>(01110010)₂ = 114₁₀，减去单精度浮点数的固定偏移值 127 得指数的实际值为 114 - 127 = -13</p>
+<ol start="3">
+<li>在尾数前加上隐藏的整数 1，然后转为 1.xxx * 2ⁿ 的形式：</li>
+</ol>
+<p>1.01010111110100000000000 * 2⁻¹³</p>
+<p>指数实际值为负数，所以整数部分为 0，小数部分二进制为：</p>
+<p><code>0.000000000000101010111110100000000000</code></p>
+<ol start="4">
+<li>计算小数</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1 * 2⁻¹³ + 1 * 2⁻¹⁵ + 1 * 2⁻¹⁷ + 1 * 2⁻¹⁹ + 1 * 2⁻²⁰ + 1 * 2⁻²¹ + 1 * 2⁻²² + 1 * 2⁻²³ + 1 * 2⁻²⁵</span><br><span class="line">&#x3D; 0.000163942575455</span><br></pre></td></tr></table></figure>
+<h2 id="subnormal-number"><a href="#subnormal-number" class="headerlink" title="subnormal number"></a>subnormal number</h2><p>非规约形式的浮点数转换方法其实也很简单。因为非规约形式的浮点数整数部分为 0，所以非规约形式的浮点数转换就相当于上边的小数部分转二进制。</p>
+<p>从上篇文章我们知道，非规约形式的浮点数指数实际值为 -126，即最终转为 0.xxx * 2⁻¹²⁶ 的形式，也就是说按照小数部分转二进制的方法，当出现第 127 个数时，这个数就作为尾数的第一个数，后边的依次补上，直到小数部分为 0 或者位数已达到所要求的精度为止。这个就不举例了。</p>
+<p>同理，将非规约形式的浮点数转为小数将更简单。</p>
+<h3 id="例：将-00000000001000000000000000000000-转为小数"><a href="#例：将-00000000001000000000000000000000-转为小数" class="headerlink" title="例：将 00000000001000000000000000000000 转为小数"></a>例：<em>将 <code>00000000001000000000000000000000</code> 转为小数</em></h3><ol>
+<li>这是一个正数，是一个非规约形式的浮点数，先分为三段</li>
+</ol>
+<p><code>0 00000000 01000000000000000000000</code></p>
+<ol start="2">
+<li>计算小数</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2⁻¹²⁸</span><br><span class="line">≈ 2.938735877056 * 10⁻³⁹</span><br></pre></td></tr></table></figure>
+<p>怎么样，对于 IEEE 754 的理解是不是更深刻了些？</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" class="post-title-link" itemprop="url">什么是 IEEE 754</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-08-20T00:00:00+08:00">2020-08-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" class="post-meta-item leancloud_visitors" data-flag-title="什么是 IEEE 754" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/20/什么是 IEEE 754/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><strong>IEEE 754（IEEE二进制浮点数算术标准）</strong>是 20 世纪 80 年代以来使用最广泛的浮点数运算标准，被许多 CPU 与浮点运算器所采用。</p>
+<p>在上世纪六、七十年代，各家计算机公司的各个型号计算机，有着千差万别的浮点数表示，这给数据交换、计算机协同工作造成了极大不便。</p>
+<p>在 1980 年，英特尔公司就推出了单片的 8087 浮点数协处理器，其浮点数表示法及定义的运算具有足够的合理性、先进性，被 IEEE 采用作为浮点数的标准，于 1985 年发布。因此第一个标准就是 IEEE 754-1985。</p>
+<h2 id="科学计数法"><a href="#科学计数法" class="headerlink" title="科学计数法"></a>科学计数法</h2><p>先来说说科学计数法。科学计数法大家肯定都不陌生，它是一种数字的表示法，最早由阿基米德提出。在科学记数法中，一个数被写成一个实数 a 与一个 10 的 n 次幂的积的形式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value &#x3D; a * 10ⁿ</span><br></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li>n 必须是一个整数</li>
+<li>1 ≤ |a| &lt; 10（如果 |a| 是一个小于 1 的小数，或大于等于 10 的数，都可以通过改变 n 来表示）</li>
+<li>a 是一个实数，称为有效数或尾数(mantissa)</li>
+</ul>
+<p>科学计数法的优点是：当需要表示非常大或非常小的数时，如果用一般的方法，要将一个数的所有位数都写出来，很难直接明确知道它的大小，还会浪费很多空间。如果使用科学记数法来表示，一个数的数量级、精确度和数值都会非常直观。</p>
+<p>比如，0.00000000000000000000000167262158 的科学计数法表示为 1.67262158 * 10⁻²⁴；1898130000000000000000000000 的科学计数法表示为 1.89813 * 10²⁷。</p>
+<p>为什么要先说科学计数法呢？因为 IEEE 754 标准的表示方法几乎就是二进制的科学计数法。</p>
+<h2 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h2><p>IEEE 754 规定了四种表示浮点数值的方式：单精确度（32位）、双精确度（64位）、延伸单精确度（43比特以上，很少使用）与延伸双精确度（79比特以上，通常以80位实现）。</p>
+<p>本文主要的研究对象是单精确度浮点数（32位）。其他精度，比如双精确度浮点数（64位），其和单精确度其实是大同小异的。</p>
+<p>二进制浮点数的表示如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value &#x3D; sign * exponent * fraction</span><br></pre></td></tr></table></figure>
+<p>其中</p>
+<ul>
+<li>sign(sign bit)：符号位</li>
+<li>exponent(exponent bias)：指数偏移值</li>
+<li>fraction：分数值</li>
+</ul>
+<p>二进制浮点数的组成如下图：</p>
+<p><img src="/images/20-1.png" alt="IEEE 754浮点数的三个域（picture from Wikipedia）"></p>
+<p>对照上图，单精确度浮点数（32位）表示如下：</p>
+<p><img src="/images/20-2.png" alt="（picture from Wikipedia）"></p>
+<p>双精确度浮点数（64位）表示如下：</p>
+<p><img src="/images/20-3.png" alt="（picture from Wikipedia）"></p>
+<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><p>下面解释一些概念。</p>
+<p>（1）<em>符号位(sign bit)</em></p>
+<p>符号位为 0 表示正数，符号位为 1 表示负数。</p>
+<p>（2）<em>指数的实际值</em></p>
+<p>一个数二进制科学计数法表示下的指数的值。</p>
+<p>例如 2¹⁷，那么指数的实际值就是 17。</p>
+<p>（3）<em>指数偏移值(exponent bias)</em></p>
+<p>指的是根据 IEEE 754 标准对浮点数二进制表示中指数部分编码的值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exponent bias &#x3D; 指数的实际值 + 某个固定值</span><br></pre></td></tr></table></figure>
+<p>IEEE 754 标准规定：该固定值为 2ᵉ⁻¹ - 1，e 为存储指数的比特的长度。</p>
+<p>例如，单精度浮点数的指数域是 8 个比特，那么固定偏移值为 2⁸⁻¹ - 1 = 128 - 1 = 127。如果指数实际值为17₁₀，那么在单精度浮点数中的指数域编码值为 17₁₀ + 127₁₀ = 144₁₀。</p>
+<p>为什么要用这种形式来表示浮点数的指数呢？</p>
+<p>因为这样可以用长度为 e 个比特的无符号整数来表示所有的指数取值，这使得两个浮点数的指数大小的比较也更为容易，实际上可以直接按照字典次序比较两个浮点表示的大小。</p>
+<p>这种移码表示的指数部分，中文称作<em>阶码</em>。</p>
+<h2 id="normal-number"><a href="#normal-number" class="headerlink" title="normal number"></a>normal number</h2><p><em>normal number：规约形式的浮点数。</em></p>
+<p>“规约”指的是用唯一确定的浮点形式去表示一个值。</p>
+<p>如果浮点数中指数部分的编码值范围为 (0, 2ᵉ - 2]（即指数位不全为 0，也不全为 1），且在科学表示法的表示方式下，fraction 部分的最高有效位是 1（fraction 部分的范围是 [1, 2)），那么这个浮点数被称为规约形式的浮点数。</p>
+<p>因此，规约形式的单精度浮点数的指数部分编码值范围为 (0, 254]，这也可以反推出规约形式的单精度浮点数对应的指数部分实际取值是 [-126, 127]。</p>
+<p>为什么没有 -127 和 128 呢？因为 -127 和 128 被用作特殊值处理，见下面“非规约形式的浮点数”和“特殊值”。</p>
+<p>由于这种表示下的尾数有一位隐含的二进制有效数字，为了与二进制科学计数法的尾数相区别，IEEE 754 称之为<em>有效数（significant）</em>。</p>
+<h2 id="subnormal-number"><a href="#subnormal-number" class="headerlink" title="subnormal number"></a>subnormal number</h2><p><em>subnormal number：非规约形式的浮点数。</em></p>
+<h3 id="为什么需要非规约形式的浮点数？"><a href="#为什么需要非规约形式的浮点数？" class="headerlink" title="为什么需要非规约形式的浮点数？"></a>为什么需要非规约形式的浮点数？</h3><p>由规约形式的浮点数部分的内容，我们可以推算出，规约形式的单精度浮点数的取值范围为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">±尾数 * 2 ^ 指数</span><br><span class="line">&#x3D; ±[1, 2) * 2 ^ [-126, 127]</span><br><span class="line">&#x3D; (-2 * 2¹²⁷, -1 * 2⁻¹²⁶] ∪ [1 * 2⁻¹²⁶, 2 * 2¹²⁷)</span><br></pre></td></tr></table></figure>
+<p>转换为十进制后的大致范围是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[-3.4 * 10³⁸, -1.18 * 10⁻³⁸] ∪ [1.18 * 10⁻³⁸, 3.4 * 10³⁸]</span><br></pre></td></tr></table></figure>
+<p>这里就有个问题，使用规约形式的浮点数我们无法表示非常接近 0 的极小的数（即 (-1 * 2⁻¹²⁶, 1 * 2⁻¹²⁶) 之间的数）！非规约形式的浮点数的出现就将解决这个问题。</p>
+<h3 id="什么是非规约形式的浮点数？"><a href="#什么是非规约形式的浮点数？" class="headerlink" title="什么是非规约形式的浮点数？"></a>什么是非规约形式的浮点数？</h3><p>如果浮点数的指数部分的编码值是 0（即指数位全为 0），且 fraction 部分非零（fraction 部分的最高有效位是 0，fraction 部分的范围是 (0, 1)），那么这个浮点数被称为非规约形式的浮点数。</p>
+<p>IEEE 754 标准规定：非规约形式的浮点数的指数偏移值比规约形式的浮点数的指数偏移值小 1。</p>
+<p>例如，最小的规约形式的单精度浮点数的指数部分编码值为 1，指数的实际值为 -126；而非规约的单精度浮点数的指数域编码值为 0，对应的指数实际值也是 -126 而不是 -127，这是规定。至于为什么这么规定，下面会说到。</p>
+<h3 id="非规约形式的浮点数怎么表示非常接近-0-的数？"><a href="#非规约形式的浮点数怎么表示非常接近-0-的数？" class="headerlink" title="非规约形式的浮点数怎么表示非常接近 0 的数？"></a>非规约形式的浮点数怎么表示非常接近 0 的数？</h3><p>准确来说，这个问题应该是非规约形式的浮点数怎么表示 (-1 * 2⁻¹²⁶, 1 * 2⁻¹²⁶) 之间的数？</p>
+<p>同样，我们可以推算出非规约形式的单精度浮点数的取值范围为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">±尾数 * 2 ^ 指数</span><br><span class="line">&#x3D; ±(0, 1) * 2⁻¹²⁶</span><br><span class="line">&#x3D; (-1 * 2⁻¹²⁶, 0) ∪ (0, 1 * 2⁻¹²⁶]</span><br></pre></td></tr></table></figure>
+<p>仔细看下，非规约形式的单精度浮点数的区间范围和规约形式的单精度浮点数的区间范围正好构成了 (-2 * 2¹²⁷, 0) ∪ (0, 1 * 2 * 2¹²⁷)。</p>
+<p>（是不是中间少个 0 很难受，不要急，0 是作为特殊值存在的，见下面的“特殊值”）</p>
+<h3 id="什么是渐进式下溢出-gradual-underflow-？"><a href="#什么是渐进式下溢出-gradual-underflow-？" class="headerlink" title="什么是渐进式下溢出(gradual underflow)？"></a>什么是渐进式下溢出(gradual underflow)？</h3><p>根据前面的内容我们可以知道：</p>
+<p>非规约形式的单精度浮点数的最大值为 0 00000000 1111111111111111111111，其实就是 0.1111111111111111111111 * 2⁻¹²⁶</p>
+<p>规约形式的单精度浮点数的最小值（大于 0 的区间中）为 0 00000001 0000000000000000000000，其实就是 1.0000000000000000000000 * 2⁻¹²⁶</p>
+<p>可以看到，两者之间几乎实现了平滑的过度，非规约形式的单精度浮点数的最大值非常紧密的连接上了规约形式的单精度浮点数的最小值（大于 0 的区间中，小于 0 的区间也同理）。</p>
+<p>这种特性在 IEEE 754 中就称为*渐进式下溢出(gradual underflow)*。</p>
+<p>理解了这个特性，也就解释了前面的两个疑问：</p>
+<ol>
+<li>为什么规定非规约形式浮点数的尾数前隐藏的整数部分是 0，而规约形式浮点数尾数前隐藏的整数部分是 1 ？</li>
+<li>为什么规定非规约形式浮点数的指数实际值的计算公式是 1 - bias，而规约形式浮点数的指数实际值计算公式是 指数部分的值 - bias ？</li>
+</ol>
+<p>就是因为有这些规定才能实现渐进式下溢出这种特性。</p>
+<p>还有一个概念与之对应，就是*突然式下溢出(abrupt underflow)*。顾名思义，不解释了。</p>
+<h2 id="non-number"><a href="#non-number" class="headerlink" title="non-number"></a>non-number</h2><p><em>non-number：特殊值。</em></p>
+<p>有三个特殊值：</p>
+<ul>
+<li>如果指数是 0 并且 fraction 的小数部分是 0，这个数是 ±0（和符号位相关）</li>
+<li>如果指数是 2ᵉ - 1 并且 fraction 的小数部分是 0，这个数是 ±∞（和符号位相关）<ul>
+<li>什么是 ±∞ 呢？比如对于规约形式的单精度浮点数来说，存储的值超过了它的范围，比如存储的值是 4 * 10³⁸</li>
+</ul>
+</li>
+<li>如果指数是 2ᵉ - 1 并且 fraction 的小数部分非 0，这个数表示为非数（NaN）<ul>
+<li>什么是 ±∞ 呢？比如要存储的值是 √-1</li>
+</ul>
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上规则，可总结如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">形式</th>
+<th align="center">指数</th>
+<th align="center">小数部分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">零</td>
+<td align="center">全为 0</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">非规约形式</td>
+<td align="center">全为 0</td>
+<td align="center">大于 0 小于 1</td>
+</tr>
+<tr>
+<td align="center">规约形式</td>
+<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
+<td align="center">大于等于 1 小于 2</td>
+</tr>
+<tr>
+<td align="center">无穷</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">全为 0</td>
+</tr>
+<tr>
+<td align="center">NaN</td>
+<td align="center">2ᵉ - 1（全为 1）</td>
+<td align="center">非 0</td>
+</tr>
+</tbody></table>
+<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>网上有几篇文章我觉得写得挺不错，我也参考了部分内容，这里共享出来链接以供大家阅读：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv4546492">https://www.bilibili.com/read/cv4546492</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9d6b8017232d">https://www.jianshu.com/u/9d6b8017232d</a></p>
+<p>鉴于这篇已经写了这么多字，就先打住，下篇会用具体示例再来演示一下。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -667,261 +1089,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" class="post-title-link" itemprop="url">leetcode之704-二分查找</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-06-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-26T00:00:00+08:00">2020-06-26</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之704-二分查找" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/06/26/leetcode%E4%B9%8B704-%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/26/leetcode之704-二分查找/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>之前在插入排序的文章中介绍了一个用二分查找来优化的思路，但是没有细说二分查找，今天也算是补上这个坑。刚好也是 leetcode 上的一道题。</p>
-<p><img src="/images/16-1.png"></p>
-<p>二分查找算法（binary search algorithm），也称折半搜索算法（half-interval search algorithm）、对数搜索算法（logarithmic search algorithm）等。</p>
-<h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><p>二分查找法是一种在有序数组中查找某一特定元素的搜索算法，它的思想比较简单：</p>
-<ol>
-<li>从有序数组的中间元素开始搜索，如果中间元素正好是要查找的元素，则搜索过程结束；</li>
-<li>如果要查找的元素大于或小于中间元素，则在数组大于或小于中间元素的那一半中进行查找，而且跟开始一样也从中间元素开始；</li>
-<li>如果在某一步中数组为空，则代表要查找的元素不在数组中。</li>
-</ol>
-<p><img src="/images/16-2.png" alt="二分查找算法（picture from Wikipedia）"></p>
-<h2 id="中间元素"><a href="#中间元素" class="headerlink" title="中间元素"></a>中间元素</h2><p>二分查找每次都从有序数组的中间元素开始，那必然要先找到中间元素的索引值 mid。假设有序数组 nums 的第一个元素索引值记为 l，最后一个元素索引值记为 r，怎么求 mid 的值呢？</p>
-<p>很简单，小学数学就学过：mid = (l + r) / 2。但是，在程序里可不一定是这样，前面在<a href="/2020/06/11/leetcode%E4%B9%8B7-%E6%95%B4%E6%95%B0%E5%8F%8D%E8%BD%AC/">leetcode之7-整数反转</a>的文章里我们知道，整数是有范围的。虽然 l 和 r 都是正常的整数，但是 l + r 就有可能会超过整数的范围，也就是说会有溢出的风险。</p>
-<p>那如何安全的求两个整数的平均值呢？</p>
-<p>（1）你可能会想了， (l + r) / 2 改成 l / 2 + r / 2 不就行了吗？在数学里确实是这样，但是我们讨论的是在程序里的情况。举个例子，l = 1，r = 3，那么 mid = 1 / 2 + 3 / 2 = 0 + 1 = 1，但其实正确结果应该是 2。</p>
-<p>（2）换个角度来思考一下，既然我们知道了 l 和 r，那么我们给 l 加上 r - l 偏移量的一半不就行了，毕竟减法是不会溢出的。即 mid = l + (r - l) / 2。</p>
-<p>（3）看看大师们是如何解决这个问题的。java 类库中也提供了二分搜索的方法，我们来看看源码中是怎样写的：mid = (l + r) &gt;&gt;&gt; 1。</p>
-<p>这么写就不怕 l + r 溢出了吗？不要震惊，仔细看后面是 &gt;&gt;&gt; 1（无符号右移），而不是 &gt;&gt; 1（带符号右移），所以并没有问题。</p>
-<p>其实也非常容易理解，如果我不把结果二进制的最高位当作符号来看，那溢不溢出又有什么关系呢？果然，大师的脑回路就是不一样。</p>
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>二分查找的思想比较简单，但是代码写起来却不太容易，因为有很多边界问题需要注意，所以我们一定要明确变量的含义，要记住一点：改变取值不代表改变含义。</p>
-<p>举个例子，r 应该怎么取值？是取 nums.length 还是取 nums.length - 1 ？其实都可以，只是我们在写代码的过程中一定要注意不能改变 r 取值的含义。</p>
-<h2 id="非递归代码"><a href="#非递归代码" class="headerlink" title="非递归代码"></a>非递归代码</h2><p>定义要在 [l…r] 的范围里寻找 target，也就规定了 r = nums.length - 1。</p>
-<p>值得一提的是，java 类库中提供的二分搜索用的就是这个定义。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r] 的范围里寻找 target（边界问题：r）</span></span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.length - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 当 l == r 时,区间 [l...r] 依然是有效的（边界问题：l &lt; r or l &lt;= r ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">    <span class="keyword">while</span> (l &lt;= r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [mid+1...r] 中（边界问题：l = mid or l = mid + 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &lt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [l...mid-1] 中（边界问题：r = mid or r = mid - 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            r = mid - <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>定义要在 [l…r) 的范围里寻找 target，也就规定了 r = nums.length。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r) 的范围里寻找 target（边界问题：r）</span></span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = nums.length;</span><br><span class="line">    <span class="comment">// 当 l == r 时, 区间 [l...r) 是个无效区间（边界问题：l &lt; r or l &lt;= r ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">    <span class="keyword">while</span> (l &lt; r) &#123;</span><br><span class="line">        <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span> (target &gt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [mid+1...r) 中（边界问题：l = mid or l = mid + 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            l = mid + <span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (target &lt; nums[mid]) &#123;</span><br><span class="line">            <span class="comment">// 说明 target 在 [l...mid) 中（边界问题：r = mid or r = mid - 1 ？这就需要明确 l 和 r 的定义）</span></span><br><span class="line">            r = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="递归代码"><a href="#递归代码" class="headerlink" title="递归代码"></a>递归代码</h2><p>从二分查找思想的描述中，明显有一种递归的感觉，确实，二分查找也可以用递归的方式来写。这里同样给出两种不同定义的写法。</p>
-<p>定义要在 [l…r] 的范围里寻找 target，也就规定了 r = nums.length - 1。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r] 的范围里寻找 target</span></span><br><span class="line">    <span class="keyword">return</span> binarySearchHelp(nums, <span class="number">0</span>, nums.length - <span class="number">1</span>, target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">binarySearchHelp</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 边界问题, 同上</span></span><br><span class="line">    <span class="keyword">if</span> (l &gt; r) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, l, mid - <span class="number">1</span>, target);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, mid + <span class="number">1</span>, r, target);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>定义要在 [l…r) 的范围里寻找 target，也就规定了 r = nums.length。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在有序数组 nums 里查找元素 target</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> nums 有序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> target 要查找的元素</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 元素 target 的索引，如果没找到返回 -1 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="comment">// 定义在 [l...r) 的范围里寻找 target</span></span><br><span class="line">    <span class="keyword">return</span> binarySearchHelp(nums, <span class="number">0</span>, nums.length, target);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">binarySearchHelp</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> l, <span class="keyword">int</span> r, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 边界问题, 同上</span></span><br><span class="line">    <span class="keyword">if</span> (l &gt;= r) &#123;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = (l + r) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (nums[mid] &gt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, l, mid, target);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">        <span class="comment">// 边界问题, 同上</span></span><br><span class="line">        <span class="keyword">return</span> binarySearchHelp(nums, mid + <span class="number">1</span>, r, target);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> mid;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><ol>
-<li>时间复杂度：</li>
-</ol>
-<ul>
-<li>二分查找每次比较都使搜索范围缩小一半（每次都除以 2），所以时间复杂度为 O(logn)。</li>
-</ul>
-<ol start="2">
-<li>空间复杂度：</li>
-</ol>
-<ul>
-<li><p>对于非递归代码来说，没有使用额外的空间，所以空间复杂度为 O(1)；</p>
-</li>
-<li><p>对于递归代码来说，因为递归的次数和深度都是 logn，所以空间复杂度也为 O(logn)。</p>
-</li>
-</ul>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p><img src="/images/16-3.png"></p>
-<p>二分查找法真是完美的说明了：思考一个算法的思想是简单的，但是写出一个没有 bug 的程序却是复杂的。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" class="post-title-link" itemprop="url">leetcode之9-回文数</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-06-21 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-21T00:00:00+08:00">2020-06-21</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/" class="post-meta-item leancloud_visitors" data-flag-title="leetcode之9-回文数" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/06/21/leetcode%E4%B9%8B9-%E5%9B%9E%E6%96%87%E6%95%B0/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/21/leetcode之9-回文数/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><img src="/images/15-1.png"></p>
-<p>有两点很明确：</p>
-<ol>
-<li>负数不可能是回文数；</li>
-<li>除了 0 以外，所有个位是 0 的数字不可能是回文数。</li>
-</ol>
-<h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>将数字本身反转，反转后的数字与原始数字进行比较，如果它们相同，那么这个数字就是回文数。</p>
-<p>但是，要注意反转后的数字可能有溢出风险。不过上篇文章已经非常详细的介绍了溢出和反转数字应该怎么做。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> copyx = x;</span><br><span class="line">    <span class="comment">// 翻转之后的数字可能超过整型的范围，用 long 来处理</span></span><br><span class="line">    <span class="keyword">long</span> y = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (copyx != <span class="number">0</span>) &#123;</span><br><span class="line">        y = y * <span class="number">10</span> + copyx % <span class="number">10</span>;</span><br><span class="line">        copyx /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> x == y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
-<h2 id="2"><a href="#2" class="headerlink" title="2"></a>2</h2><p>将数字转换为字符串，通过对比字符串前后对称位置的字符是否相等来检查原始数字是否为回文。</p>
-<p>有个可以优化的小点是我们只需遍历一半的字符串就够了。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    String str = String.valueOf(x);</span><br><span class="line">    <span class="keyword">int</span> n = str.length();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n / <span class="number">2</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 对比字符串前后对称位置的字符是否相等</span></span><br><span class="line">        <span class="keyword">if</span> (str.charAt(i) != str.charAt(n - <span class="number">1</span> - i)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(n / 2)，忽略常数后为 O(n)；空间复杂度为 O(n)，因为我们将数字转换为了字符串。</p>
-<h2 id="官方题解"><a href="#官方题解" class="headerlink" title="官方题解"></a>官方题解</h2><p>一个非常巧妙的办法，反转一半的数字，这必然不会导致溢出。</p>
-<p>其中我们要解决两个问题：</p>
-<ol>
-<li>如何知道反转数字的位数已经达到原始数字位数的一半？</li>
-<li>反转后的数字 revertedNumber 如何和原始数字 x 进行比较？</li>
-</ol>
-<p><img src="/images/15-2.png"></p>
-<p>可以看到：</p>
-<ol>
-<li>当原始数字 x 小于或等于反转后的数字 revertedNumber 时，就意味着已经处理了一半位数的数字了；</li>
-<li>如果是回文数，最终 revertedNumber 和 x 的关系必然如上图所示。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isPalindrome</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 上述两种情况直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (x &lt; <span class="number">0</span> || (x % <span class="number">10</span> == <span class="number">0</span> &amp;&amp; x != <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> revertedNumber = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 反转一半</span></span><br><span class="line">    <span class="keyword">while</span> (x &gt; revertedNumber) &#123;</span><br><span class="line">        revertedNumber = revertedNumber * <span class="number">10</span> + x % <span class="number">10</span>;</span><br><span class="line">        x /= <span class="number">10</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 判断是否回文</span></span><br><span class="line">    <span class="keyword">return</span> x == revertedNumber || x == revertedNumber / <span class="number">10</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>时间复杂度为 O(log(x))，因为 x 中大约有 lg(x) 位数字；空间复杂度为 O(1)。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/5/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/7/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -989,7 +1160,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
