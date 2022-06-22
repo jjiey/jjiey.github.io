@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">46</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,188 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/04/21/What-is-the-real-Spring-IoC-container/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/21/What-is-the-real-Spring-IoC-container/" class="post-title-link" itemprop="url">What is the real Spring IoC container</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-21 22:04:30" itemprop="dateCreated datePublished" datetime="2021-04-21T22:04:30+08:00">2021-04-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/source-code/" itemprop="url" rel="index"><span itemprop="name">source code</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/04/21/What-is-the-real-Spring-IoC-container/" class="post-meta-item leancloud_visitors" data-flag-title="What is the real Spring IoC container" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2021/04/21/What-is-the-real-Spring-IoC-container/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/04/21/What-is-the-real-Spring-IoC-container/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><em>note：本文基于 spring-framework 5.2.2.RELEASE</em></p>
+<p>What is the real Spring IoC container? <code>BeanFactory</code> or <code>ApplicationContext</code>?</p>
+<h2 id="官网描述"><a href="#官网描述" class="headerlink" title="官网描述"></a>官网描述</h2><p>从<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.2.2.RELEASE/spring-framework-reference/core.html#beans-introduction"> Spring 官网 beans-introduction </a>描述中可以得到以下信息：</p>
+<blockquote>
+<ul>
+<li>源码工程中的 <code>org.springframework.beans</code> 和 <code>org.springframework.context</code> 包是 Spring Framework 的 IoC container 基础</li>
+<li><code>BeanFactory</code> 接口提供了一种高级配置机制能够管理任何类型的对象</li>
+<li><code>ApplicationContext</code> 是 <code>BeanFactory</code> 的一个子类，它增加了以下功能：<ul>
+<li>更容易和 Spring AOP 集成</li>
+<li>消息资源处理（用于国际化）</li>
+<li>事件发布</li>
+<li>应用层面特定上下文，例如用于 web 应用的 <code>WebApplicationContext</code></li>
+</ul>
+</li>
+<li>简而言之，<code>BeanFactory</code> 提供了配置框架和基础的功能，而 <code>ApplicationContext</code> 增加了更多企业级特性的功能。<code>ApplicationContext</code> 是 <code>BeanFactory</code> 的一个完整超集</li>
+</ul>
+</blockquote>
+<h3 id="BeanFactory-or-ApplicationContext"><a href="#BeanFactory-or-ApplicationContext" class="headerlink" title="BeanFactory or ApplicationContext?"></a><code>BeanFactory</code> or <code>ApplicationContext</code>?</h3><p><code>BeanFactory</code> 和 <code>ApplicationContext</code> 应该如何选择？</p>
+<p><a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/5.2.2.RELEASE/spring-framework-reference/core.html#beans-beanfactory">Spring 官网 BeanFactory or ApplicationContext </a>中也做了详细的描述。重点是这两句：</p>
+<blockquote>
+<p>You should use an ApplicationContext unless you have a good reason for not doing so<br>（你应该使用 ApplicationContext，除非你有很好的理由不使用它）<br>Because an ApplicationContext includes all the functionality of a BeanFactory, it is generally recommended over a plain BeanFactory<br>（因为 ApplicationContext 包含了 BeanFactory 的所有功能，通常建议使用）</p>
+</blockquote>
+<p>还附了一张关于 Feature Matrix(功能矩阵) 的表来描述 <code>BeanFactory</code> 和 <code>ApplicationContext</code> 接口和实现所提供的功能：</p>
+<table>
+<thead>
+<tr>
+<th align="center">特性</th>
+<th align="center">BeanFactory</th>
+<th align="center">ApplicationContext</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Bean 实例化/加工(wiring)</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="center">集成生命周期管理</td>
+<td align="center">No</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="center">自动注册 <code>BeanPostProcessor</code></td>
+<td align="center">No</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="center">自动注册 <code>BeanFactoryPostProcessor</code></td>
+<td align="center">No</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="center">方便 <code>MessageSource</code> 访问（用于国际化）</td>
+<td align="center">No</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="center">内置 <code>ApplicationEvent</code> 发布机制</td>
+<td align="center">No</td>
+<td align="center">Yes</td>
+</tr>
+</tbody></table>
+<p>可以看出，官方更推荐使用 <code>ApplicationContext</code>，但这并不代表 <code>BeanFactory</code> 就没有使用场景，只是场景真的比较有限，具体可参考官方文档描述。</p>
+<h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><h3 id="ApplicationContext-Java-Diagrams"><a href="#ApplicationContext-Java-Diagrams" class="headerlink" title="ApplicationContext Java Diagrams"></a>ApplicationContext Java Diagrams</h3><p><img src="/images/35-1.png" alt="ApplicationContext diagrams"></p>
+<p>从图中可以可以反映出：<code>ApplicationContext</code> 自身就是一个 <code>BeanFactory</code> 并且它还拥有其他功能。</p>
+<p>那么，<code>ApplicationContext</code> 是 <code>BeanFactory</code> 的一个完整超集这是如何实现的呢？</p>
+<h3 id="ApplicationContext-internal-BeanFactory"><a href="#ApplicationContext-internal-BeanFactory" class="headerlink" title="ApplicationContext internal BeanFactory"></a>ApplicationContext internal BeanFactory</h3><p><code>ApplicationContext</code> 源码中，getAutowireCapableBeanFactory() 方法注释中有个重要的字眼：<em>internal BeanFactory</em>。</p>
+<p><img src="/images/35-2.png"></p>
+<p>这个字眼是否意味着，虽然 <code>ApplicationContext</code> 是一个 <code>BeanFactory</code>，但是其内部还有一个 BeanFactory？如果真是这样，是否多此一举呢？</p>
+<p>顺着该方法注释提示去 @see ConfigurableApplicationContext#getBeanFactory() 源码，发现该方法注释第一句就解答了疑问：</p>
+<blockquote>
+<p>Return the internal bean factory of this application context. Can be used to access specific functionality of the underlying factory.<br>（返回此应用程序上下文的内部 bean factory。可用于访问基础 factory 的特定功能）</p>
+</blockquote>
+<p><img src="/images/35-3.png"></p>
+<h4 id="How-to-set-internal-BeanFactory"><a href="#How-to-set-internal-BeanFactory" class="headerlink" title="How to set internal BeanFactory"></a>How to set internal BeanFactory</h4><p>这里就有一个新问题，这个 internal BeanFactory 是如何设置进去的？</p>
+<p>按常理来讲，既然有 getBeanFactory() 方法，那应该也有一个 setBeanFactory() 方法用来把 beanFactory set 进去，但是很遗憾，源码中并没有 setBeanFactory() 方法。</p>
+<p>继续查看 getBeanFactory() 的实现，发现有两个类实现了该方法：<code>AbstractRefreshableApplicationContext</code> 和 <code>GenericApplicationContext</code>。</p>
+<p>继续看这两个类的源码会发现，这两个类里都有一个非常重要的内部属性：DefaultListableBeanFactory beanFactory，而 getBeanFactory() 方法返回的  internal BeanFactory 正是这个 beanFactory！</p>
+<p>这种方式有点像代理，通过组合的方式把 <code>BeanFactory</code> 的实现 <code>DefaultListableBeanFactory</code> 组合进来，并不是完全去抽象或继承该类。</p>
+<p>题外：其实这两个类都很重要，Spring 中”著名”的两个类都继承自它们：</p>
+<ul>
+<li><code>ClassPathXmlApplicationContext</code> extends … extends <code>AbstractRefreshableApplicationContext</code></li>
+<li><code>AnnotationConfigApplicationContext</code> extends <code>GenericApplicationContext</code></li>
+</ul>
+<h4 id="应用-internal-BeanFactory"><a href="#应用-internal-BeanFactory" class="headerlink" title="应用 internal BeanFactory"></a>应用 internal BeanFactory</h4><p>可以看下 Spring 里 <code>AbstractApplicationContext</code> 里的各个 getBean() 方法的实现，都是先调用 getBeanFactory() 再调用 getBean()：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getBean</span><span class="params">(String name)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">    assertBeanFactoryActive();</span><br><span class="line">    <span class="keyword">return</span> getBeanFactory().getBean(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，<code>ApplicationContext</code> 其实并不具备依赖查找的能力，都是委托给自己的 internal beanFactory 来实现。</p>
+<p>同时也反映了，<code>BeanFactory</code> 其实是最底层的 IoC 容器，<code>ApplicationContext</code> 是在 <code>BeanFactory</code> 的基础上增加了一些特性。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>综上，可以说，<code>BeanFactory</code> 含有的能力 <code>ApplicationContext</code> 都有，并且 <code>ApplicationContext</code> 提供了更多的特性。</p>
+<p>再看官网这句话，就豁然开朗了： <strong><code>BeanFactory</code> 提供了配置框架和基础的功能，而 <code>ApplicationContext</code> 增加了更多企业级特性的功能。<code>ApplicationContext</code> 是 <code>BeanFactory </code> 的一个完整超集。</strong></p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -792,227 +974,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-title-link" itemprop="url">jstat 基本命令</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-02 21:23:24" itemprop="dateCreated datePublished" datetime="2021-04-02T21:23:24+08:00">2021-04-02</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/" class="post-meta-item leancloud_visitors" data-flag-title="jstat 基本命令" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2021/04/02/jstat-%E5%9F%BA%E6%9C%AC%E5%91%BD%E4%BB%A4/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2021/04/02/jstat-基本命令/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>JDK 的 bin 目录下为 Java 开发人员提供了很多实用的小工具，很多场景下都会用到它们，比如：打包、部署、签名、调试、监控、运维等。本文介绍其中一款：</p>
-<p><strong>jstat (JVM Statistics Monitoring Tool)</strong>: 虚拟机统计信息监视工具</p>
-<p><em>详细信息可参考：<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/technotes/tools/share/jstat.html">jstat doc</a></em></p>
-<h2 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h2><p>用于监视虚拟机各种运行状态信息的命令行工具。可以显示本地或远程虚拟机进程中的类加载、内存、垃圾收集、即时编译等运行时数据。</p>
-<h3 id="远程虚拟机进程"><a href="#远程虚拟机进程" class="headerlink" title="远程虚拟机进程"></a>远程虚拟机进程</h3><p>需要远程主机提供 RMI 支持，JDK 中提供了 jstatd 工具可以很方便地建立远程 RMI 服务器。</p>
-<h2 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h2><p>jstat [ option vmid [interval[s|ms] [count]] ]</p>
-<h3 id="VMID-与-LVMID"><a href="#VMID-与-LVMID" class="headerlink" title="VMID 与 LVMID"></a>VMID 与 LVMID</h3><p>如果是本地虚拟机进程，VMID 与 LVMID 是一致的；如果是远程虚拟机进程，那 VMID 的格式应当是：</p>
-<p>[protocol:][//]lvmid[@hostname[:port]/servername]</p>
-<h3 id="interval-和-count"><a href="#interval-和-count" class="headerlink" title="interval 和 count"></a>interval 和 count</h3><p>interval: 查询间隔。如果没有显示指定，默认单位为 ms。</p>
-<p>count: 次数</p>
-<p>如果省略这 2 个参数，说明只查询一次。</p>
-<p>假设需要每 250 毫秒查询一次进程 2764 垃圾收集状况，一共查询 20 次，那命令应当是:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gc 2764 250 20</span><br></pre></td></tr></table></figure>
-<h3 id="option"><a href="#option" class="headerlink" title="option"></a>option</h3><p>代表用户希望查询的虚拟机信息，主要分为三类: <strong><em>类加载、垃圾收集、运行期编译状况</em></strong>。</p>
-<p>可以通过如下命令查看所有选项：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -options</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-1.png"></p>
-<table>
-<thead>
-<tr>
-<th align="center">选项</th>
-<th align="center">作用</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">-class</td>
-<td align="center">监视类加载、卸载数量、总空间以及类装载所耗费的时间</td>
-</tr>
-<tr>
-<td align="center">-gc</td>
-<td align="center">监视 Java 堆状况，包括 Eden 区、2 个 Survivor 区、老年代、永久代等的容量，已用空间、垃圾收集时间合计等信息</td>
-</tr>
-<tr>
-<td align="center">-gccapacity</td>
-<td align="center">监视内容与 -gc 基本相同，但输出主要关注 Java 堆各个区域使用到的最大、最小空间</td>
-</tr>
-<tr>
-<td align="center">-gcutil</td>
-<td align="center">监视内容与 -gc 基本相同，但输出主要关注已使用空间占总空间的百分比</td>
-</tr>
-<tr>
-<td align="center">-gccause</td>
-<td align="center">与 -gcutil 功能一样，但是会额外输出导致上一次垃圾收集产生的原因</td>
-</tr>
-<tr>
-<td align="center">-gcnew</td>
-<td align="center">监视新生代垃圾收集状况</td>
-</tr>
-<tr>
-<td align="center">-gcnewcapacity</td>
-<td align="center">监视内容与 -gcnew 基本相同，输出主要关注使用到的最大、最小空间</td>
-</tr>
-<tr>
-<td align="center">-gcold</td>
-<td align="center">监视老年代垃圾收集状况</td>
-</tr>
-<tr>
-<td align="center">-gcoldcapacity</td>
-<td align="center">监视内容与 -gcold 基本相同，输出主要关注使用到的最大、最小空间</td>
-</tr>
-<tr>
-<td align="center">-gcpermcapacity(x)</td>
-<td align="center">输出永久代使用到的最大、最小空间 (高版本已移除)</td>
-</tr>
-<tr>
-<td align="center">-compiler</td>
-<td align="center">输出即时编译器(JIT compiler，just-in-time compiler)编译过的方法、耗时等信息</td>
-</tr>
-<tr>
-<td align="center">-printcompilation</td>
-<td align="center">输出已经被即时编译的方法</td>
-</tr>
-<tr>
-<td align="center">-gcmetacapacity</td>
-<td align="center">输出 metaspace 的统计信息</td>
-</tr>
-</tbody></table>
-<h2 id="执行样例"><a href="#执行样例" class="headerlink" title="执行样例"></a>执行样例</h2><p><em>（旧版本可能会有 P (Permanent): 永久代）</em></p>
-<h3 id="class"><a href="#class" class="headerlink" title="-class"></a>-class</h3><p>监视类加载、卸载数量、总空间以及类装载所耗费的时间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -class 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-2.png"></p>
-<p>Loaded: 加载 class 数量<br>Bytes: 加载占用空间<br>Unloaded: 卸载 class 数量<br>Bytes: 卸载占用空间<br>Time: 执行类加载和卸载操作总耗时</p>
-<h3 id="gc"><a href="#gc" class="headerlink" title="-gc"></a>-gc</h3><p>监视 Java 堆状况，包括 Eden 区、2 个 Survivor 区、老年代、永久代等的容量，已用空间、垃圾收集时间合计等信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gc 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-3.png"></p>
-<p>S0C (Survivor0 Capacity)、S1C (Survivor1 Capacity): S0 / S1 总空间 (KB)<br>S0U (Survivor0 Utilization)、S1U (Survivor1 Utilization): S0 / S1 已使用空间 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>EU (Eden Utilization): Eden 已使用空间 (KB)<br>OC (Old Capacity): 老年代总空间 (KB)<br>OU (Old Utilization): 老年代已使用空间 (KB)<br>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>MU (Metaspace Utilization): 元数据区已使用空间 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>CCSU (Compressed Class Space Utilization): 压缩类空间已使用大小 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
-<h3 id="gccapacity"><a href="#gccapacity" class="headerlink" title="-gccapacity"></a>-gccapacity</h3><p>监视内容与 -gc 基本相同，但输出主要关注 Java 堆各个区域使用到的最大、最小空间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gccapacity 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-4.png"></p>
-<p>NGCMN (New Generation Capacity Min): 新生代最小容量 (KB)<br>NGCMX (New Generation Capacity Max): 新生代最大容量 (KB)<br>NGC (New Generation Capacity): 新生代总空间 (KB)<br>S0C (Survivor0 Capacity)、S1C (Survivor1 Capacity): S0 / S1 总空间 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>OGCMN (Old Generation Capacity Min): 老年代最小容量 (KB)<br>OGCMX (Old Generation Capacity Max): 老年代最大容量 (KB)<br>OGC (Old Generation Capacity)、OC (Old Capacity): 老年代总空间 (KB)<br>MCMN (Metaspace Capacity Min): 元数据区最小容量 (KB)<br>MCMX (Metaspace Capacity Max): 元数据区最大容量 (KB)<br>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>CCSMN (Compressed Class Space Min): 压缩类空间最小容量 (KB)<br>CCSMX (Compressed Class Space Max): 压缩类空间最大容量 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数</p>
-<h3 id="gcutil"><a href="#gcutil" class="headerlink" title="-gcutil"></a>-gcutil</h3><p>监视内容与 -gc 基本相同，但输出主要关注已使用空间占总空间的百分比。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcutil 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-5.png"></p>
-<p>S0 (Survivor0)、S1 (Survivor1): S0 / S1 使用比例<br>E (Eden): Eden 使用比例<br>O (Old): 老年代使用比例<br>M (Metaspace): 元数据区使用比例<br>CCS (Compressed Class Space): 压缩类空间使用比例<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
-<h3 id="gccause"><a href="#gccause" class="headerlink" title="-gccause"></a>-gccause</h3><p>与 -gcutil 功能一样，但是会额外输出导致上一次垃圾收集产生的原因。（输出结果比 -gcutil 多了 LGCC 和 GCC）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gccause 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-6.png"></p>
-<p>S0 (Survivor0)、S1 (Survivor1): S0 / S1 使用比例<br>E (Eden): Eden 使用比例<br>O (Old): 老年代使用比例<br>M (Metaspace): 元数据区使用比例<br>CCS (Compressed Class Space): 压缩类空间使用比例<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时<br>LGCC (Last GC Cause): 上次 GC 原因<br>GCC (GC Cause): 本次 GC 原因</p>
-<h3 id="gcnew"><a href="#gcnew" class="headerlink" title="-gcnew"></a>-gcnew</h3><p>监视新生代垃圾收集状况。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcnew 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-7.png"></p>
-<p>S0C (Survivor0 Capacity)、S1C (Survivor1 Capacity): S0 / S1 总空间 (KB)<br>S0U (Survivor0 Utilization)、S1U (Survivor1 Utilization): S0 / S1 已使用空间 (KB)<br>TT (Tenuring Threshold): 对象在新生代的存活次数<br>MTT (Max Tenuring Threshold): 对象在新生代存活的最大次数<br>DSS (Desired Survivor Size): 期望的幸存区大小 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>EU (Eden Utilization): Eden 已使用空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>YGCT (Young GC Time): Young GC 耗时</p>
-<h3 id="gcnewcapacity"><a href="#gcnewcapacity" class="headerlink" title="-gcnewcapacity"></a>-gcnewcapacity</h3><p>监视内容与 -gcnew 基本相同，输出主要关注使用到的最大、最小空间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcnewcapacity 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-8.png"></p>
-<p>NGCMN (New Generation Capacity Min): 新生代最小容量 (KB)<br>NGCMX (New Generation Capacity Max): 新生代最大容量 (KB)<br>NGC (New Generation Capacity): 新生代总空间 (KB)<br>S0CMX (Survivor0 Capacity Max): S0 最大容量 (KB)<br>S0C (Survivor0 Capacity): S0 总空间 (KB)<br>S1CMX (Survivor1 Capacity Max): S1 最大容量 (KB)<br>S1C (Survivor1 Capacity): S1 总空间 (KB)<br>ECMX (Eden Capacity Max): Eden 最大容量 (KB)<br>EC (Eden Capacity): Eden 总空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数</p>
-<h3 id="gcold"><a href="#gcold" class="headerlink" title="-gcold"></a>-gcold</h3><p>监视老年代垃圾收集状况。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcold 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-9.png"></p>
-<p>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>MU (Metaspace Utilization): 元数据区已使用空间 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>CCSU (Compressed Class Space Utilization): 压缩类空间已使用大小 (KB)<br>OC (Old Capacity): 老年代总空间 (KB)<br>OU (Old Utilization): 老年代已使用空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
-<h3 id="gcoldcapacity"><a href="#gcoldcapacity" class="headerlink" title="-gcoldcapacity"></a>-gcoldcapacity</h3><p>监视内容与 -gcold 基本相同，输出主要关注使用到的最大、最小空间。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcoldcapacity 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-10.png"></p>
-<p>OGCMN (Old Generation Capacity Min): 老年代最小容量 (KB)<br>OGCMX (Old Generation Capacity Max): 老年代最大容量 (KB)<br>OGC (Old Generation Capacity)、OC (Old Capacity): 老年代总空间 (KB)<br>OC (Old Capacity): 老年代总空间 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
-<h3 id="gcpermcapacity-x"><a href="#gcpermcapacity-x" class="headerlink" title="-gcpermcapacity (x)"></a>-gcpermcapacity (x)</h3><p>输出永久代使用到的最大、最小空间。(高版本已移除)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcpermcapacity 5511</span><br></pre></td></tr></table></figure>
-<p><em>会提示：Unknown option: -gcpermcapacity</em></p>
-<h3 id="compiler"><a href="#compiler" class="headerlink" title="-compiler"></a>-compiler</h3><p>输出即时编译器(JIT compiler，just-in-time compiler)编译过的方法、耗时等信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -compiler 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-11.png"></p>
-<p>Compiled: 编译任务数<br>Failed: 失败的编译任务数<br>Invalid: 无效的编译任务数<br>Time: 编译花费时间<br>FailedType: 上次编译失败的编译类型<br>FailedMethod: 上次编译失败的类名和方法</p>
-<h3 id="printcompilation"><a href="#printcompilation" class="headerlink" title="-printcompilation"></a>-printcompilation</h3><p>输出已经被即时编译的方法。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -printcompilation 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-12.png"></p>
-<p>Compiled: 最近编译方法的数量<br>Size: 最近编译方法的字节码数量<br>Type: 最近编译方法的编译类型<br>Method: 标识最近编译方法的类名和方法名。这两个字段的格式与 HotSpot - XX:+PrintComplation 选项一致</p>
-<h3 id="gcmetacapacity"><a href="#gcmetacapacity" class="headerlink" title="-gcmetacapacity"></a>-gcmetacapacity</h3><p>输出 metaspace 的统计信息。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jstat -gcmetacapacity 5511</span><br></pre></td></tr></table></figure>
-<p><img src="/images/30-13.png"></p>
-<p>MCMN (Metaspace Capacity Min): 元数据区最小容量 (KB)<br>MCMX (Metaspace Capacity Max): 元数据区最大容量 (KB)<br>MC (Metaspace Capacity): 元数据区总空间 (KB)<br>CCSMN (Compressed Class Space Min): 压缩类空间最小容量 (KB)<br>CCSMX (Compressed Class Space Max): 压缩类空间最大容量 (KB)<br>CCSC (Compressed Class Space Capacity): 压缩类空间大小 (KB)<br>YGC (Young GC / Minor GC): Young GC 次数<br>FGC (Full GC): Full GC 次数<br>FGCT (Full GC Time): Full GC 耗时<br>GCT (GC Time): GC 总耗时</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1080,7 +1045,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

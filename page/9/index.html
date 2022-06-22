@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">46</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,160 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">归并排序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-23 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-23T00:00:00+08:00">2020-04-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index"><span itemprop="name">algorithm</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/" class="post-meta-item leancloud_visitors" data-flag-title="归并排序" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/04/23/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/23/归并排序/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>归并排序（merge sort）是1945年由科学家约翰·冯·诺伊曼（John von Neumann）首次提出的，它是分治法的一个非常典型的应用。</p>
+<p>当然，它也是面试中算法的一个高频考察点。（一说到面试，你是不是都有动力看下去了呢）</p>
+<h2 id="归并排序思想"><a href="#归并排序思想" class="headerlink" title="归并排序思想"></a>归并排序思想</h2><p>首先简单介绍一下分治法（Divide and Conquer）。在计算机科学中，分治法是基于多项分支递归的一种很重要的算法范式。在每一层递归上一般有三个步骤：分解，解决，合并。分治的字面意思是“分而治之”，就是把一个复杂的问题分成多个相同或相似的子问题，最终子问题可以简单的直接求解，然后合并子问题的解即可得到原问题的解。这个思想也是很多高效算法的基础。</p>
+<p><img src="/images/5-1.gif" alt="使用归并排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
+<p>接下来就演示一下归并排序的整个过程吧。这次就不用文字来描述了，直接用两张图，因为图更直观些，相信看完你就能明白。</p>
+<p><img src="/images/5-2.gif" alt="使用归并排序为一列数字进行排序的过程（picture from Wikipedia）"></p>
+<p><img src="/images/5-3.png" alt="使用归并排序为一列数字进行排序的过程"></p>
+<p>从demo中，我们可以看到，归并排序算法整体上可以分为两个部分：</p>
+<ol>
+<li><p>分组：递归地把当前数组分割成两部分，直到不可再分割为止，此时，每个数组中只有一个元素；</p>
+</li>
+<li><p>归并（merge）：将两个已经有序的数组合并成一个有序的数组，最终，就会得到一个排好序的数组。</p>
+</li>
+</ol>
+<p>可以看到 merge 操作的代码写的怎么样基本上就决定了归并算法的好坏，那么应该怎么写呢？大家可以先思考一下。</p>
+<p>这个问题是一个典型的“看起来比较简单，真正操作起来会发现其实并没有那么简单”的问题。merge 的过程通常不能直接在原数组上通过交换位置来完成，而是需要开辟一个同样大小的临时空间来辅助完成这个过程。</p>
+<p>当使用这个临时空间后，归并的过程就变得比较容易。但这也算是归并排序的一个缺点，即多使用了O(n)的存储空间。不过在现代的计算机中，时间效率要比空间效率重要的多。因为无论是内存也好，或者硬盘也好，都变得越来越廉价，可以存储的数据规模也越来越大，因此，如果数据存储空间不是算法过程中的瓶颈，我们设计的算法通常优先考虑时间复杂度。</p>
+<h2 id="归并排序代码"><a href="#归并排序代码" class="headerlink" title="归并排序代码"></a>归并排序代码</h2><p>在 merge 的代码实现上，主要思路是用三个索引来在数组内进行追踪。如下图：</p>
+<p><img src="/images/5-4.png" alt="merge的代码实现思路"></p>
+<p>其实定义上图中的这些变量非常重要，举个例子，假如上图中定义的 mid 指向的是 2，那么写出来的代码就是完全不一样的。</p>
+<p>在真正写代码之前，还要再啰嗦一句。其实归并排序的代码可以有两种写法：“Top-down”和“Bottom-up”，或者也可以称为“自顶向下”和“自底向上”，或者也可以称为“递归法”和“非递归法”（迭代法）。不要慌，下面都会给出代码示例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort：Top-down；自顶向下；递归法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  sort(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * sort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (left &gt;= right) &#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = left + ((right - left) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">  sort(data, left, mid);</span><br><span class="line">  sort(data, mid + <span class="number">1</span>, right);</span><br><span class="line">  <span class="comment">// 对 data[left...mid] 和 data[mid + 1...right] 两部分进行归并，merge 方法代码见下</span></span><br><span class="line">  merge(data, left, mid, right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort：Bottom-up；自底向上；非递归；迭代法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = data.length;</span><br><span class="line">  <span class="comment">// 第一层循环对 merge 的元素个数进行遍历，结果为（1，2，4，8，16，...）</span></span><br><span class="line">  <span class="comment">// 第二层循环中 j 为每一轮要进行归并的两个有序数组中左边数组的起始位置</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">      <span class="comment">// 对 data[j...j + i - 1] 和 data[j + i...j + 2 * i - 1] 两部分进行归并，merge 方法代码见下</span></span><br><span class="line">      merge(data, j, j + i - <span class="number">1</span>, Math.min(j + <span class="number">2</span> * i - <span class="number">1</span>, n - <span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为归并排序的两种写法的 merge 部分是一样的，所以这里单独给出 merge 方法的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将 data[l...mid] 和 data[mid + 1...r] 两部分进行归并</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> mid 中间index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 用来辅助排序，保存合并后的序列</span></span><br><span class="line">  <span class="keyword">int</span>[] temp = <span class="keyword">new</span> <span class="keyword">int</span>[right - left + <span class="number">1</span>];</span><br><span class="line">  <span class="comment">// i，j，k的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>, k = <span class="number">0</span>;</span><br><span class="line">  <span class="comment">// 比较左右两个数组的元素</span></span><br><span class="line">  <span class="keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;</span><br><span class="line">    temp[k++] = data[i] &lt;= data[j] ? data[i++] : data[j++];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 处理右边数组元素全部存进去，左边数组元素还没有存完的情况</span></span><br><span class="line">  <span class="keyword">while</span> (i &lt;= mid) &#123;</span><br><span class="line">    temp[k++] = data[i++];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 同上，处理左边数组元素全部存进去，右边数组元素还没有存完的情况</span></span><br><span class="line">  <span class="keyword">while</span> (j &lt;= right) &#123;</span><br><span class="line">    temp[k++] = data[j++];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 复制回原数组</span></span><br><span class="line">  System.arraycopy(temp, <span class="number">0</span>, data, left, temp.length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为了开拓大家的思路，下面再给出一种 merge 方法的实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 将 data[l...mid] 和 data[mid + 1...r] 两部分进行归并</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> mid 中间index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span>[] temp = Arrays.copyOfRange(data, left, right + <span class="number">1</span>);</span><br><span class="line">  <span class="comment">// i，j，k的定义在上边已经介绍</span></span><br><span class="line">  <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> k = left ; k &lt;= right; k ++) &#123;</span><br><span class="line">    <span class="comment">// 处理左边数组元素全部存进去，右边数组元素还没有存完的情况</span></span><br><span class="line">    <span class="keyword">if</span> (i &gt; mid) &#123;</span><br><span class="line">      data[k] = temp[j - left];</span><br><span class="line">      j ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 处理右边数组元素全部存进去，左边数组元素还没有存完的情况</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; right) &#123;</span><br><span class="line">      data[k] = temp[i - left];</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 当前左边数组元素 &lt; 当前右边数组元素</span></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (temp[i - left] &lt; temp[j - left]) &#123;</span><br><span class="line">      data[k] = temp[i - left];</span><br><span class="line">      i ++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 当前左边数组元素 &gt;= 当前右边数组元素</span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      data[k] = temp[j - left];</span><br><span class="line">      j ++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="归并排序优化"><a href="#归并排序优化" class="headerlink" title="归并排序优化"></a>归并排序优化</h2><p>这里要讲两个小的优化点：</p>
+<ol>
+<li><p>前面我们在分完组后直接进行 merge 操作，其实我们忽略了一种情况，那就是在分完组后 merge 之前，有可能两个数组已经就是有序的了，这时候就没必要再进行 merge 操作了。</p>
+<p>具体在代码优化实现上，可以在 merge 之前加一个判断，判断如果 data[mid] &gt; data[mid+1]，才进行 merge 操作。如果要处理的数据场景有可能会出现近乎有序的情况，我们可以加上这个优化。</p>
+</li>
+<li><p>第二个优化点要用到我们前面聊插入排序时的知识，在插入排序的最后，我们说到插入排序可以在更加复杂的排序算法中作为一个子过程来优化，便可以用在这里。</p>
+<p>具体在代码优化实现上，可以在递归到数据量比较小时，转而使用插入排序提高性能。因为当数据量比较小的时候，插入排序会比归并排序快一些（此时整个数组近乎有序的概率也会比较大）。</p>
+<p>不过，讲道理，虽然这两个优化点对归并排序的时间复杂度并没有影响，但是确实会让程序运行快一些。</p>
+</li>
+</ol>
+<h2 id="归并排序优化代码"><a href="#归并排序优化代码" class="headerlink" title="归并排序优化代码"></a>归并排序优化代码</h2><p>首先，需要对插入排序的代码进行一定的改写，要支持指定范围的插入排序，代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对data[l...r]的区间使用插入排序</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> l 起始index，代表left</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> r 结尾index，代表right</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">  <span class="keyword">for</span>( <span class="keyword">int</span> i = l + <span class="number">1</span> ; i &lt;= r ; i ++ )&#123;</span><br><span class="line">    <span class="keyword">int</span> e = data[i];</span><br><span class="line">    <span class="keyword">int</span> j = i;</span><br><span class="line">    <span class="keyword">for</span> (; j &gt; l &amp;&amp; data[j-<span class="number">1</span>] &gt; e; j--) &#123;</span><br><span class="line">      data[j] = data[j - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    data[j] = e;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然，归并排序的两种写法都可以用到上面提到的两个优化点（merge 代码同上）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort优化：Top-down；自顶向下；递归法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  sort(data, <span class="number">0</span>, data.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * sort</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> left 起始index</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> right 结尾index</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] data, <span class="keyword">int</span> l, <span class="keyword">int</span> r)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 优化2: 对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">  <span class="keyword">if</span> (r - l &lt;= <span class="number">15</span>) &#123;</span><br><span class="line">    insertSort(data, l, r);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">int</span> mid = l + ((r - l) &gt;&gt; <span class="number">1</span>);</span><br><span class="line">  sort(data, l, mid);</span><br><span class="line">  sort(data, mid + <span class="number">1</span>, r);</span><br><span class="line">  <span class="comment">// 优化1</span></span><br><span class="line">  <span class="keyword">if</span> (data[mid] &gt; data[mid+<span class="number">1</span>]) &#123;</span><br><span class="line">    <span class="comment">// merge 代码同上</span></span><br><span class="line">    merge(data, l, mid, r);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * mergeSort优化：Bottom-up；自底向上；非递归；迭代法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> data 待排序数组</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] data)</span></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = data.length;</span><br><span class="line">  <span class="comment">// 优化2: 对于小规模数组（这里指定为16个元素）, 使用插入排序</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i += <span class="number">16</span>) &#123;</span><br><span class="line">    insertSort(data, i, Math.min(i + <span class="number">15</span>, n - <span class="number">1</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">16</span>; i &lt; n; i *= <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i; j += <span class="number">2</span> * i) &#123;</span><br><span class="line">      <span class="comment">// 优化1</span></span><br><span class="line">      <span class="keyword">if</span> (data[j + i - <span class="number">1</span>] &gt; data[j + i]) &#123;</span><br><span class="line">        <span class="comment">// merge 代码同上</span></span><br><span class="line">        merge(data, j, j + i - <span class="number">1</span>, Math.min(j + <span class="number">2</span> * i - <span class="number">1</span>, n - <span class="number">1</span>));</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="复杂度和稳定性分析"><a href="#复杂度和稳定性分析" class="headerlink" title="复杂度和稳定性分析"></a>复杂度和稳定性分析</h2><p>大家可能都了解过，归并排序的时间复杂度为 O(n * logn)，那么它是怎么计算的呢？大致如下：</p>
+<p>首先计算分组后的层数。会发现：如果数组有 n 个元素，那么层数就为 logn。如果 n 不是 2 的次方也没有关系，因为此时 logn 的结果是个浮点数，上取整即可。</p>
+<p>接下来要分析 merge 的时间复杂度。会发现：虽然我们把它分成了不同的部分，但是每一层要处理的元素个数都是一样的。那么如果整个过程能够用 O(n) 的时间复杂度来解决，那么我们代码的时间复杂度就为 O(n * logn) 级别。而我们实现的 merge 操作时间复杂度就是 O(n)。</p>
+<ol>
+<li>时间复杂度</li>
+</ol>
+<ul>
+<li><p>最优时间复杂度：O(n * logn)</p>
+</li>
+<li><p>最坏时间复杂度：O(n * logn)</p>
+</li>
+<li><p>平均时间复杂度：O(n * logn)</p>
+</li>
+</ul>
+<ol start="2">
+<li>空间复杂度：O(n)</li>
+</ol>
+<ul>
+<li>前面已经分析过了，需要开辟临时空间来辅助完成 merge 过程。</li>
+</ul>
+<ol start="3">
+<li>归并排序是一种稳定排序。</li>
+</ol>
+<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>所谓慢工出细活，这篇文章写了两天，如果你看到这里了，能告诉我这篇文章对得起“通篇都是干货”这句话吗。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -1286,106 +1440,10 @@ step = 1；[1, 5, 2, 6, 3, 8, 4, 9, 7]
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/01/01/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/01/01/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-01-01 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-01T00:00:00+08:00">2020-01-01</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hello-World-categories/" itemprop="url" rel="index"><span itemprop="name">Hello World categories</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/01/01/hello-world/" class="post-meta-item leancloud_visitors" data-flag-title="Hello World" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/01/01/hello-world/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/01/01/hello-world/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span>
+    <a class="extend prev" rel="prev" href="/page/8/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1453,7 +1511,7 @@ step = 1；[1, 5, 2, 6, 3, 8, 4, 9, 7]
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

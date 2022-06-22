@@ -134,7 +134,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">45</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">46</span></a>
 
   </li>
         <li class="menu-item menu-item-schedule">
@@ -178,6 +178,140 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/10/28/%E6%90%9E%E6%87%82%20Trie/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="jjiey">
+      <meta itemprop="description" content="yangsanity's blog">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yangsanity's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/" class="post-title-link" itemprop="url">搞懂 Trie</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-28 00:00:00" itemprop="dateCreated datePublished" datetime="2020-10-28T00:00:00+08:00">2020-10-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/data-structure/" itemprop="url" rel="index"><span itemprop="name">data structure</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/" class="post-meta-item leancloud_visitors" data-flag-title="搞懂 Trie" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2020/10/28/%E6%90%9E%E6%87%82%20Trie/#disqus_thread" itemprop="discussionUrl">
+      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/10/28/搞懂 Trie/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1"><a href="#1" class="headerlink" title="1"></a>1</h2><p>在计算机科学中，Trie 又称字典树或前缀树，顾名思义，它是一个树形结构。Trie 树通常专门用来处理字符串，解决在一组字符串集合中快速查找某个字符串的问题。</p>
+<p>Trie 的典型应用就是自动补全、搜索提示等。例如命令行或 ide 的自动补全；例如在搜索引擎中输入一个关键字或网址，可以自动弹出可能的选择，而当没有完全匹配的搜索结果时，可以返回前缀最相似的可能结果。</p>
+<p>利用 Trie 树可以做到：查询每个字符串的时间复杂度和字符串总数量无关，只和查询字符串的长度有关。</p>
+<p>怎么做到的呢？</p>
+<p>在实现上，Trie 是一棵多叉树。存储时，将每个字符串以字符为单位拆开存储在每个节点上，利用字符串之间的公共前缀，将重复的前缀合并在一起。结构如下图：</p>
+<p><img src="/images/25-1.png" alt="Trie 结构"></p>
+<p>可以看到，在这棵树上，每个节点的所有子孙节点都有相同的前缀，而根节点是一个空节点，不包含任何信息。</p>
+<p>这样，查找任何字符串，从根节点出发，最多需要查询字符串的长度即可找到相应的字符串。</p>
+<h2 id="定义节点"><a href="#定义节点" class="headerlink" title="定义节点"></a>定义节点</h2><p>我们知道，英文字母表中一共有 26 个英文字母，所以相应地每个节点应该有 26 个指针指向下一个节点，所以在 Trie 中每个节点可以这样定义：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字符</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     * 初试时指定大小为 26</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Node[] next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是，考虑到不同语言，不同情境，比如要存储的字符串要包含大小写，或包含数字，或要存储的字符串是网址，或邮件地址，甚至更加复杂的内容时，26 个指针是不够的。当然某些情况下，26 个指针又太富裕，会造成不必要的浪费。</p>
+<p>这样看来，直接写死 26 并不太好，至少不够灵活，除非我们能非常确定我们的业务场景只需要有固定的 26 个指针。我们希望最好能够用动态的方式来解决这个问题，怎么做呢？我们可以用 Map&lt;char, Node&gt; 来作为 next 的实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 字符</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">char</span> c;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Map&lt;Character, Node&gt; next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再仔细想想，当我们要在 Trie 中搜索某个字符串时，其实已经知道接下来要搜索的字符是什么了。所以更准确来讲，我们应该把字符标到 Trie 的边上，如下图：</p>
+<p><img src="/images/25-2.png" alt="Trie 结构"></p>
+<p>因此，在 Node 节点的实现中其实并不用保存这个字符的值。（当然，也得承认，某些情况下在节点中多存储一些信息可以帮助我们更快的组织某些逻辑）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Map&lt;Character, Node&gt; next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外还有一个问题，就是有可能某个字符串是另一个字符串的前缀，这样我们就还需要知道哪些节点代表着这个字符串的结束。所以在每个 Node 中还需要再存储一个值来表示当前节点是否是某个字符串的结尾。</p>
+<p>综上，最终的节点可以定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Map&lt;Character, Node&gt; next;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结构图如下（用红色节点来表示 isEndingChar 为 true）：</p>
+<p><img src="/images/25-3.png" alt="Trie 结构"></p>
+<h2 id="Trie-实现"><a href="#Trie-实现" class="headerlink" title="Trie 实现"></a>Trie 实现</h2><p>Trie 树主要有三个操作：</p>
+<ul>
+<li>将一个字符串插入到 Trie 树中</li>
+<li>查询一个字符串是否在 Trie 树中</li>
+<li>查询一个字符串在 Trie 树中是否作为某些字符串的前缀</li>
+</ul>
+<p>接下来就可以动手来实现 Trie 了，这里给出两版实现。</p>
+<h3 id="用数组来实现"><a href="#用数组来实现" class="headerlink" title="用数组来实现"></a>用数组来实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 数组实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The root node.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initialize the data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts a word into the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">int</span> index = c - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span> (cur.next[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                cur.next[index] = <span class="keyword">new</span> Node();</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next[index];</span><br><span class="line">        &#125;</span><br><span class="line">        cur.isEndingChar = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * search a prefix or whole key in trie and returns the node where search ends</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">int</span> index = c - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span> (cur.next[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next[index];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if the word is in the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEndingChar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> Node[] next;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">            next = <span class="keyword">new</span> Node[<span class="number">26</span>];</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="用-Map-来实现"><a href="#用-Map-来实现" class="headerlink" title="用 Map 来实现"></a>用 Map 来实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * HashMap 实现</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The root node.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Initialize the data structure.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Inserts a word into the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (!cur.next.containsKey(c)) &#123;</span><br><span class="line">                cur.next.put(c, <span class="keyword">new</span> Node());</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next.get(c);</span><br><span class="line">        &#125;</span><br><span class="line">        cur.isEndingChar = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * search a prefix or whole key in trie and returns the node where search ends</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node cur = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); i++) &#123;</span><br><span class="line">            <span class="keyword">char</span> c = word.charAt(i);</span><br><span class="line">            <span class="keyword">if</span> (!cur.next.containsKey(c)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.next.get(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if the word is in the trie.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEndingChar;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Returns if there is any word in the trie that starts with the given prefix.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 该节点是否是字符串的结尾</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">boolean</span> isEndingChar;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 指向后续节点的指针</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> Map&lt;Character, Node&gt; next;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">boolean</span> isEndingChar)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.isEndingChar = isEndingChar;</span><br><span class="line">            next = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(<span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p>虽然 Trie 树如此高效，但仍然有局限性，相信大家也发现了，那就是空间问题。在某些情况下，比如重复前缀并不多时，Trie 树甚至有可能会浪费更多的内存。</p>
+<p>这个问题又该如何解决呢？</p>
+<p>大的思路来说，就是要在查询效率和内存之间做平衡。所以，既然要省内存，我们就牺牲一点查询的效率。</p>
+<p>这里介绍两种思路：</p>
+<ol>
+<li>第一种思路叫做<em>压缩字典树（Compressed Trie）</em>，即对只有一个子节点的节点，而且此节点不是一个字符串的结束节点，将此节点与子节点合并在一起。如下图所示：</li>
+</ol>
+<p><img src="/images/25-4.png" alt="Compressed Trie"></p>
+<p>可以看到，空间明显减少，但是代价就是操作更复杂，维护成本更高，插入也会更费时。</p>
+<ol start="2">
+<li>第二种思路叫做<em>三分搜索字典树（Ternary Search Trie）</em>，这种树每个节点只有三个孩子，对于任意一个节点，小于该节点字符的节点放到其左子树上，大于该节点字符的节点放到其右子树上，等于该节点字符的节点放到中间子树上。如下图所示一个三分搜索字典树的局部：</li>
+</ol>
+<p><img src="/images/25-5.png" alt="Ternary Search Trie"></p>
+<p>举个例子，我们要在上图中寻找 dog 这个字符串，第一个字符 d 等于 d，走中间的子树，第二个字符 o 大于 k，走右边的子树，第三个字符 g 小于 l，走左边的子树。</p>
+<p>显然，这样时间复杂度会比字符串的长度要多，因为需要先判断当前要找的字符和当前节点字符的大小关系，再决定下一步往哪个方向走。</p>
+<hr>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -943,225 +1077,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yangsanity.me/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-      <meta itemprop="name" content="jjiey">
-      <meta itemprop="description" content="yangsanity's blog">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yangsanity's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" class="post-title-link" itemprop="url">什么是 IEEE 754</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-08-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-08-20T00:00:00+08:00">2020-08-20</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/computer/" itemprop="url" rel="index"><span itemprop="name">computer</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/" class="post-meta-item leancloud_visitors" data-flag-title="什么是 IEEE 754" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="fa fa-comment-o"></i>
-      </span>
-      <span class="post-meta-item-text">Disqus：</span>
-    
-    <a title="disqus" href="/2020/08/20/%E4%BB%80%E4%B9%88%E6%98%AF%20IEEE%20754/#disqus_thread" itemprop="discussionUrl">
-      <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/20/什么是 IEEE 754/" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>IEEE 754（IEEE二进制浮点数算术标准）</strong>是 20 世纪 80 年代以来使用最广泛的浮点数运算标准，被许多 CPU 与浮点运算器所采用。</p>
-<p>在上世纪六、七十年代，各家计算机公司的各个型号计算机，有着千差万别的浮点数表示，这给数据交换、计算机协同工作造成了极大不便。</p>
-<p>在 1980 年，英特尔公司就推出了单片的 8087 浮点数协处理器，其浮点数表示法及定义的运算具有足够的合理性、先进性，被 IEEE 采用作为浮点数的标准，于 1985 年发布。因此第一个标准就是 IEEE 754-1985。</p>
-<h2 id="科学计数法"><a href="#科学计数法" class="headerlink" title="科学计数法"></a>科学计数法</h2><p>先来说说科学计数法。科学计数法大家肯定都不陌生，它是一种数字的表示法，最早由阿基米德提出。在科学记数法中，一个数被写成一个实数 a 与一个 10 的 n 次幂的积的形式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value &#x3D; a * 10ⁿ</span><br></pre></td></tr></table></figure>
-<p>其中：</p>
-<ul>
-<li>n 必须是一个整数</li>
-<li>1 ≤ |a| &lt; 10（如果 |a| 是一个小于 1 的小数，或大于等于 10 的数，都可以通过改变 n 来表示）</li>
-<li>a 是一个实数，称为有效数或尾数(mantissa)</li>
-</ul>
-<p>科学计数法的优点是：当需要表示非常大或非常小的数时，如果用一般的方法，要将一个数的所有位数都写出来，很难直接明确知道它的大小，还会浪费很多空间。如果使用科学记数法来表示，一个数的数量级、精确度和数值都会非常直观。</p>
-<p>比如，0.00000000000000000000000167262158 的科学计数法表示为 1.67262158 * 10⁻²⁴；1898130000000000000000000000 的科学计数法表示为 1.89813 * 10²⁷。</p>
-<p>为什么要先说科学计数法呢？因为 IEEE 754 标准的表示方法几乎就是二进制的科学计数法。</p>
-<h2 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h2><p>IEEE 754 规定了四种表示浮点数值的方式：单精确度（32位）、双精确度（64位）、延伸单精确度（43比特以上，很少使用）与延伸双精确度（79比特以上，通常以80位实现）。</p>
-<p>本文主要的研究对象是单精确度浮点数（32位）。其他精度，比如双精确度浮点数（64位），其和单精确度其实是大同小异的。</p>
-<p>二进制浮点数的表示如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">value &#x3D; sign * exponent * fraction</span><br></pre></td></tr></table></figure>
-<p>其中</p>
-<ul>
-<li>sign(sign bit)：符号位</li>
-<li>exponent(exponent bias)：指数偏移值</li>
-<li>fraction：分数值</li>
-</ul>
-<p>二进制浮点数的组成如下图：</p>
-<p><img src="/images/20-1.png" alt="IEEE 754浮点数的三个域（picture from Wikipedia）"></p>
-<p>对照上图，单精确度浮点数（32位）表示如下：</p>
-<p><img src="/images/20-2.png" alt="（picture from Wikipedia）"></p>
-<p>双精确度浮点数（64位）表示如下：</p>
-<p><img src="/images/20-3.png" alt="（picture from Wikipedia）"></p>
-<h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><p>下面解释一些概念。</p>
-<p>（1）<em>符号位(sign bit)</em></p>
-<p>符号位为 0 表示正数，符号位为 1 表示负数。</p>
-<p>（2）<em>指数的实际值</em></p>
-<p>一个数二进制科学计数法表示下的指数的值。</p>
-<p>例如 2¹⁷，那么指数的实际值就是 17。</p>
-<p>（3）<em>指数偏移值(exponent bias)</em></p>
-<p>指的是根据 IEEE 754 标准对浮点数二进制表示中指数部分编码的值：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exponent bias &#x3D; 指数的实际值 + 某个固定值</span><br></pre></td></tr></table></figure>
-<p>IEEE 754 标准规定：该固定值为 2ᵉ⁻¹ - 1，e 为存储指数的比特的长度。</p>
-<p>例如，单精度浮点数的指数域是 8 个比特，那么固定偏移值为 2⁸⁻¹ - 1 = 128 - 1 = 127。如果指数实际值为17₁₀，那么在单精度浮点数中的指数域编码值为 17₁₀ + 127₁₀ = 144₁₀。</p>
-<p>为什么要用这种形式来表示浮点数的指数呢？</p>
-<p>因为这样可以用长度为 e 个比特的无符号整数来表示所有的指数取值，这使得两个浮点数的指数大小的比较也更为容易，实际上可以直接按照字典次序比较两个浮点表示的大小。</p>
-<p>这种移码表示的指数部分，中文称作<em>阶码</em>。</p>
-<h2 id="normal-number"><a href="#normal-number" class="headerlink" title="normal number"></a>normal number</h2><p><em>normal number：规约形式的浮点数。</em></p>
-<p>“规约”指的是用唯一确定的浮点形式去表示一个值。</p>
-<p>如果浮点数中指数部分的编码值范围为 (0, 2ᵉ - 2]（即指数位不全为 0，也不全为 1），且在科学表示法的表示方式下，fraction 部分的最高有效位是 1（fraction 部分的范围是 [1, 2)），那么这个浮点数被称为规约形式的浮点数。</p>
-<p>因此，规约形式的单精度浮点数的指数部分编码值范围为 (0, 254]，这也可以反推出规约形式的单精度浮点数对应的指数部分实际取值是 [-126, 127]。</p>
-<p>为什么没有 -127 和 128 呢？因为 -127 和 128 被用作特殊值处理，见下面“非规约形式的浮点数”和“特殊值”。</p>
-<p>由于这种表示下的尾数有一位隐含的二进制有效数字，为了与二进制科学计数法的尾数相区别，IEEE 754 称之为<em>有效数（significant）</em>。</p>
-<h2 id="subnormal-number"><a href="#subnormal-number" class="headerlink" title="subnormal number"></a>subnormal number</h2><p><em>subnormal number：非规约形式的浮点数。</em></p>
-<h3 id="为什么需要非规约形式的浮点数？"><a href="#为什么需要非规约形式的浮点数？" class="headerlink" title="为什么需要非规约形式的浮点数？"></a>为什么需要非规约形式的浮点数？</h3><p>由规约形式的浮点数部分的内容，我们可以推算出，规约形式的单精度浮点数的取值范围为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">±尾数 * 2 ^ 指数</span><br><span class="line">&#x3D; ±[1, 2) * 2 ^ [-126, 127]</span><br><span class="line">&#x3D; (-2 * 2¹²⁷, -1 * 2⁻¹²⁶] ∪ [1 * 2⁻¹²⁶, 2 * 2¹²⁷)</span><br></pre></td></tr></table></figure>
-<p>转换为十进制后的大致范围是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[-3.4 * 10³⁸, -1.18 * 10⁻³⁸] ∪ [1.18 * 10⁻³⁸, 3.4 * 10³⁸]</span><br></pre></td></tr></table></figure>
-<p>这里就有个问题，使用规约形式的浮点数我们无法表示非常接近 0 的极小的数（即 (-1 * 2⁻¹²⁶, 1 * 2⁻¹²⁶) 之间的数）！非规约形式的浮点数的出现就将解决这个问题。</p>
-<h3 id="什么是非规约形式的浮点数？"><a href="#什么是非规约形式的浮点数？" class="headerlink" title="什么是非规约形式的浮点数？"></a>什么是非规约形式的浮点数？</h3><p>如果浮点数的指数部分的编码值是 0（即指数位全为 0），且 fraction 部分非零（fraction 部分的最高有效位是 0，fraction 部分的范围是 (0, 1)），那么这个浮点数被称为非规约形式的浮点数。</p>
-<p>IEEE 754 标准规定：非规约形式的浮点数的指数偏移值比规约形式的浮点数的指数偏移值小 1。</p>
-<p>例如，最小的规约形式的单精度浮点数的指数部分编码值为 1，指数的实际值为 -126；而非规约的单精度浮点数的指数域编码值为 0，对应的指数实际值也是 -126 而不是 -127，这是规定。至于为什么这么规定，下面会说到。</p>
-<h3 id="非规约形式的浮点数怎么表示非常接近-0-的数？"><a href="#非规约形式的浮点数怎么表示非常接近-0-的数？" class="headerlink" title="非规约形式的浮点数怎么表示非常接近 0 的数？"></a>非规约形式的浮点数怎么表示非常接近 0 的数？</h3><p>准确来说，这个问题应该是非规约形式的浮点数怎么表示 (-1 * 2⁻¹²⁶, 1 * 2⁻¹²⁶) 之间的数？</p>
-<p>同样，我们可以推算出非规约形式的单精度浮点数的取值范围为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">±尾数 * 2 ^ 指数</span><br><span class="line">&#x3D; ±(0, 1) * 2⁻¹²⁶</span><br><span class="line">&#x3D; (-1 * 2⁻¹²⁶, 0) ∪ (0, 1 * 2⁻¹²⁶]</span><br></pre></td></tr></table></figure>
-<p>仔细看下，非规约形式的单精度浮点数的区间范围和规约形式的单精度浮点数的区间范围正好构成了 (-2 * 2¹²⁷, 0) ∪ (0, 1 * 2 * 2¹²⁷)。</p>
-<p>（是不是中间少个 0 很难受，不要急，0 是作为特殊值存在的，见下面的“特殊值”）</p>
-<h3 id="什么是渐进式下溢出-gradual-underflow-？"><a href="#什么是渐进式下溢出-gradual-underflow-？" class="headerlink" title="什么是渐进式下溢出(gradual underflow)？"></a>什么是渐进式下溢出(gradual underflow)？</h3><p>根据前面的内容我们可以知道：</p>
-<p>非规约形式的单精度浮点数的最大值为 0 00000000 1111111111111111111111，其实就是 0.1111111111111111111111 * 2⁻¹²⁶</p>
-<p>规约形式的单精度浮点数的最小值（大于 0 的区间中）为 0 00000001 0000000000000000000000，其实就是 1.0000000000000000000000 * 2⁻¹²⁶</p>
-<p>可以看到，两者之间几乎实现了平滑的过度，非规约形式的单精度浮点数的最大值非常紧密的连接上了规约形式的单精度浮点数的最小值（大于 0 的区间中，小于 0 的区间也同理）。</p>
-<p>这种特性在 IEEE 754 中就称为*渐进式下溢出(gradual underflow)*。</p>
-<p>理解了这个特性，也就解释了前面的两个疑问：</p>
-<ol>
-<li>为什么规定非规约形式浮点数的尾数前隐藏的整数部分是 0，而规约形式浮点数尾数前隐藏的整数部分是 1 ？</li>
-<li>为什么规定非规约形式浮点数的指数实际值的计算公式是 1 - bias，而规约形式浮点数的指数实际值计算公式是 指数部分的值 - bias ？</li>
-</ol>
-<p>就是因为有这些规定才能实现渐进式下溢出这种特性。</p>
-<p>还有一个概念与之对应，就是*突然式下溢出(abrupt underflow)*。顾名思义，不解释了。</p>
-<h2 id="non-number"><a href="#non-number" class="headerlink" title="non-number"></a>non-number</h2><p><em>non-number：特殊值。</em></p>
-<p>有三个特殊值：</p>
-<ul>
-<li>如果指数是 0 并且 fraction 的小数部分是 0，这个数是 ±0（和符号位相关）</li>
-<li>如果指数是 2ᵉ - 1 并且 fraction 的小数部分是 0，这个数是 ±∞（和符号位相关）<ul>
-<li>什么是 ±∞ 呢？比如对于规约形式的单精度浮点数来说，存储的值超过了它的范围，比如存储的值是 4 * 10³⁸</li>
-</ul>
-</li>
-<li>如果指数是 2ᵉ - 1 并且 fraction 的小数部分非 0，这个数表示为非数（NaN）<ul>
-<li>什么是 ±∞ 呢？比如要存储的值是 √-1</li>
-</ul>
-</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上规则，可总结如下：</p>
-<table>
-<thead>
-<tr>
-<th align="center">形式</th>
-<th align="center">指数</th>
-<th align="center">小数部分</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">零</td>
-<td align="center">全为 0</td>
-<td align="center">全为 0</td>
-</tr>
-<tr>
-<td align="center">非规约形式</td>
-<td align="center">全为 0</td>
-<td align="center">大于 0 小于 1</td>
-</tr>
-<tr>
-<td align="center">规约形式</td>
-<td align="center">1 到 2ᵉ - 2（不全为 0 也不全为 1）</td>
-<td align="center">大于等于 1 小于 2</td>
-</tr>
-<tr>
-<td align="center">无穷</td>
-<td align="center">2ᵉ - 1（全为 1）</td>
-<td align="center">全为 0</td>
-</tr>
-<tr>
-<td align="center">NaN</td>
-<td align="center">2ᵉ - 1（全为 1）</td>
-<td align="center">非 0</td>
-</tr>
-</tbody></table>
-<h2 id="凑字数"><a href="#凑字数" class="headerlink" title="凑字数"></a>凑字数</h2><p>网上有几篇文章我觉得写得挺不错，我也参考了部分内容，这里共享出来链接以供大家阅读：</p>
-<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv4546492">https://www.bilibili.com/read/cv4546492</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/u/9d6b8017232d">https://www.jianshu.com/u/9d6b8017232d</a></p>
-<p>鉴于这篇已经写了这么多字，就先打住，下篇会用具体示例再来演示一下。</p>
-<hr>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1229,7 +1148,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
